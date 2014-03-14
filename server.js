@@ -13,6 +13,8 @@ app.engine('html', engines.hogan); // tell Express to run .html files through Ho
 app.set('views', __dirname + '/templates'); // tell Express where to find templates
 app.use(express.bodyParser());
 app.use('/public', express.static(__dirname + '/public'));
+
+//initi
 /* ////////////////////////////////////////////
 End of initialization
 *//////////////////////////////////////////////
