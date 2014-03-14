@@ -53,10 +53,6 @@ function unsubscribe(email,entryID){
 
 }
 
-//scrapes
-function scrapeAddress(httpAddress){
-
-}
 
 /* ////////////////////////////////////////////
 Internal server functionality
