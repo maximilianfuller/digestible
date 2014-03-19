@@ -1,25 +1,26 @@
 var anyDB = require('any-db');
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 
-conn.query('CREATE TABLE Emails (email-id TEXT PRIMARY KEY, recipient TEXT, ' + 
-    'date-to-send TEXT, entry-id TEXT, collection-id TEXT);') 
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+conn.query('CREATE TABLE Emails (email_id INT AUTO_INCREMENT PRIMARY KEY, recipient TEXT, ' + 
+    'date_to_send TEXT, entry_id TEXT, collection_id TEXT);') 
     .on('error', function() {
     	console.error; 
     });
 
-conn.query('CREATE TABLE Entries (entry-id TEXT PRIMARY KEY, collection-id TEXT, ' + 
-    'author TEXT, title TEXT, date-submitted TEXT, content TEXT);') 
+conn.query('CREATE TABLE Entries (entry_id INT AUTO_INCRMENT PRIMARY KEY, collection_id TEXT, ' + 
+    'author TEXT, title TEXT, date_submitted TEXT, content TEXT);') 
     .on('error', function() {
     	console.error; 
     });
 
-conn.query('CREATE TABLE Collections (collection-id TEXT PRIMARY KEY, ' + 
-    'collection-title TEXT, creator-email TEXT);') 
+conn.query('CREATE TABLE Collections (collection_id INT PRIMARY AUTO_INCRMENT KEY, ' + 
+    'collection_title TEXT, creator_email TEXT);') 
     .on('error', function() {
         console.error; 
     });
 
-conn.query('CREATE TABLE Creator-login (email TEXT PRIMARY KEY, password TEXT)')
+conn.query('CREATE TABLE Creator_login (email TEXT PRIMARY KEY, password TEXT)')
 	.on('error', function() {
 		console.error;
 	});
@@ -40,13 +41,13 @@ conn.query('CREATE TABLE Creator-login (email TEXT PRIMARY KEY, password TEXT)')
     	//collection id
     	//author
     	//title
-    	//date-submitted
+    	//date_submitted
     	//content
     	//color scheme
     	//more data
 
     //collections TABLE
-        //(primary) collection-id
+        //(primary) collection_id
         //collection title
         //creator email
 
