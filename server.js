@@ -24,9 +24,8 @@ function Entry(entry-id, collection-id, collection-title,
     this.title = title;
     this.date-submitted = date-submitted;
     this.content = content;
-
 }
-//initi
+
 /* ////////////////////////////////////////////
 End of initialization
 *//////////////////////////////////////////////
@@ -71,9 +70,7 @@ function deleteEntry(entryID){
         .on('error', console.error);
 }
 
-function
 
-//
 
 //creates a subscription
 function subscribeToEmail(EntryId,whatotherparamtersdoweneed){
