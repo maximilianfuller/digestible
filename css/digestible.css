@@ -7,6 +7,16 @@ body, html {
 
 a {
 	color: #444;
+	text-decoration: none;
+	-webkit-transition: color 200ms;
+	-moz-transition: color 200ms;
+	-ms-transition: color 200ms;
+	-o-transition: color 200ms;
+	transition: color 200ms;
+}
+
+a:hover {
+	color: rgb(230,77,75);
 }
 
 img {
@@ -117,8 +127,28 @@ APP
 	width: 200px;
 }
 
-#logoContain {
+#logo {
+	width: 100%;
+	text-align: center;
+	font-weight: 600;
+	font-size: 22px;
+}
+
+.sideBarLink {
+	width: 100%;
+	text-align: center;
+	margin: 20px 0 0 0;
+}
+
+#collections {
+	margin: 50px auto 0;
 	width: 150px;
-	height: 50px;
-	margin: 40px 0 0 22px;
+}
+
+#logout {
+	position: absolute;
+	bottom: 20px;
+	left: 0;
+	width: 200px;
+	text-align: center;
 }
