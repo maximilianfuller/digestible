@@ -1,7 +1,6 @@
 var anyDB = require('any-db');
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 
-id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
 conn.query('CREATE TABLE Emails (email_id INT AUTO_INCREMENT PRIMARY KEY, recipient TEXT, ' + 
     'date_to_send TEXT, entry_id TEXT, collection_id TEXT);') 
     .on('error', function() {
