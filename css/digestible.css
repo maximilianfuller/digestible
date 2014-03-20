@@ -139,6 +139,9 @@ APP
 	text-align: center;
 	margin: 20px 0 0 0;
 }
+#subscribers {
+	margin-bottom: 50px;
+}
 
 #collections {
 	margin: 50px auto 0;
