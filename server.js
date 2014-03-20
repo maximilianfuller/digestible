@@ -105,40 +105,145 @@ app.post('*', function(request, response){
 
 });
 
+
 /* ////////////////////////////////////////////
-Methods that get called on our server
+Internal server functionality
 *//////////////////////////////////////////////
 
-//generates an entry
-function makeNewEntry(entry, collection_id){
-    conn.query('INSERT INTO Entries (entry_id, collection_id, collection_title, ' + 
-        'creator_email, author, title, date_submitted, content)' + 
-        'VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
+
+//constructor for a new Entry object
+//eg var entry = new Entry(blah, blah, blah)
+function Entry(entry_id, collection_id, author, title, date_submitted, subject, content) {
+    this.entry_id = entry_id;
+    this.collection_id = collection_id;
+    this.author = author;
+    this.title = title;
+    this.date_submitted = date_submitted;
+    this.subject = subject;
+    this.content = content;
+}
+
+//constructor for an Email object
+function Email(email_id, recipient,date_to_send, entry_id, collection_id) {
+    this.email_id = email_id;
+    this.date_to_send = date_to_send;
+    this.entry_id = entry_id;
+    this.collection_id = collection_id;
+}
+
+//constructor for a Collection object
+function Collection(collection_id, collection_title, creator_email) {
+    this.collectoin_id = collection_id;
+    this.collection_title = collection_title;
+    this.creator_email = creator_email;
+}
+
+//puts an entry into the database 
+function addEntry(entry){
+    conn.query('INSERT INTO Entries (collectoin_id, author, title, '+
+        'date_submitted, subject, content)' + 
+        'VALUES ($1, $2, $3, $4, $5, $6)', 
         [
-            entry.entry_id, 
-            entry.collection_id, 
-            entry.collection_title,
-            entry.creator_email,
-            entry.author,
+            entry.collection_id,
+            entry.author; 
             entry.title,
             entry.date_submitted,
+            entry.subject
             entry.content
-        ])
-        .on('error', console.error);
+        ]).on('error', console.error);
+    }
 }
 
-//editEntry
-function editEntry(entry, entryID){
-    unique_id = generateMessageIdentifier();
-}
+//updates an entry in the database (based on its collection id)
+function editEntry(entry){
+    conn.query('UPDATE Entries ' + 
+        'SET collection_id=$2, author=$3, title=$4, ' +
+        'date_submitted=$5, subject=$6, content=$7 ' + 
+        'WHERE entry_id=$1',
+        [
+            entry.entry_id, 
+            entry.collection_id,
+            collection.author; 
+            entry.title,
+            entry.date_submitted,
+            entry.subject,
+            entry.content
+        ]).on('error', console.error);
+    }
+
 
 //deletes an entry
-function deleteEntry(entryID){
-    conn.query('DELETE FROM Entries WHERE entry-id=$1', [entryID])
+function deleteEntry(entry_id){
+    conn.query('DELETE FROM Entries WHERE entry_id=$1', [entry_id])
         .on('error', console.error);
+    //update emails
 }
 
 
+//puts a collection into the database 
+function addCollection(collection){
+    conn.query('INSERT INTO Collections (collection_title TEXT, creator_email TEXT)' + 
+        'VALUES ($1, $2)', 
+        [
+            collection.collection_title,
+            collection.creator_email,
+        ]).on('error', console.error);
+    }
+    //update emails
+}
+
+
+//updates a collection in the database
+function editCollection(collection) {
+    conn.query('UPDATE Collections ' + 
+        'SET collection_title=$2, creator_email=$3, ' +
+        'WHERE collection_id=$1',
+    [
+        collection.collection_id;
+        collection.collection_title;
+        collection.creator_email;
+    ]).on('error', console.error);
+}
+
+function deleteCollection(collection_id) {
+    conn.query('DELETE FROM Collections WHERE collection_id=$1',
+        [collection_id])
+        .on('error', console.error);
+}
+
+//puts an email into the database 
+function addEmail(email){
+    conn.query('INSERT INTO Emails (recipient, date_to_send , entry_id , collection_id)' + 
+        'VALUES ($1, $2, $3, $4)', 
+        [
+            email.recipient,
+            email.date_to_send,
+            email.entry_id,
+            email.collectoin_id
+        ]).on('error', console.error);
+    }
+}
+
+//updates an email in the database (based on its email_id)
+function editEmail(email){
+    conn.query('UPDATE Emails ' + 
+        'SET recipient=$2, date_to_send=$3, entry_id=$4, collection_id=$5' +
+        'WHERE email_id=$1',
+    [
+        email.email_id;
+        email.recipient,
+        email.date_to_send,
+        email.entry_id,
+        email.collectoin_id
+    ]).on('error', console.error);
+    }
+
+
+//deletes an entry
+function deleteEmail(email_id){
+    conn.query('DELETE FROM Emails WHERE email_id=$1', [email_id])
+        .on('error', console.error);
+}
 
 //creates a subscription
 function subscribeToEmail(EntryId,whatotherparamtersdoweneed){
@@ -150,37 +255,6 @@ function unsubscribe(email,entryID){
 
 }
 
-
-/* ////////////////////////////////////////////
-Internal server functionality
-*//////////////////////////////////////////////
-
-
-//what is this function for?
-function Entry(entry_id, collection_id, collection_title, 
-    creator_email, author, title, date_submitted, content) {
-    this.entry_id = entry_id;
-    this.collection_id = collection_id;
-    this.collection_title = collection_title;
-    this.creator_email = creator_email;
-    this.author = author;
-    this.title = title;
-    this.date_submitted = date_submitted;
-    this.content = content;
-}
-
-//generate a message identifier
-function generateMessageIdentifier() {
-    // make a list of legal characters
-    // we're intentionally excluding 0, O, I, and 1 for readability
-    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-    var result = '';
-    for (var i = 0; i < 9; i++)
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-
-    return result;
-}
 
 
 

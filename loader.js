@@ -7,13 +7,13 @@ conn.query('CREATE TABLE Emails (email_id INT AUTO_INCREMENT PRIMARY KEY, recipi
     	console.error; 
     });
 
-conn.query('CREATE TABLE Entries (entry_id INT AUTO_INCRMENT PRIMARY KEY, collection_id TEXT, ' + 
-    'author TEXT, title TEXT, date_submitted TEXT, content TEXT);') 
+conn.query('CREATE TABLE Entries (entry_id INT AUTO_INCREMENT PRIMARY KEY, collection_id TEXT, ' + 
+    'author TEXT, title TEXT, date_submitted TEXT, subject TEXT, content TEXT);') 
     .on('error', function() {
     	console.error; 
     });
 
-conn.query('CREATE TABLE Collections (collection_id INT PRIMARY AUTO_INCRMENT KEY, ' + 
+conn.query('CREATE TABLE Collections (collection_id INT PRIMARY AUTO_INCREMENT KEY, ' + 
     'collection_title TEXT, creator_email TEXT);') 
     .on('error', function() {
         console.error; 
