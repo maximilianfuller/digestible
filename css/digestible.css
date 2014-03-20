@@ -91,3 +91,29 @@ SIGN UP
 .formSubmit {
 	margin-top: 40px;
 }
+
+
+/*--------------
+APP
+--------------*/
+#appMainContainer {
+	width: 880px;
+	margin: 0 auto;
+	padding: 50px 0 0 300px;
+	box-sizing: border-box;
+}
+
+#sideBar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 200px;
+	min-height: 100%;
+	box-shadow: inset -7px 0 5px -5px rgba(50,50,50,.25);
+}
+
+#logoContain {
+	width: 150px;
+	height: 50px;
+	margin: 40px 0 0 22px;
+}
