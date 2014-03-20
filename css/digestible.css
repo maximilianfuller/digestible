@@ -5,6 +5,14 @@ body, html {
 	margin: 0;
 }
 
+a {
+	color: #444;
+}
+
+img {
+	width: 100%;
+}
+
 #mainContainer {
 	width: 880px;
 	margin: 0 auto;
@@ -28,4 +36,15 @@ button {
     cursor: pointer;
     border: none;
     outline: none;
+}
+
+#instructionList li {
+	margin-bottom: 40px;
+}
+
+.instructionImageContain {
+	width: 840px;
+	height: 150px;
+	overflow: hidden;
+	border-radius: 4px;
 }
