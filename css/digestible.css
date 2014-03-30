@@ -158,6 +158,16 @@ APP
 	text-align: center;
 }
 
+/*--------------
+COLLECTIONS
+--------------*/
+#picUpload {
+	width: 200px;
+	height: 40px;
+	margin: 20px 0 0 20px;
+	font-size: 13px;
+}
+
 /*---------------
 SUBSCRIBERS
 ---------------*/
