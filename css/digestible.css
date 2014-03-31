@@ -169,6 +169,43 @@ COLLECTIONS
 }
 
 /*---------------
+CONSUMERS
+---------------*/
+#sideSignUp {
+	width: 160px;
+	margin: 60px auto 10px;
+}
+#collectionTitle {
+	text-align: center;
+	font-size: 50px;
+	margin-bottom: 10px;
+}
+#author {
+	text-align: center;
+	font-size: 20px;
+	margin: 0 0 20px 0;
+}
+#description {
+	color: #999;
+}
+#emailExplain {
+	margin-top: 70px;
+	text-align: center;
+}
+#consumerForm {
+	width: 472px;
+	margin: 0 auto;
+}
+.consumerInput {
+	height: 40px;
+	display: inline-block;
+}
+#consumerSubmit {
+	width: 100%;
+	margin-top: 10px;
+}
+
+/*---------------
 SUBSCRIBERS
 ---------------*/
 #subscribeTable {
