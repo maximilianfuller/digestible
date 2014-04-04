@@ -45,7 +45,17 @@ myDate.setDate(myDate.getDate()+5);
 */
 
 
-function email(reader_email, subject, body, millsFromNow);
+function email(email_id, millsFromNow) {
+
+}
+
+function getBodyFromID() {
+
+}
+
+function getSubjectFromID() {
+    
+}
 
 function scheduleEmail(senderName, senderEmail, receiver, eSubject, body, dateToEmail){
 	// setup e-mail data with unicode symbols
