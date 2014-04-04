@@ -138,26 +138,70 @@ function Email(email_id, recipient,date_to_send, entry_id, collection_id) {
 
 //constructor for a Collection object
 function Collection(collection_id, collection_title, creator_email) {
-    this.collectoin_id = collection_id;
+    this.collection_id = collection_id;
     this.collection_title = collection_title;
     this.creator_email = creator_email;
 }
 
 //puts an entry into the database 
 function addEntry(entry){
-    conn.query('INSERT INTO Entries (collectoin_id, author, title, '+
+    conn.query('INSERT INTO Entries (collection_id, author, title, '+
         'date_submitted, subject, content)' + 
         'VALUES ($1, $2, $3, $4, $5, $6)', 
         [
             entry.collection_id,
-            entry.author; 
+            entry.author, 
             entry.title,
             entry.date_submitted,
-            entry.subject
+            entry.subject,
             entry.content
         ]).on('error', console.error);
-    }
 }
+
+
+function getEntry(entry_id) {
+    conn.query('SELECT * FROM Entries WHERE entry_id=$1', [entry_id],
+        function(error, result) {
+            if(result.rows.length == 0) {
+                return null;
+            }
+            if(result.rows.length >= 2) {
+                console.error('entry id corresponds to multiple entries')
+            }
+            return new Entry(
+                entry_id,
+                result.rows[0].collection_id,
+                result.rows[0].author,
+                result.rows[0].title,
+                result.rows[0].date_submitted,
+                result.rows[0].subject,
+                result.rows[0].content
+            );
+
+
+        });
+}
+
+//gets all the entries in a given collection
+function getEntriesWithCollectionID(collection_id) {
+    conn.query('SELECT * FROM Entries WHERE collection_id=$1', [collection_id],
+        function(error, result) {
+            var entries = [];
+            for(var i = 0; i < result.rows.length; i++) {
+                entries.push(new Entry(
+                    result.rows[i].entry_id,
+                    collection_id,
+                    result.rows[i].author,
+                    result.rows[i].title,
+                    result.rows[i].date_submitted,
+                    result.rows[i].subject,
+                    result.rows[i].content
+                ));
+            }
+            return entries;
+        });
+}
+
 
 //updates an entry in the database (based on its collection id)
 function editEntry(entry){
@@ -168,20 +212,20 @@ function editEntry(entry){
         [
             entry.entry_id, 
             entry.collection_id,
-            collection.author; 
+            collection.author, 
             entry.title,
             entry.date_submitted,
             entry.subject,
             entry.content
         ]).on('error', console.error);
-    }
+}
 
 
 //deletes an entry
 function deleteEntry(entry_id){
     conn.query('DELETE FROM Entries WHERE entry_id=$1', [entry_id])
         .on('error', console.error);
-    //update emails
+    //TODO: update emails
 }
 
 
@@ -193,10 +237,45 @@ function addCollection(collection){
             collection.collection_title,
             collection.creator_email,
         ]).on('error', console.error);
-    }
-    //update emails
 }
 
+
+//gets the collection with the given collection id. If none exists,
+//returns null
+function getCollection(collection_id) {
+    conn.query('SELECT * FROM Collections ' + 
+        'WHERE collection_id=$1',
+        [
+            collection_id
+        ],
+        function(error, result) {
+            if(result.rows.length == 0) {
+                return null;
+            }
+            if(result.rows.length >= 2) {
+                console.error('collection id corresponds to multiple collections')
+            }
+            return new Collection(result.rows[0].collection_id, 
+                result.rows[0].collection_title, result.rows[0].creator_email);
+        
+        });
+}
+
+//returns an array of collections under a given creator_email
+function getCollectionsWithCreator(creator_email) {
+    conn.query('SELECT * FROM Collections WHERE creator_email=$1', [creator_email],
+        function(error, result) {
+            var collections = [];
+            for(var i = 0; i < result.rows.length; i++) {
+                collections.push(new Collection(
+                    result.rows[i].collection_id,
+                    result.rows[i].collection_title,
+                    creator_email
+                ));
+            }
+            return collections;
+        });
+}
 
 //updates a collection in the database
 function editCollection(collection) {
@@ -204,9 +283,9 @@ function editCollection(collection) {
         'SET collection_title=$2, creator_email=$3, ' +
         'WHERE collection_id=$1',
     [
-        collection.collection_id;
-        collection.collection_title;
-        collection.creator_email;
+        collection.collection_id,
+        collection.collection_title,
+        collection.creator_email
     ]).on('error', console.error);
 }
 
@@ -227,7 +306,6 @@ function addEmail(email){
             email.entry_id,
             email.collectoin_id
         ]).on('error', console.error);
-    }
 }
 
 //updates an email in the database (based on its email_id)
@@ -236,7 +314,7 @@ function editEmail(email){
         'SET recipient=$2, date_to_send=$3, entry_id=$4, collection_id=$5' +
         'WHERE email_id=$1',
     [
-        email.email_id;
+        email.email_id,
         email.recipient,
         email.date_to_send,
         email.entry_id,
@@ -252,7 +330,7 @@ function deleteEmail(email_id){
 }
 
 //creates a subscription
-function subscribeToEmail(EntryId,whatotherparamtersdoweneed){
+function subscribe(collection_id){
 
 }
 
