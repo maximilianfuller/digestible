@@ -19,7 +19,8 @@ conn.query('CREATE TABLE Collections (collection_id INT PRIMARY AUTO_INCREMENT K
         console.error; 
     });
 
-conn.query('CREATE TABLE Creator_login (email TEXT PRIMARY KEY, password TEXT)')
+conn.query('CREATE TABLE Creator_login (email TEXT PRIMARY KEY, password TEXT, ' + 
+    'street_address TEXT, city TEXT, state TEXT, zipcode TEXT)')
 	.on('error', function() {
 		console.error;
 	});
@@ -53,6 +54,10 @@ conn.query('CREATE TABLE Creator_login (email TEXT PRIMARY KEY, password TEXT)')
     //username and password TABLE (for creators only)
     	//(primary) email
     	//password
+        //street address
+        //city
+        //state
+        //zipcode
 
     //////////OPTIONAL///////////
     //(for creator's dashboard)
