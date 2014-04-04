@@ -45,6 +45,8 @@ myDate.setDate(myDate.getDate()+5);
 */
 
 
+function email(reader_email, subject, body, millsFromNow);
+
 function scheduleEmail(senderName, senderEmail, receiver, eSubject, body, dateToEmail){
 	// setup e-mail data with unicode symbols
 	var mailOptions = {
@@ -55,14 +57,15 @@ function scheduleEmail(senderName, senderEmail, receiver, eSubject, body, dateTo
 
 	    //remember to add comma if using html field
 	    //html: "<b>Hello world</b>" // html bodies can also be sent
-	};
-
-	//sendEmail(mailOptions);'
-	
+	};	
 
 	//calculate milliseconds until send
 	millis = dateToEmail.getTime()-((new Date()).getTime());
-	j = setTimeout(function(){console.log('yup')},millis);
+	var j = setTimeout(function() {
+
+        sendEmail(mailOptions);
+
+    },millis);
 	console.log(millis);
 	console.log(dateToEmail.getTime());
 	console.log((new Date()));
@@ -330,12 +333,13 @@ function deleteEmail(email_id){
 }
 
 //creates a subscription
-function subscribe(collection_id){
+function subscribe(collection_id, reader_email){
+    //create a bunch of emails
 
 }
 
 //unsubscribes
-function unsubscribe(email,entryID){
+function unsubscribe(collection_id, reader_email){
 
 }
 
