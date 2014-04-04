@@ -194,7 +194,7 @@ CONSUMERS
 }
 #consumerForm {
 	width: 472px;
-	margin: 0 auto;
+	margin: 0 auto 100px;
 }
 .consumerInput {
 	height: 40px;
@@ -203,6 +203,25 @@ CONSUMERS
 #consumerSubmit {
 	width: 100%;
 	margin-top: 10px;
+}
+#subscriptionsContainer {
+	width: 472px;
+	margin: 0 auto;
+}
+#subscribeTitle {
+	text-align: center;
+}
+#subscriptionsContainer ol {
+	padding: 0 0 0 30px;
+	font-weight: bold;
+	font-size: 18px;
+	color: rgb(230,77,75);
+}
+#subscriptionsContainer ol li {
+	margin-bottom: 10px;
+}
+#subscriptionsContainer ol li span {
+	color: #444;
 }
 
 /*---------------
