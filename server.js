@@ -105,6 +105,11 @@ app.post('*', function(request, response){
 
 });
 
+app.get('consumer/:collection_id', function(request, response){
+    var collection_id = request.params.collection_id;
+
+});
+
 
 /* ////////////////////////////////////////////
 Internal server functionality
@@ -205,6 +210,7 @@ function editCollection(collection) {
     ]).on('error', console.error);
 }
 
+//deletes a collection in the database
 function deleteCollection(collection_id) {
     conn.query('DELETE FROM Collections WHERE collection_id=$1',
         [collection_id])
