@@ -1,19 +1,18 @@
 $(document).ready(function() { 
+     alert("awefff");
   $("form").submit(function( event ) {
+       
+    // prevent the page from redirecting
     event.preventDefault();
-        // prevent the page from redirecting
-    e.preventDefault();
+  
+    alert($('#name').val());
+    alert($('#email').val());
 
-    // create a FormData object from our form
-    var fd = $('#messageField').val();
-    $('#messageField').val('');
-
-    $.post((roomName + "/messages.json"),
+    //send data to the server
+    $.post(("consumer"),
     {
-       sendMessage: "true",
-       rName: roomName, 
-       nName: nickName,
-       mess: fd
+       name: $('#name').val(), 
+       email: $('#email').val()
     },
     function(data,status){ //
         messages = JSON.parse(data);
@@ -22,12 +21,9 @@ $(document).ready(function() {
   });
 });
 
-
 //overrides default behavior of messageForm
 window.addEventListener('load', function(){
    alert("awefa");
    /* var messageForm = document.getElementById('signForm');
     messageForm.addEventListener('submit', sendForm, false);*/
 }, false);
-
-

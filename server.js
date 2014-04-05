@@ -49,6 +49,18 @@ function email(email_id, millsFromNow) {
 
 }
 
+/*
+*right now we have the following functions:
+*delete email
+*edit email
+*add email
+*email
+*scheduleEmail
+*sendEmail
+*
+*maybe we could consolidate those once everything is written out, and just 
+*have three functions: delete, edit, and add
+*/
 function getBodyFromID() {
 
 }
@@ -115,7 +127,7 @@ ajax/server input handling
 //server communications comes in here-
 //is this the way we wanna do things?
 app.post('*', function(request, response){
-
+    console.log("received post");
 });
 
 app.get('consumer/:collection_id', function(request, response){
