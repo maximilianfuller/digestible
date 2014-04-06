@@ -9,6 +9,7 @@
 		"consolidate": "0.7.x",
 		"sqlite3": "2.1.x",
 		"colors": "0.6.2",
-		"nodemailer": "0.6.1"
+		"nodemailer": "0.6.1",
+		"hogan-express": "o.5.2"
 	}
 }
