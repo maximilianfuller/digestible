@@ -99,7 +99,8 @@ ajax/server request handling
 *//////////////////////////////////////////////
 
 
-app.post('/subscribeRequest', function(request, response){
+
+app.post('subscribeRequest', function(request, response){
     console.log("received subscriberequest");
 
     var name = request.body.name; //format params for a subscription
@@ -111,6 +112,32 @@ app.post('/subscribeRequest', function(request, response){
     //subscribe
     subscribe(collection_id, reader_email, millsToFirst, millsInterval);
 });
+
+
+//route and respond to ajax message-related posts
+app.post('/:roomName/messages.json', function(request, response){ 
+    //handle refreshMessages requests
+    console.log("potota");
+});
+
+
+
+app.post('/*', function(request, response){
+   console.log("receivedpost");
+/*   var collection_id = request.params.post;
+    console.log("aq" + collection_id);*/
+
+});
+
+app.post('*', function(request, response){
+   console.log("asdfreceivedpost");
+   var collection_id = request.params.post;
+    console.log("aq" + collection_id);
+
+});
+
+
+
 
 app.get('/consumer/:collection_id', function(request, response){
     var collection_id = request.params.collection_id;
