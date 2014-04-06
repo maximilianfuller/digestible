@@ -45,7 +45,7 @@ myDate.setDate(myDate.getDate()+5);
 */
 
 
-function email(email_id, millsFromNow) {
+function scheduleEmail(email_id, millsFromNow) {
 
 }
 
@@ -61,15 +61,9 @@ function email(email_id, millsFromNow) {
 *maybe we could consolidate those once everything is written out, and just 
 *have three functions: delete, edit, and add
 */
-function getBodyFromID() {
 
-}
 
-function getSubjectFromID() {
-    
-}
-
-function scheduleEmail(senderName, senderEmail, receiver, eSubject, body, dateToEmail){
+function sendEmail(email_id){
 	// setup e-mail data with unicode symbols
 	var mailOptions = {
 	    from: senderName + " <" + senderEmail + ">", // sender address
@@ -355,7 +349,7 @@ function deleteEmail(email_id){
 }
 
 //creates a subscription
-function subscribe(collection_id, reader_email){
+function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
     //create a bunch of emails
 
 }
