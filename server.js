@@ -7,6 +7,7 @@ var	express = require('express');
 var engines = require('consolidate');
 var anyDB = require('any-db');
 var mailer = require('nodemailer');
+var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 var app = express();
 
@@ -35,72 +36,18 @@ End of initialization
 *//////////////////////////////////////////////
 
 /* ////////////////////////////////////////////
-timed email testing
+Email Scheduling
 *//////////////////////////////////////////////
 
-/*
-how to create a date five days in the future:
-var myDate=new Date();
-myDate.setDate(myDate.getDate()+5);
-*/
-
-
 function scheduleEmail(email_id, millsFromNow) {
-
+    var job = setTimeout(function() {
+        sendEmail(mailOptions);
+    },millis);
 }
 
 /*
-*right now we have the following functions:
-*delete email
-*edit email
-*add email
-*email
-*scheduleEmail
-*sendEmail
 *
-*maybe we could consolidate those once everything is written out, and just 
-*have three functions: delete, edit, and add
-*/
-
-
-function sendEmail(email_id){
-	// setup e-mail data with unicode symbols
-	var mailOptions = {
-	    from: senderName + " <" + senderEmail + ">", // sender address
-	    to: receiver, // list of receivers
-	    subject: eSubject, // Subject line
-	    text: body // plaintext body
-
-	    //remember to add comma if using html field
-	    //html: "<b>Hello world</b>" // html bodies can also be sent
-	};	
-
-	//calculate milliseconds until send
-	millis = dateToEmail.getTime()-((new Date()).getTime());
-	var j = setTimeout(function() {
-
-        sendEmail(mailOptions);
-
-    },millis);
-	console.log(millis);
-	console.log(dateToEmail.getTime());
-	console.log((new Date()));
-}
-
-function sendEmail(email){
-	// send mail with defined transport object
-	smtpTransport.sendMail(email, function(error, response){
-	    if(error){
-	        console.log(error);
-	    }else{
-	        console.log("Message sent: " + response.message.cyan);
-	    }
-
-	    // if you don't want to use this transport object anymore, uncomment following line
-	    //smtpTransport.close(); // shut down the connection pool, no more messages
-	});
-}
-
+* sample params:
 senderName = "Fred Foo";
 senderEmail = "benjamin_resnick@brown.edu";
 receiver = "benjamin_resnick@brown.edu, neb301@yahoo.com";
@@ -108,7 +55,40 @@ subject = "Hello";
 body = "Hello world";
 var dateToEmail = new Date(2014, 3, 19, 14, 26 ,0,0); //year, month, day, hour, minute, second, millis
 scheduleEmail(senderName,senderEmail,receiver,subject,body,dateToEmail);
+*
+*/
+function sendEmail(email_id){
 
+    email_params = getEmail(email_id);
+    senderName = email_params.senderName;
+    senderEmail = email_params.senderEmail;
+    receiver = email_params.receiver;
+    eSubject = email_params.subject;
+    body = email_params.contents; 
+
+	// setup e-mail data with unicode symbols
+	var mailOptions = {
+	    from: senderName + " <" + senderEmail + ">", // sender address
+	    to: receiver, // list of receivers
+	    subject: eSubject, // Subject line
+	    text: contents // plaintext body
+
+	    //remember to add comma if using html field
+	    //html: "<b>Hello world</b>" // html bodies can also be sent
+	};	
+
+    // send mail with defined transport object
+    smtpTransport.sendMail(mailOptions, function(error, response){
+        if(error){
+            console.log(error);
+        }else{
+            console.log("Message sent: " + response.message.cyan);
+        }
+
+        // if you don't want to use this transport object anymore, uncomment following line
+        //smtpTransport.close(); // shut down the connection pool, no more messages
+    });
+}
 
 /* ////////////////////////////////////////////
 end email testing
