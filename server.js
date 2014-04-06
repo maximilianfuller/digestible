@@ -28,7 +28,8 @@ var smtpTransport = mailer.createTransport("SMTP",{
 
 
 //data structure initializations 
-scheduled_jobs = []; 
+var scheduled_emails = new HashMap(); //key: email_id, value: a scheduled email
+
 
 
 /* ////////////////////////////////////////////
