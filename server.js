@@ -308,6 +308,24 @@ function addEmail(email){
         ]).on('error', console.error);
 }
 
+//gets the email with the given email id. Returns null if none exists. Throws
+//an error if more than one exist.
+function getEmail(email_id) {
+    conn.query('SELECT FROM Emails WHERE email_id = $1', [email_id],
+        function(error, result) {
+            if(result.rows.length == 0) {
+                return null;
+            }
+            if(result.rows.length >= 2) {
+                console.error('email id corresponds to multiple emails')
+            }
+            return new Email(email_id, 
+                result.rows[0].date_to_send, 
+                result.rows[0].entry_id, 
+                result.rows[0].collection_id);
+        });
+}
+
 //updates an email in the database (based on its email_id)
 function editEmail(email){
     conn.query('UPDATE Emails ' + 
@@ -331,13 +349,17 @@ function deleteEmail(email_id){
 
 //creates a subscription
 function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
-    //create a bunch of emails
+    var entries = getEntriesWithCollectionID(collection_id);
+    var currentMills;
+    for(var i = 0; i < entries.length; i++) {
+        email
+    }
 
 }
 
 //unsubscribes
 function unsubscribe(collection_id, reader_email){
-
+    
 }
 
 
