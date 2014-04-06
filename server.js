@@ -95,26 +95,26 @@ end email testing
 *//////////////////////////////////////////////
 
 /* ////////////////////////////////////////////
-ajax/server input handling
+ajax/server request handling
 *//////////////////////////////////////////////
 
-//server communications comes in here-
-//is this the way we wanna do things?
-app.post('*', function(request, response){
-    console.log("received post");
+
+app.post('/subscribeRequest', function(request, response){
+    console.log("received subscriberequest");
+
+    var name = request.body.name; //format params for a subscription
+    var reader_email = request.body.email;
+    var collection_id = request.body.collection_id;
+    millsToFirst = 0;
+    millInterval = 86400000; //one day
+
+    //subscribe
+    subscribe(collection_id, reader_email, millsToFirst, millsInterval);
 });
 
-
-/*//serve a chatroom
-app.get('/:roomName', function(request, response){
-    var name = request.params.roomName;  // 'ABC123'
-    console.log(name);
-    response.render('room.html',{roomName: name});
-});
-*/
 app.get('/consumer/:collection_id', function(request, response){
     var collection_id = request.params.collection_id;
-    console.log(collection_id);
+    console.log("consumer req" + collection_id);
 
     //check if the collection exists
     //if(getCollection(collection_id) !== null){
@@ -125,12 +125,6 @@ app.get('/consumer/:collection_id', function(request, response){
         console.log("invalid collection access attempt");
     //}   
 });
-/*
-app.get('*', function(request, response){
-    console.log("received post");
-
-    response.render('consumer.html',{});
-});*/
 
 /* ////////////////////////////////////////////
 Internal server functionality
