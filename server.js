@@ -40,10 +40,12 @@ End of initialization
 Email Scheduling
 *//////////////////////////////////////////////
 
-function scheduleEmail(email_id, millsFromNow) {
+function scheduleEmail(email_id, millisFromNow) {
     var job = setTimeout(function() {
-        sendEmail(mailOptions);
-    },millis);
+        sendEmail(email_id);
+    },millisFromNow);
+
+    scheduled_emails.set(email_id,job);
 }
 
 /*
@@ -85,9 +87,6 @@ function sendEmail(email_id){
         }else{
             console.log("Message sent: " + response.message.cyan);
         }
-
-        // if you don't want to use this transport object anymore, uncomment following line
-        //smtpTransport.close(); // shut down the connection pool, no more messages
     });
 }
 
@@ -105,11 +104,33 @@ app.post('*', function(request, response){
     console.log("received post");
 });
 
-app.get('consumer/:collection_id', function(request, response){
-    var collection_id = request.params.collection_id;
 
+/*//serve a chatroom
+app.get('/:roomName', function(request, response){
+    var name = request.params.roomName;  // 'ABC123'
+    console.log(name);
+    response.render('room.html',{roomName: name});
 });
+*/
+app.get('/consumer/:collection_id', function(request, response){
+    var collection_id = request.params.collection_id;
+    console.log(collection_id);
 
+    //check if the collection exists
+    //if(getCollection(collection_id) !== null){
+        response.render('consumer.html',{collectionName: collection_id});    
+    //}
+    //else{
+        //render a 404 page
+        console.log("invalid collection access attempt");
+    //}   
+});
+/*
+app.get('*', function(request, response){
+    console.log("received post");
+
+    response.render('consumer.html',{});
+});*/
 
 /* ////////////////////////////////////////////
 Internal server functionality
