@@ -1,3 +1,5 @@
+var roomName = meta('roomName');
+
 $(document).ready(function() { 
   $("#consumerForm").submit(function( event ) {
        
