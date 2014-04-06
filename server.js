@@ -112,7 +112,7 @@ app.get('consumer/:collection_id', function(request, response){
 
 
 /* ////////////////////////////////////////////
-Internal server functionality
+Database wrappers
 *//////////////////////////////////////////////
 
 
@@ -129,8 +129,9 @@ function Entry(entry_id, collection_id, author, title, date_submitted, subject, 
 }
 
 //constructor for an Email object
-function Email(email_id, recipient,date_to_send, entry_id, collection_id) {
+function Email(email_id, recipient, date_to_send, entry_id, collection_id) {
     this.email_id = email_id;
+    this.recipient = recipient;
     this.date_to_send = date_to_send;
     this.entry_id = entry_id;
     this.collection_id = collection_id;
@@ -143,7 +144,7 @@ function Collection(collection_id, collection_title, creator_email) {
     this.creator_email = creator_email;
 }
 
-//puts an entry into the database 
+//puts an entry into the database and returns the entry's id
 function addEntry(entry){
     conn.query('INSERT INTO Entries (collection_id, author, title, '+
         'date_submitted, subject, content)' + 
@@ -156,12 +157,24 @@ function addEntry(entry){
             entry.subject,
             entry.content
         ]).on('error', console.error);
+    conn.query('SELECT last_insert_rowid() FROM Entries',
+        function(error, result) {
+            if(error)
+                console.error;
+            if(result.rows.length != 1) {
+                console.error('failed to get last insert row id');
+            }
+            return result.rows[0].entry_id;
+        });
+
 }
 
 
 function getEntry(entry_id) {
     conn.query('SELECT * FROM Entries WHERE entry_id=$1', [entry_id],
         function(error, result) {
+            if(error)
+                console.error;
             if(result.rows.length == 0) {
                 return null;
             }
@@ -186,6 +199,8 @@ function getEntry(entry_id) {
 function getEntriesWithCollectionID(collection_id) {
     conn.query('SELECT * FROM Entries WHERE collection_id=$1', [collection_id],
         function(error, result) {
+            if(error)
+                console.error;
             var entries = [];
             for(var i = 0; i < result.rows.length; i++) {
                 entries.push(new Entry(
@@ -229,7 +244,7 @@ function deleteEntry(entry_id){
 }
 
 
-//puts a collection into the database 
+//puts a collection into the database and returns its id
 function addCollection(collection){
     conn.query('INSERT INTO Collections (collection_title TEXT, creator_email TEXT)' + 
         'VALUES ($1, $2)', 
@@ -237,6 +252,15 @@ function addCollection(collection){
             collection.collection_title,
             collection.creator_email,
         ]).on('error', console.error);
+    conn.query('SELECT last_insert_rowid() FROM Collections',
+        function(error, result) {
+            if(error)
+                console.error;
+            if(result.rows.length != 1) {
+                console.error('failed to get last insert row id');
+            }
+            return result.rows[0].collection_id;
+        });
 }
 
 
@@ -249,6 +273,8 @@ function getCollection(collection_id) {
             collection_id
         ],
         function(error, result) {
+            if(error)
+                console.error;
             if(result.rows.length == 0) {
                 return null;
             }
@@ -296,7 +322,7 @@ function deleteCollection(collection_id) {
         .on('error', console.error);
 }
 
-//puts an email into the database 
+//puts an email into the database and returns its id
 function addEmail(email){
     conn.query('INSERT INTO Emails (recipient, date_to_send , entry_id , collection_id)' + 
         'VALUES ($1, $2, $3, $4)', 
@@ -304,8 +330,17 @@ function addEmail(email){
             email.recipient,
             email.date_to_send,
             email.entry_id,
-            email.collectoin_id
+            email.collection_id
         ]).on('error', console.error);
+    conn.query('SELECT last_insert_rowid() FROM Emails',
+        function(error, result) {
+            if(error)
+                console.error;
+            if(result.rows.length != 1) {
+                console.error('failed to get last insert row id');
+            }
+            return result.rows[0].email_id;
+        });
 }
 
 //gets the email with the given email id. Returns null if none exists. Throws
@@ -313,6 +348,8 @@ function addEmail(email){
 function getEmail(email_id) {
     conn.query('SELECT FROM Emails WHERE email_id = $1', [email_id],
         function(error, result) {
+            if(error)
+                console.error;
             if(result.rows.length == 0) {
                 return null;
             }
@@ -336,7 +373,7 @@ function editEmail(email){
         email.recipient,
         email.date_to_send,
         email.entry_id,
-        email.collectoin_id
+        email.collection_id
     ]).on('error', console.error);
     }
 
@@ -347,12 +384,21 @@ function deleteEmail(email_id){
         .on('error', console.error);
 }
 
+////////////////////////////////////////////////////////////////// 
+//Subscribing
+////////////////////////////////////////////////////////////////// 
+
 //creates a subscription
 function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
     var entries = getEntriesWithCollectionID(collection_id);
-    var currentMills;
+    var currentMills = millsToFirst;
     for(var i = 0; i < entries.length; i++) {
-        email
+        var email = new Email(null, reader_email, 
+            Date.now() + currentMills, entries[i], collection_id);
+        var email_id = addEmail(email);
+        scheduleEmail(email_id, currentMills);
+
+        currentMills+=millsInterval;
     }
 
 }

@@ -8,7 +8,7 @@ conn.query('CREATE TABLE Emails (email_id INT AUTO_INCREMENT PRIMARY KEY, recipi
     });
 
 conn.query('CREATE TABLE Entries (entry_id INT AUTO_INCREMENT PRIMARY KEY, collection_id TEXT, ' + 
-    'author TEXT, title TEXT, date_submitted TEXT, subject TEXT, content TEXT);') 
+    'author TEXT, title TEXT, date_submitted INT, subject TEXT, content TEXT);') 
     .on('error', function() {
     	console.error; 
     });
@@ -30,7 +30,7 @@ conn.query('CREATE TABLE Creator_login (email TEXT PRIMARY KEY, password TEXT, '
     //email TABLE
     	//email id
     	//recipient
-    	//date to send
+    	//date to send milliseconds since 1/1/1970 00:00:00 UTC
     	//entry id
     	//collection id
     	//(to delete an email, select by collection id and recipient)
@@ -39,7 +39,7 @@ conn.query('CREATE TABLE Creator_login (email TEXT PRIMARY KEY, password TEXT, '
     //entry TABLE
     	//(primary) entry id
     	//collection id
-    	//author
+    	//authorcollection
     	//title
     	//date_submitted
     	//content
