@@ -13,7 +13,7 @@ conn.query('CREATE TABLE Entries (entry_id INT AUTO_INCREMENT PRIMARY KEY, colle
     	console.error; 
     });
 
-conn.query('CREATE TABLE Collections (collection_id INT PRIMARY AUTO_INCREMENT KEY, ' + 
+conn.query('CREATE TABLE Collections (collection_id INT AUTO_INCREMENT PRIMARY KEY, ' + 
     'collection_title TEXT, creator_email TEXT);') 
     .on('error', function() {
         console.error; 
@@ -24,6 +24,8 @@ conn.query('CREATE TABLE Creator_login (email TEXT PRIMARY KEY, password TEXT, '
 	.on('error', function() {
 		console.error;
 	});
+
+conn.end();
 
 
 //DATABASES
