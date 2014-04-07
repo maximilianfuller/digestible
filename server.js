@@ -98,8 +98,6 @@ end email testing
 ajax/server request handling
 *//////////////////////////////////////////////
 
-
-
 app.post('subscribeRequest', function(request, response){
     console.log("received subscriberequest");
 
@@ -122,7 +120,7 @@ app.post('/:roomName/messages.json', function(request, response){
 
 
 
-app.post('/*', function(request, response){
+app.post('/endpoint', function(request, response){
    console.log("receivedpost");
 /*   var collection_id = request.params.post;
     console.log("aq" + collection_id);*/
@@ -456,6 +454,6 @@ function unsubscribe(collection_id, reader_email){
 ////////////////////////////////////////////////////////////////// 
 //run on local for testing
 ////////////////////////////////////////////////////////////////// 
-app.listen(8080, function(){
-    console.log('- Server listening on port 8080'.grey);
+app.listen(8082, function(){
+    console.log('- Server listening on port 8082'.grey);
 });
