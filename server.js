@@ -98,7 +98,7 @@ end email testing
 ajax/server request handling
 *//////////////////////////////////////////////
 
-app.post('subscribeRequest', function(request, response){
+/*app.post('subscribeRequest', function(request, response){
     console.log("received subscriberequest");
 
     var name = request.body.name; //format params for a subscription
@@ -116,21 +116,21 @@ app.post('subscribeRequest', function(request, response){
 app.post('/:roomName/messages.json', function(request, response){ 
     //handle refreshMessages requests
     console.log("potota");
-});
+});*/
 
 
 
-app.post('/endpoint', function(request, response){
+app.post('/consumer/sign_up', function(request, response){
    console.log("receivedpost");
-/*   var collection_id = request.params.post;
-    console.log("aq" + collection_id);*/
+//   var collection_id = request.params.post;
+    console.log("aq");
 
 });
 
 app.post('*', function(request, response){
    console.log("asdfreceivedpost");
-   var collection_id = request.params.post;
-    console.log("aq" + collection_id);
+   //var collection_id = request.params.post;
+    console.log("aq");
 
 });
 
@@ -149,6 +149,11 @@ app.get('/consumer/:collection_id', function(request, response){
         //render a 404 page
         console.log("invalid collection access attempt");
     //}   
+});
+
+app.get('*',function(request, response){
+    console.log("consumer req" );
+
 });
 
 /* ////////////////////////////////////////////

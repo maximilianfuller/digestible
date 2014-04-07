@@ -1,5 +1,5 @@
 $(document).ready(function() { 
-  alert("script called");
+  alert("script calffled");
 
   var meta = document.querySelector('meta[name=collectionName]');
   var collectionName = meta.content;
@@ -10,26 +10,12 @@ $(document).ready(function() {
     // prevent the page from redirecting
     event.preventDefault();
     //send data to the server
-    alert("here");
-     $.post("endpoint",
-        {
-            refreshMessages: "true",
-            rName: roomName
-        }).done(
-        function(data){
-            messages = JSON.parse(data);
-            displayMessages(messages);
-        });
-
-/*
-    $.post(("subscribeRequest"),
-    {
+    $.post("sign_up",{
        name: $('#name').val(), 
        email: $('#email').val(), 
        collection_id: collectionName
-    },
-    function(data,status){ 
-            alert("asdf");
-    });*/
+    },function(data,status){
+      alert("Data: " + data + "\nStatus: " + status);
+    });
   });
 });
