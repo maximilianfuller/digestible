@@ -98,44 +98,18 @@ end email testing
 ajax/server request handling
 *//////////////////////////////////////////////
 
-/*app.post('subscribeRequest', function(request, response){
-    console.log("received subscriberequest");
+app.post('/consumer/sign_up', function(request, response){
+    console.log("received sign_up request");
 
     var name = request.body.name; //format params for a subscription
     var reader_email = request.body.email;
     var collection_id = request.body.collection_id;
-    millsToFirst = 0;
-    millInterval = 86400000; //one day
+    millisToFirst = 0;
+    millisInterval = 86400000; //one day
 
     //subscribe
-    subscribe(collection_id, reader_email, millsToFirst, millsInterval);
+    //subscribe(collection_id, reader_email, millisToFirst, millisInterval);
 });
-
-
-//route and respond to ajax message-related posts
-app.post('/:roomName/messages.json', function(request, response){ 
-    //handle refreshMessages requests
-    console.log("potota");
-});*/
-
-
-
-app.post('/consumer/sign_up', function(request, response){
-   console.log("receivedpost");
-//   var collection_id = request.params.post;
-    console.log("aq");
-
-});
-
-app.post('*', function(request, response){
-   console.log("asdfreceivedpost");
-   //var collection_id = request.params.post;
-    console.log("aq");
-
-});
-
-
-
 
 app.get('/consumer/:collection_id', function(request, response){
     var collection_id = request.params.collection_id;
@@ -149,11 +123,6 @@ app.get('/consumer/:collection_id', function(request, response){
         //render a 404 page
         console.log("invalid collection access attempt");
     //}   
-});
-
-app.get('*',function(request, response){
-    console.log("consumer req" );
-
 });
 
 /* ////////////////////////////////////////////

@@ -1,5 +1,4 @@
 $(document).ready(function() { 
-  alert("script calffled");
 
   var meta = document.querySelector('meta[name=collectionName]');
   var collectionName = meta.content;
