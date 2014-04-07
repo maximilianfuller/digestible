@@ -109,6 +109,7 @@ app.post('/consumer/sign_up', function(request, response){
 
     //subscribe
     //subscribe(collection_id, reader_email, millisToFirst, millisInterval);
+    response.send("success");//on successful signup
 });
 
 app.get('/consumer/:collection_id', function(request, response){
@@ -117,13 +118,34 @@ app.get('/consumer/:collection_id', function(request, response){
 
     //check if the collection exists
     //if(getCollection(collection_id) !== null){
+
+
+        //this is probably easier to do via an ajax dump than moustahce
+        
+        /*//create moustache fields for the entry names
+        var entries = getEntriesWithCollectionID(collection_id);
+        var orderedEntries = new Array();
+        for(var i = 0; i < entries.length; i++){ //order the entries by entry_number
+            orderedEntries[entries[i].entry_number] = entries[i];
+        }
+
+        var entryTitles =  ",";
+        for(var i = 0; i < entries.length; i++){ //generate the moustache string
+            entryTitles = entryTitles + "entryTitle: " orderedEntries[i] + ",";*/
+        }
+
         response.render('consumer.html',{collectionName: collection_id});    
-    //}
-    //else{
-        //render a 404 page
+    /*}
+    else{
+        render a 404 page
         console.log("invalid collection access attempt");
-    //}   
+    }*/   
 });
+
+//serve collection articles on the consumer subscription page
+app.get('/consumer/:collection_id'){
+
+}
 
 /* ////////////////////////////////////////////
 Database wrappers

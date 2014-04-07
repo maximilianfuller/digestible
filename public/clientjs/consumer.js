@@ -1,8 +1,7 @@
 $(document).ready(function() { 
-
+  $("#successMessage").hide();
   var meta = document.querySelector('meta[name=collectionName]');
   var collectionName = meta.content;
-  alert(collectionName);
 
   $("#consumerForm").submit(function( event ) {
 
@@ -14,7 +13,12 @@ $(document).ready(function() {
        email: $('#email').val(), 
        collection_id: collectionName
     },function(data,status){
-      alert("Data: " + data + "\nStatus: " + status);
+      if(status === "success"){
+        $("#consumerForm").hide();
+        $("#emailExplain").hide("fast", function(){
+          $("#successMessage").show();
+        });
+      }
     });
   });
 });
