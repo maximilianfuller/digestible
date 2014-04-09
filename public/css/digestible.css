@@ -214,12 +214,9 @@ APP
 }
 
 .sideBarLink {
-	width: 100%;
-	text-align: center;
-	margin: 20px 0 0 0;
-}
-#subscribers {
-	margin-bottom: 50px;
+	width: 172px;
+	text-align: right;
+	margin: 30px 0 0 0;
 }
 
 #collections {
@@ -231,8 +228,8 @@ APP
 	position: absolute;
 	bottom: 20px;
 	left: 0;
-	width: 200px;
-	text-align: center;
+	width: 172px;
+	text-align: right;
 }
 
 /*--------------
