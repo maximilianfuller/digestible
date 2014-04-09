@@ -17,27 +17,15 @@
 				<h2>Once you fill out this page, all you'll have to do is paste your article URLs.</h2>
 				<!--we need to change action to match our actual server address once thats up and running-->
 				<form id = "signForm" action="http://127.0.0.1:8080/sign_up" method="post">
-					<label for="name">Your real name:</label>
-					<input type="text" name="name" id="name" class="textInput">
-					<label for="email">Email address:</label>
-					<input type="text" name="email" id="email" class="textInput">
-					<label for="password">Password:</label>
-					<input type="password" name="password" id="password" class="textInput">
-					<p id="addressExplain">(We need your address so you can legally email subscribers.)</p>
-					<label for="street">Street address:</label>
-					<input type="text" name="street" id="street" class="textInput">
-					<label for="city">City:</label>
-					<input type="text" name="city" id="city" class="textInput">
-					<label for="">State:</label>
-					<select name="">
-						<option value="RI">(Choose)</option>
-						<option value="RI">RI</option>
-						<option value="MN">MN</option>
-						<option value="TODO">TODO: add all 50</option>
-					</select>
-					<label for="zip">Zipcode:</label>
-					<input type="text" name="" id="zip" class="textInput">
-					<input class="formSubmit" type="submit" name="" value="Make Your First Collection"/>
+					<input type="text" name="name" id="name" class="textInput" placeholder="Your real name">
+					<input type="text" name="email" id="email" class="textInput" placeholder="Email address">
+					<input type="password" name="password" id="password" class="textInput" placeholder="Password">
+					<p id="addressExplain">We need your address so you can legally email subscribers.</p>
+					<input type="text" name="street" id="street" class="textInput" placeholder="Street address">
+					<input type="text" name="city" id="city" class="textInput" placeholder="City">
+					<input type="text" name="" id="state" class="textInput" placeholder="State">
+					<input type="text" name="" id="zip" class="textInput" placeholder="Zipcode">
+					<input class="formSubmit" type="submit" name="" value="Make a Collection!"/>
 				</form>
 			</section>
 		</div>
