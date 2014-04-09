@@ -142,6 +142,19 @@ section#howItWorks {
 	margin-bottom: 0;
 	padding-bottom: 5px;
 }
+#howToImgContain {
+	float: right;
+	width: 360px;
+	margin-top: 25px;
+	height: 520px;
+	background: white;
+	border-radius: 2px;
+	border: 2px solid white;
+	overflow: hidden;
+}
+#howToImgContain img {
+	width: 100%;
+}
 
 /*------------
 SIGN UP
