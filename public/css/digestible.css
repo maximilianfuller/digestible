@@ -46,7 +46,7 @@ select {
 	position: absolute;
 	right: 0;
 	top: 20px;
-	width: 433px;
+	width: 418px;
 }
 
 .authInput {
@@ -64,6 +64,7 @@ select {
 	cursor: pointer;
 	font-weight: bold;
 	color: #e31218;
+	padding: 0;
 }
 #mainContainer, #subContain {
 	width: 640px;
