@@ -195,7 +195,7 @@ APP
 #appMainContainer {
 	width: 930px;
 	margin: 0 auto;
-	padding: 50px 50px 0 100px;
+	padding: 50px 50px 0 60px;
 	box-sizing: border-box;
 }
 
@@ -301,33 +301,39 @@ CONSUMERS
 /*---------------
 SUBSCRIBERS
 ---------------*/
+#subscriberTitle {
+	text-align: center;
+	font-size: 36px;
+	margin-top: 0;
+
+}
 #subscribeTable {
 	width: 100%;
 	border-collapse: collapse;
 	margin-top: 50px;
 }
-
+#headerRow {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 3px;
+	height: 30px;
+}
 #subscribeTable th {
 	text-align: left;
-	padding: 0 0 5px 5px;
 }
 
 #subscribeTable td {
-	padding: 0 15px 0 15px;
-	border-top: 1px solid #ccc;
-	border-left: 1px solid #ccc;
-	border-right: 1px solid #ccc;
 	max-width: 260px;
 	word-break: break-word;
+	padding: 0 0 35px 0;
+	vertical-align: top;
 }
-
-#subscribeTable tr td:first-child {
-	border-left: none;
+#subscribeTable td:last-child, #subscribeTable th:last-child {
+	text-align: right;
 }
-#subscribeTable tr td:last-child {
-	border-right: none;
+#subscribeTable td ul, #subscribeTable p {
+	padding: 0;
+	margin: 10px 0 0 0;
 }
-
-#subscribeTable tr:last-child td {
-	padding-bottom: 10px;
+#subscribeTable td li {
+	list-style-type: none;
 }
