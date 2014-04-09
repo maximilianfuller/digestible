@@ -42,8 +42,30 @@ select {
 	margin: 1px 0 20px 0;
 	font-size: 17px;
 }
+#authForm {
+	position: absolute;
+	right: 0;
+	top: 20px;
+	width: 600px;
+}
 
-#mainContainer {
+.authInput {
+	width: 180px;
+	float: left;
+}
+#authPass {
+	margin-left: 10px;
+}
+.authSubmit {
+	border: none;
+	background: #fff;
+	width: 75px;
+	height: 36px;
+	cursor: pointer;
+	font-weight: bold;
+	color: #e31218;
+}
+#mainContainer, #subContain {
 	width: 640px;
 	margin: 0 auto;
 	padding: 0 40px;
@@ -81,43 +103,12 @@ button, .formSubmit {
     border: none;
     outline: none;
 }
-#howTitle {
-	color: #fff;
-	margin: 110px 0 0 240px;
-}
-#instructionList li {
-	margin-bottom: 40px;
-}
-
-.instructionImageContain {
+section#howItWorks {
+	background: #0071bc;
+	margin: 0;
 	width: 100%;
-	height: 150px;
-	overflow: hidden;
-	border-radius: 4px;
-}
-
-#authForm {
-	position: absolute;
-	right: 0;
-	top: 20px;
-	width: 600px;
-}
-
-.authInput {
-	width: 180px;
-	float: left;
-}
-#authPass {
-	margin-left: 10px;
-}
-.authSubmit {
-	border: none;
-	background: #fff;
-	width: 75px;
-	height: 36px;
-	cursor: pointer;
-	font-weight: bold;
-	color: #e31218;
+	color: #fff;
+	padding-bottom: 10px;
 }
 #notch {
 	width: 0; 
@@ -126,6 +117,30 @@ button, .formSubmit {
 	border-right: 20px solid transparent;
 	border-top: 20px solid #fff;
 	margin: 0 auto;
+}
+#subContain {
+	width: 840px;
+}
+#howTitle {
+	color: #fff;
+	margin: 110px 0 0 0;
+}
+#instructionList {
+	width: 400px;
+	margin: 0 0 20px 0;
+	float: left;
+}
+#instructionList li {
+	margin-bottom: 40px;
+	list-style-type: none;
+}
+#instructionList .listHeader {
+	font-weight: 600;
+	border-bottom: 2px solid white;
+	display: inline-block;
+	font-size: 24px;
+	margin-bottom: 0;
+	padding-bottom: 5px;
 }
 
 /*------------
@@ -147,12 +162,6 @@ SIGN UP
 
 .formSubmit {
 	margin-top: 40px;
-}
-section#howItWorks {
-	background: #0071bc;
-	margin: 0;
-	width: 100%;
-	color: #fff;
 }
 
 
