@@ -46,11 +46,11 @@ select {
 	position: absolute;
 	right: 0;
 	top: 20px;
-	width: 600px;
+	width: 433px;
 }
 
 .authInput {
-	width: 180px;
+	width: 140px;
 	float: left;
 }
 #authPass {
