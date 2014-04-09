@@ -1,19 +1,19 @@
 var anyDB = require('any-db');
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 
-conn.query('CREATE TABLE Emails (email_id INT AUTO_INCREMENT PRIMARY KEY, recipient TEXT, ' + 
+conn.query('CREATE TABLE Emails (email_id INTEGER PRIMARY KEY AUTOINCREMENT, recipient TEXT, ' + 
     'date_to_send TEXT, entry_id TEXT, collection_id TEXT);') 
     .on('error', function() {
     	console.error; 
     });
 
-conn.query('CREATE TABLE Entries (entry_id INT AUTO_INCREMENT PRIMARY KEY, collection_id TEXT, ' + 
+conn.query('CREATE TABLE Entries (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, collection_id TEXT, ' + 
     'author TEXT, title TEXT, date_submitted INT, subject TEXT, content TEXT);') 
     .on('error', function() {
     	console.error; 
     });
 
-conn.query('CREATE TABLE Collections (collection_id INT AUTO_INCREMENT PRIMARY KEY, ' + 
+conn.query('CREATE TABLE Collections (collection_id INTEGER PRIMARY KEY AUTOINCREMENT, ' + 
     'collection_title TEXT, creator_email TEXT);') 
     .on('error', function() {
         console.error; 
