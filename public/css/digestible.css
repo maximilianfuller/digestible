@@ -16,7 +16,7 @@ a {
 }
 
 a:hover {
-	color: rgb(230,77,75);
+	color: #e31218;
 }
 
 img {
@@ -27,12 +27,12 @@ input {
 	outline: none;
 	border: none;
 	font-family: "Open Sans";
-	background: #eee;
 	font-weight: 400;
 	height: 30px;
 	font-size: 17px;
 	padding: 3px 0 3px 10px;
 	display: block;
+	border-left: 5px solid #ccc;
 }
 
 select {
@@ -44,22 +44,35 @@ select {
 }
 
 #mainContainer {
-	width: 700px;
+	width: 640px;
 	margin: 0 auto;
 	padding: 0 40px;
 }
 
 #title {
 	text-align: center;
-	font-size: 50px;
+	font-size: 72px;
+	margin: 100px 0 20px 0;
+	font-weight: 800;
+	color: #222;
 }
-
+.landingSubtitle {
+	font-size: 48px;
+	color: #222;
+	margin-top: 10px;
+}
+.content {
+	font-size: 24px;
+	color: #333;
+	font-weight: 600;
+}
 button, .formSubmit {
 	display: block;
 	margin: 0 auto 60px;
-	width: 500px;
-	height: 50px;
-	background-color: rgb(230,77,75);
+	width: 100%;
+	height: 60px;
+	font-weight: 600;
+	background-color: #e31218;
     border-radius:2px;
     color: #fff;
     font-family: 'Open Sans', sans-serif;
@@ -68,7 +81,10 @@ button, .formSubmit {
     border: none;
     outline: none;
 }
-
+#howTitle {
+	color: #fff;
+	margin: 110px 0 0 240px;
+}
 #instructionList li {
 	margin-bottom: 40px;
 }
@@ -80,6 +96,37 @@ button, .formSubmit {
 	border-radius: 4px;
 }
 
+#authForm {
+	position: absolute;
+	right: 0;
+	top: 20px;
+	width: 600px;
+}
+
+.authInput {
+	width: 180px;
+	float: left;
+}
+#authPass {
+	margin-left: 10px;
+}
+.authSubmit {
+	border: none;
+	background: #fff;
+	width: 75px;
+	height: 36px;
+	cursor: pointer;
+	font-weight: bold;
+	color: #e31218;
+}
+#notch {
+	width: 0; 
+	height: 0; 
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	border-top: 20px solid #fff;
+	margin: 0 auto;
+}
 
 /*------------
 SIGN UP
@@ -100,6 +147,12 @@ SIGN UP
 
 .formSubmit {
 	margin-top: 40px;
+}
+section#howItWorks {
+	background: #0071bc;
+	margin: 0;
+	width: 100%;
+	color: #fff;
 }
 
 
@@ -215,7 +268,7 @@ CONSUMERS
 	padding: 0 0 0 30px;
 	font-weight: bold;
 	font-size: 18px;
-	color: rgb(230,77,75);
+	color: #e31218;
 }
 #subscriptionsContainer ol li {
 	margin-bottom: 10px;
