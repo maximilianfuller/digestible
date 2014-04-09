@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<header>
+		<meta charset="UTF-8">
+		<title>Digestible - An easy way for readers to read an online collection of work.</title>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="../public/css/digestible.css" />
+		<script type="text/javascript" src="../public/clientjs/jquery-2.1.0.min.js"></script>
+		<script type="text/javascript" src="../public/clientjs/signUp.js"></script>
+	</header>
+
+	<body>
+		<div id="mainContainer">
+			<section>
+				<h1 id="title">Digestible</h1>
+				<h2>Once you fill out this page, all you'll have to do is paste your article URLs.</h2>
+				<!--we need to change action to match our actual server address once thats up and running-->
+				<form id = "signForm" action="http://127.0.0.1:8080/sign_up" method="post">
+					<label for="name">Your real name:</label>
+					<input type="text" name="name" id="name" class="textInput">
+					<label for="email">Email address:</label>
+					<input type="text" name="email" id="email" class="textInput">
+					<label for="password">Password:</label>
+					<input type="password" name="password" id="password" class="textInput">
+					<p id="addressExplain">(We need your address so you can legally email subscribers.)</p>
+					<label for="street">Street address:</label>
+					<input type="text" name="street" id="street" class="textInput">
+					<label for="city">City:</label>
+					<input type="text" name="city" id="city" class="textInput">
+					<label for="">State:</label>
+					<select name="">
+						<option value="RI">(Choose)</option>
+						<option value="RI">RI</option>
+						<option value="MN">MN</option>
+						<option value="TODO">TODO: add all 50</option>
+					</select>
+					<label for="zip">Zipcode:</label>
+					<input type="text" name="" id="zip" class="textInput">
+					<input class="formSubmit" type="submit" name="" value="Make Your First Collection"/>
+				</form>
+			</section>
+		</div>
+	</body>
+</html>
+
+
+
