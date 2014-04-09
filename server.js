@@ -1,5 +1,10 @@
 //digestable node.js based server
 
+//HOW TO RUN TESTS:
+
+var runDBTests = false;
+var runEmailTests = true;
+
 //dependencies
 var http = require('http');
 var	colors = require('colors');
@@ -60,39 +65,88 @@ var dateToEmail = new Date(2014, 3, 19, 14, 26 ,0,0); //year, month, day, hour, 
 scheduleEmail(senderName,senderEmail,receiver,subject,body,dateToEmail);
 *
 */
-function sendEmail(email_id){
+function sendEmail(email_id) {
 
-    email_params = getEmail(email_id);
-    senderName = email_params.senderName;
-    senderEmail = email_params.senderEmail;
-    receiver = email_params.receiver;
-    eSubject = email_params.subject;
-    body = email_params.contents; 
+    getEmail(email_id, function(email) {
+        getCollection(email.collection_id, function (collection) {
+            getEntry(email.entry_id, function (entry) {
 
-	// setup e-mail data with unicode symbols
-	var mailOptions = {
-	    from: senderName + " <" + senderEmail + ">", // sender address
-	    to: receiver, // list of receivers
-	    subject: eSubject, // Subject line
-	    text: contents // plaintext body
+            	// setup e-mail data with unicode symbols
+            	var mailOptions = {
+            	    from: "John Doe" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
+            	    to: email.recipient, // list of receivers
+            	    subject: entry.subject, // Subject line
+            	    //text: contents // plaintext body
 
-	    //remember to add comma if using html field
-	    //html: "<b>Hello world</b>" // html bodies can also be sent
-	};	
+            	    //remember to add comma if using html field
+            	    html: entry.content // html bodies can also be sent
+            	};	
 
-    // send mail with defined transport object
-    smtpTransport.sendMail(mailOptions, function(error, response){
-        if(error){
-            console.log(error);
-        }else{
-            console.log("Message sent: " + response.message.cyan);
-        }
-    });
+                // send mail with defined transport object
+                smtpTransport.sendMail(mailOptions, function(error, response){
+                    if(error){
+                        console.log(error);
+                    }else{
+                        console.log("Message sent: " + response.message.cyan);
+                    }
+                });
+            });
+        });
+});
 }
 
+////////////////////////////////////////////////////////////////// 
+//Subscribing
+////////////////////////////////////////////////////////////////// 
+
+//creates a subscription
+function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
+    var entries = getEntriesWithCollectionID(collection_id);
+    var currentMills = millsToFirst;
+    for(var i = 0; i < entries.length; i++) {
+        var email = new Email(null, reader_email, 
+            Date.now() + currentMills, entries[i], collection_id);
+        addEmail(email, new function(email_id) {
+            scheduleEmail(email_id, currentMills);
+        });
+
+        currentMills+=millsInterval;
+    }
+
+}
+
+//unsubscribes
+function unsubscribe(collection_id, reader_email){
+    
+}
+
+
+
 /* ////////////////////////////////////////////
-end email testing
+email testing
 *//////////////////////////////////////////////
+if(runEmailTests) {
+var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu");
+addCollection(c1, function(c1_id) {
+    
+    var e1 = new Entry(null, c1_id, "max", 
+        "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss.</b>");
+    addEntry(e1, function(e1_id) {
+        var email1 = new Email(null, 
+            "benjamin_resnick@brown.edu", new Date(Date.now()+60000), e1_id, c1_id);
+        addEmail(email1, function(email1_id) {
+            sendEmail(email1_id);
+
+            /*deleteEmail(email1_id);
+            deleteEntry(e1_id);
+            deleteCollection(c1_id);*/
+        });
+    });
+});
+}
+
+
+
 
 /* ////////////////////////////////////////////
 ajax/server request handling
@@ -458,6 +512,22 @@ function deleteEmail(email_id){
 }
 
 
+function printEmails() {
+    conn.query("SELECT * FROM Emails", function(error, response) {
+        console.log(response);
+    });
+}
+
+function printEntries() {
+    conn.query("SELECT * FROM Entries", function(error, response) {
+        console.log(response);
+    });
+}
+function printCollections() {
+    conn.query("SELECT * FROM Collections", function(error, response) {
+        console.log(response);
+    });
+}
 
 
 
@@ -469,11 +539,11 @@ function assert(cond) {
     if(!cond) {
         console.log("assertion failed");
     } else {
-        //console.log("assertion passed");
+        console.log("assertion passed");
     }
 }
 
-
+if(runDBTests) {
 var c1 = new Collection(null, "boss instructions", "max@gmail.com");
 
 addCollection(c1, function(c1_id) {
@@ -492,6 +562,7 @@ addCollection(c1, function(c1_id) {
 
                 //GET EMAILS WITH COLLECTION ID
                 getEntriesWithCollectionID(c1_id, function(entries) {
+                    //console.log(entries);
                     assert(entries[0].title === "how to be a boss" && entries[1].title === "how to be a boss2");
                 });
 
@@ -509,7 +580,7 @@ addCollection(c1, function(c1_id) {
 
                 //EMAIL DELETING
                 getEmail(email1_id, function (email) {
-                    assert(email== null);
+                    assert(email == null);
                 });
 
                 //ENTRY ADDING/GETTING
@@ -559,32 +630,8 @@ addCollection(c1, function(c1_id) {
         
     });
 });
-
-
-////////////////////////////////////////////////////////////////// 
-//Subscribing
-////////////////////////////////////////////////////////////////// 
-
-//creates a subscription
-function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
-    var entries = getEntriesWithCollectionID(collection_id);
-    var currentMills = millsToFirst;
-    for(var i = 0; i < entries.length; i++) {
-        var email = new Email(null, reader_email, 
-            Date.now() + currentMills, entries[i], collection_id);
-        addEmail(email, new function(email_id) {
-            scheduleEmail(email_id, currentMills);
-        });
-
-        currentMills+=millsInterval;
-    }
-
 }
 
-//unsubscribes
-function unsubscribe(collection_id, reader_email){
-    
-}
 
 
 
