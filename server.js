@@ -113,39 +113,40 @@ app.post('/consumer/sign_up', function(request, response){
 });
 
 app.get('/consumer/:collection_id', function(request, response){
-    var collection_id = request.params.collection_id;
+    var collection_id = request.params.clolection_id;
     console.log("consumer req" + collection_id);
 
+    //start storing relevant moustache params
+    var moustacheParams = [];
+    moustacheParams.push({collectionName: collection_id});
+/*
     //check if the collection exists
-    //if(getCollection(collection_id) !== null){
-
-
-        //this is probably easier to do via an ajax dump than moustahce
+    if(getCollection(collection_id) !== null){
         
-        /*//create moustache fields for the entry names
-        var entries = getEntriesWithCollectionID(collection_id);
-        var orderedEntries = new Array();
-        for(var i = 0; i < entries.length; i++){ //order the entries by entry_number
+        //create moustache field for entry names
+        var entryList =  [];
+        var entries = getEntriesWithCollectionID(collection_id); //db entry return results
+        var orderedEntries = []; //ordered db results
+        
+        //order the entries by entry_number
+        for(var i = 0; i < entries.length; i++){ 
             orderedEntries[entries[i].entry_number] = entries[i];
+        }//generate the moustache fields
+        for(var i = 0; i < entries.length; i++){ 
+            entryList.push({entryTitle: orderedEntries[i].title});
         }
 
-        var entryTitles =  ",";
-        for(var i = 0; i < entries.length; i++){ //generate the moustache string
-            entryTitles = entryTitles + "entryTitle: " orderedEntries[i] + ",";*/
-        }
+        //add the entry name fields to the moustacheParams
+        moustacheParams.push(entryList);*/
 
-        response.render('consumer.html',{collectionName: collection_id});    
-    /*}
-    else{
-        render a 404 page
+        //render the webpage
+        response.render('consumer.html',moustacheParams);    
+  /*  }
+    else{ //render a 404 page
         console.log("invalid collection access attempt");
-    }*/   
+    }   */
 });
 
-//serve collection articles on the consumer subscription page
-app.get('/consumer/:collection_id'){
-
-}
 
 /* ////////////////////////////////////////////
 Database wrappers
