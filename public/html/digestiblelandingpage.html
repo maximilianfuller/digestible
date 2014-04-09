@@ -11,7 +11,7 @@
 	<body>
 		<!--We can start off by making this landing page very simple. Black and white with some nice fonts, like the blogging tutorial I emailed out. This way, our mobile version will just be a more narrow version of our landing page. -->
 		<div id="mainContainer">
-			<section>
+			<section id="landingSection">
 				<form action="" id="authForm">
 					<input type="text" name="name" id="authEmail" class="authInput" placeholder="Email">
 					<input type="password" name="name" id="authPass" class="authInput" placeholder="Password">
@@ -26,38 +26,28 @@
 		</div>
 			<section id="howItWorks">
 				<div id="notch"></div>
-				<h2 class="landingSubtitle" id="howTitle">How it works</h2>
-				<!--We can add photos under each step to illuminate the process later on. -->
-				<ol id="instructionList">
-					<li>
-						<p><a href="#">Sign up.</a></p>
-						<div class="instructionImageContain">
-							<img src="http://placehold.it/840x150" alt="">
-						</div>
-					</li>
-					<li>
-						<p>To create a subscription form, describe your collection of articles, and we'll provide you a link.</p>
-						<div class="instructionImageContain">
-							<img src="http://placehold.it/840x150" alt="">
-						</div>
-					</li>
-					<li>
-						<p>To create the scheduled emails, paste the URLs of the articles, and we'll generate the subject lines and content for you, or you can make the emails from scratch. Regardless, you can always edit them.</p>
-						<div class="instructionImageContain">
-							<img src="http://placehold.it/840x150" alt="">
-						</div>
-					</li>
-					<li>
-						<p>So readers can enjoy your content in the form of periodic emails, put the link to your subscription form under your archive.</p>
-						<div class="instructionImageContain">
-							<img src="http://placehold.it/840x150" alt="">
-						</div>
-					</li>
-					<li>
-						<p>That's it!</p>
-					</li>
-				</ol>
-				<button>SIGN UP NOW!</button>
+				<div id="subContain">
+					<h2 class="landingSubtitle" id="howTitle">How it works</h2>
+					<!--We can add photos under each step to illuminate the process later on. -->
+					<ul id="instructionList">
+						<li>
+							<p class="listHeader">Create a subscription form.</p>
+							<p class="listExplain">Here readers sign up to receive each article as an email.</p>
+						</li>
+						<li>
+							<p class="listHeader">Make the scheduled emails.</p>
+							<p class="listExplain">Just paste the URL of each article and we'll generate the subject lines and content for you, or you can make the emails from scratch. Regardless, you can always edit them.</p>
+						</li>
+						<li>
+							<p class="listHeader">Link to your subscription form under your article collection.</p>
+							<p class="listExplain">Now your readers have the option to casually read the articles with periodic emails.</p>
+						</li>
+					</ul>
+					<div id="howToImgContain">
+						<img src="http://placehold.it/360x520" alt="">
+					</div>
+					<button>Sign Up!</button>
+				</div>
 			</section>
 	</body>
 </html>
