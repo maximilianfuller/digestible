@@ -183,20 +183,26 @@ SIGN UP
 /*--------------
 APP
 --------------*/
-#mainWrap {
+#mainWrap, #subscriberMainWrap {
 	position: absolute;
 	left: 200px;
 	top: 0;
 	right: 0;
 	box-shadow: 0 0 10px rgba(50,50,50,.25);
 	min-height: 100%;
+	min-width: 640px;
+}
+#subscriberMainWrap {
 	min-width: 930px;
 }
-#appMainContainer {
-	width: 930px;
+#appMainContainer, #subscriberMainContainer {
+	width: 640px;
 	margin: 0 auto;
 	padding: 50px 50px 0 60px;
 	box-sizing: border-box;
+}
+#subscriberMainContainer {
+	width: 930px;
 }
 
 #sideBar {
@@ -250,17 +256,15 @@ CONSUMERS
 	margin: 60px auto 10px;
 }
 #collectionTitle {
-	text-align: center;
 	font-size: 50px;
 	margin-bottom: 10px;
 }
 #author {
-	text-align: center;
-	font-size: 20px;
+	font-size: 16px;
 	margin: 0 0 20px 0;
 }
 #description {
-	color: #999;
+	
 }
 #emailExplain {
 	margin-top: 70px;
