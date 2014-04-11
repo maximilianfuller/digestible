@@ -1,9 +1,11 @@
 //digestable node.js based server
 
-//HOW TO RUN TESTS:
+//RUN TESTS/PRIMERS:
 
 var runDBTests = false;
-var runEmailTests = true;
+var runEmailTests = false;
+var primeDataBase = true;
+var printDataBase = true;
 
 //dependencies
 var http = require('http');
@@ -11,6 +13,7 @@ var	colors = require('colors');
 var	express = require('express');
 var engines = require('consolidate');
 var anyDB = require('any-db');
+var begin = require('any-db-transaction');
 var mailer = require('nodemailer');
 var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
@@ -24,6 +27,7 @@ app.use('/public', express.static(__dirname + '/public'));
 // create reusable transport method (opens pool of SMTP connections)
 //NOTE: we may want to use a different transport method
 var smtpTransport = mailer.createTransport("SMTP",{
+
     service: "Gmail",
     auth: {
         user: "benjamin_resnick@brown.edu",
@@ -60,13 +64,13 @@ senderName = "Fred Foo";
 senderEmail = "benjamin_resnick@brown.edu";
 receiver = "benjamin_resnick@brown.edu, neb301@yahoo.com";
 subject = "Hello";
-body = "Hello world";
+bodymaximilian_fuller@brown.edu = "Hello world";
 var dateToEmail = new Date(2014, 3, 19, 14, 26 ,0,0); //year, month, day, hour, minute, second, millis
 scheduleEmail(senderName,senderEmail,receiver,subject,body,dateToEmail);
 *
 */
 function sendEmail(email_id) {
-
+    console.log("sending email with id: " + email_id);
     getEmail(email_id, function(email) {
         getCollection(email.collection_id, function (collection) {
             getEntry(email.entry_id, function (entry) {
@@ -90,9 +94,11 @@ function sendEmail(email_id) {
                         console.log("Message sent: " + response.message.cyan);
                     }
                 });
+                deleteEmail(email);
+                scheduled_emails.remove(email_id);
             });
         });
-});
+    });
 }
 
 ////////////////////////////////////////////////////////////////// 
@@ -100,18 +106,24 @@ function sendEmail(email_id) {
 ////////////////////////////////////////////////////////////////// 
 
 //creates a subscription
-function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
-    var entries = getEntriesWithCollectionID(collection_id);
-    var currentMills = millsToFirst;
-    for(var i = 0; i < entries.length; i++) {
-        var email = new Email(null, reader_email, 
-            Date.now() + currentMills, entries[i], collection_id);
-        addEmail(email, new function(email_id) {
-            scheduleEmail(email_id, currentMills);
-        });
+function subscribe(collection_id, reader_email, millsToFirst, millsInterval){   
+    getEntriesWithCollectionID(collection_id, function(entries) {
+        var currentMills = millsToFirst;
+        for(var i = 0; i < entries.length; i++) {
+            var email = new Email(null, reader_email, 
+                Date.now() + currentMills, entries[i].entry_id, collection_id);
+            //console.log("currentMills=" + currentMills + "(function)");
+            (function(currentMills) {
+                addEmail(email, function(email_id) {
+                    //console.log("currentMills=" + currentMills + "(callback)");
+                    scheduleEmail(email_id, currentMills);
+                });
+            })(currentMills);
+            currentMills+=millsInterval;
 
-        currentMills+=millsInterval;
-    }
+        }
+    });
+    
 
 }
 
@@ -119,8 +131,6 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
 function unsubscribe(collection_id, reader_email){
     
 }
-
-
 
 /* ////////////////////////////////////////////
 email testing
@@ -159,40 +169,17 @@ app.post('/consumer/sign_up', function(request, response){
     var name = request.body.name; //format params for a subscription
     var reader_email = request.body.email;
     var collection_id = request.body.collection_id;
-    millisToFirst = 0;
-    millisInterval = 86400000; //one day
+    var millisToFirst = 0;
+    var millisInterval = 60000; //1 min
+    subscribe(collection_id, reader_email, millisToFirst, millisInterval);
 
-    //subscribe
-    //subscribe(collection_id, reader_email, millisToFirst, millisInterval);
     response.send("success");//on successful signup
-});
-
-//route and respond to ajax message-related posts
-app.post('/:roomName/messages.json', function(request, response){ 
-    //handle refreshMessages requests
-    console.log("potota");
-});
-
-
-
-app.post('/*', function(request, response){
-   console.log("receivedpost");
-/*   var collection_id = request.params.post;
-    console.log("aq" + collection_id);*/
-
-});
-
-app.post('*', function(request, response){
-   console.log("asdfreceivedpost");
-   var collection_id = request.params.post;
-    console.log("aq" + collection_id);
-
 });
 
 
 app.get('/consumer/:collection_id', function(request, response){
-    var collection_id = request.params.clolection_id;
-    console.log("consumer req" + collection_id);
+    var collection_id = request.params.collection_id;
+    console.log("consumer requested collection_id: " + collection_id);
 
     //start storing relevant moustache params
     var moustacheParams = [];
@@ -218,7 +205,7 @@ app.get('/consumer/:collection_id', function(request, response){
         moustacheParams.push(entryList);*/
 
         //render the webpage
-        response.render('consumer.html',moustacheParams);    
+        response.render('consumer.html',{collectionName: collection_id});    
   /*  }
     else{ //render a 404 page
         console.log("invalid collection access attempt");
@@ -261,10 +248,12 @@ function Collection(collection_id, collection_title, creator_email) {
 
 //puts an entry into the database and calls callback on the entry id
 function addEntry(entry, callback){
-    conn.query('INSERT INTO Entries (collection_id, author, title, '+
+    var id = generateEntryID();
+    conn.query('INSERT INTO Entries (entry_id, collection_id, author, title, '+
         'date_submitted, subject, content)' + 
-        'VALUES ($1, $2, $3, $4, $5, $6)', 
+        'VALUES ($1, $2, $3, $4, $5, $6, $7)', 
         [
+            id,
             entry.collection_id,
             entry.author, 
             entry.title,
@@ -272,15 +261,7 @@ function addEntry(entry, callback){
             entry.subject,
             entry.content
         ]).on('error', console.error).on('end', function() {
-             conn.query('SELECT last_insert_rowid() FROM Entries',
-                function(error, result) {
-                    if(error)
-                        console.error;
-                     else {
-                        var id = result.rows[0]['last_insert_rowid()'];
-                        callback(id);
-                    }
-                });
+             callback(id);
         });
    
 
@@ -362,23 +343,15 @@ function deleteEntry(entry_id){
 
 //puts a collection into the database and calls callback on its id
 function addCollection(collection, callback){
-    conn.query('INSERT INTO Collections (collection_title, creator_email)' + 
-        'VALUES ($1, $2)', 
+    var id = generateCollectionID();
+    conn.query('INSERT INTO Collections (collection_id, collection_title, creator_email)' + 
+        'VALUES ($1, $2, $3)', 
         [
+            id,
             collection.collection_title,
             collection.creator_email,
         ]).on('error', console.error).on('end', function() {
-            conn.query('SELECT last_insert_rowid() FROM Collections',
-            function(error, result) {
-                if(error)
-                    console.error;
-                else if(result.rowCount == 0) {
-                    callback(null);
-                } else {
-                    var id = result.rows[0]['last_insert_rowid()'];
-                    callback(id);
-                }
-            });
+            callback(id);
         });
     
 
@@ -443,27 +416,19 @@ function deleteCollection(collection_id) {
 
 //puts an email into the database and calls callback on its id
 function addEmail(email, callback) {
-    conn.query('INSERT INTO Emails (recipient, date_to_send , entry_id , collection_id)' + 
-        'VALUES ($1, $2, $3, $4)', 
+    var id = generateEmailID();
+    conn.query('INSERT INTO Emails (email_id, recipient, date_to_send , entry_id , collection_id)' + 
+        'VALUES ($1, $2, $3, $4, $5);',
         [
+            id,
             email.recipient,
             email.date_to_send,
             email.entry_id,
             email.collection_id
-        ]).on('error', console.error).on('end', function() {
-            conn.query('SELECT last_insert_rowid() FROM Emails',
-                function(error, result) {
-                    if(error)
-                        console.error;
-                    else if(result.rowCount == 0) {
-                        callback(null);
-                    } else {
-                        var id = result.rows[0]['last_insert_rowid()'];
-                        callback(id);
-                    }
-                });
+        ]).on('error', console.error)
+        .on('end', function() {
+            callback(id);
         });
-    
 }
 
 //calls callback on the the email with the given email id (could be null if none
@@ -472,7 +437,7 @@ function getEmail(email_id, callback) {
     conn.query('SELECT * FROM Emails WHERE email_id = $1', [email_id],
         function(error, result) {
             if(error) {
-                console.error;
+                console.error(error);
             }
             if(result.rowCount >= 2) {
                 console.log('ERROR: email id corresponds to multiple emails');
@@ -511,7 +476,48 @@ function deleteEmail(email_id){
         .on('error', console.error);
 }
 
+//define and prime the unique identifiers for each table
+var lastEmailID;
+var lastCollectionID;
+var lastEntryID;
 
+conn.query("SELECT MAX(email_id) FROM Emails", function(error, result) {
+    if(error) {
+        console.error(error);
+    } else  {
+        lastEmailID = result.rows[0]['MAX(email_id)'];
+    }
+});
+
+conn.query("SELECT MAX(collection_id) FROM Collections", function(error, result) {
+    if(error) {
+        console.error(error);
+    } else  {
+        lastCollectionID = result.rows[0]['MAX(collection_id)'];
+    }
+});
+
+conn.query("SELECT MAX(entry_id) FROM Entries", function(error, result) {
+    if(error) {
+        console.error(error);
+    } else  {
+        lastEntryID = result.rows[0]['MAX(entry_id)'];
+    }
+});
+
+function generateEmailID() {
+    return ++lastEmailID;
+}
+
+function generateCollectionID() {
+    return ++lastCollectionID;
+}
+
+function generateEntryID() {
+    return ++lastEmailID;
+}
+
+//printing for debugging
 function printEmails() {
     conn.query("SELECT * FROM Emails", function(error, response) {
         console.log(response);
@@ -529,6 +535,12 @@ function printCollections() {
     });
 }
 
+function printDB() {
+    printCollections();
+    printEntries();
+    printEmails();
+}
+
 
 
 //////////////////////////////////////////////
@@ -544,6 +556,7 @@ function assert(cond) {
 }
 
 if(runDBTests) {
+setTimeout(function() {
 var c1 = new Collection(null, "boss instructions", "max@gmail.com");
 
 addCollection(c1, function(c1_id) {
@@ -630,9 +643,43 @@ addCollection(c1, function(c1_id) {
         
     });
 });
+}, 500);
 }
 
+///////////////////////////////////////
+//Prime Database
+///////////////////////////////
 
+if(primeDataBase) {
+//wait to avoid collision with table id primers
+setTimeout(function() {
+var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu");
+addCollection(c1, function(c1_id) {
+    
+    var e1 = new Entry(null, c1_id, "max", 
+        "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss.</b>");
+    var e2 = new Entry(null, c1_id, "max", 
+        "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss TWICE");
+    var e3 = new Entry(null, c1_id, "max", 
+        "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss THRICE.</b>");
+    var e4 = new Entry(null, c1_id, "max", 
+        "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss FOUR TIMES");
+    addEntry(e1, function(e1_id) {
+        addEntry(e2, function(e2_id) {
+            addEntry(e3, function(e3_id) {
+                addEntry(e4, function(e4_id) {
+                    console.log("database is primed");
+                });
+            });
+        });
+    });
+});
+}, 500);
+}
+
+if(printDataBase) {
+    printDB();
+}
 
 
 
