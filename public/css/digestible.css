@@ -249,12 +249,34 @@ COLLECTIONS
 	right: 0;
 	height: 50px;
 }
-#deleteColl {
+.headerButton {
 	width: 80px;
 	height: 30px;
 	margin: 10px 0 0 20px;
 	font-size: 13px;
+	float: right;
 }
+#deleteColl {
+	float: left;
+}
+#previewColl {
+	background: #aaa;
+}
+#saveColl {
+	background: #aaa;
+}
+#publishColl {
+	background: #1095EC;
+	margin-right: 20px;
+}
+#settingsHolder {
+	width: 30px;
+	height: 30px;
+	float: right;
+	margin: 10px 5px 0 0;
+	cursor: pointer;
+}
+
 #collEditForm {
 	margin: 45px 0 50px 0;
 }
