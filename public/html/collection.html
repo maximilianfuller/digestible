@@ -6,6 +6,8 @@
 		<title>Digestible - An easy way for readers to read an online collection of work.</title>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="../css/digestible.css" />
+		<script type="text/javascript" src="../clientjs/jquery-2.1.0.min.js"></script>
+		<script type="text/javascript" src="../clientjs/collection.js"></script>
 	</head>
 
 	<body>
@@ -16,7 +18,7 @@
 				<button class="headerButton" id="saveColl">Save</button>
 				<button class="headerButton" id="previewColl">Preview</button>
 				<div id="settingsHolder">
-					<img src="../images/settings.png" alt="Settings">
+					<img src="../images/settings.png" alt="Collection Settings">
 				</div>
 			</div>
 			<div id="appMainContainer">
@@ -30,6 +32,28 @@
 						<input type="text" placeholder="Email Address" class="consumerInput" id="email" disabled>
 						<input class="formSubmit" id="consumerSubmit" type="submit" name="" value="Subscribe">
 					</form>
+				</section>
+				<section>
+					<div id="subscriptionsContainer">
+						<h2 id="subscribeTitle">Email Archive</h2>
+
+						<!-- this only shows up if there are no li elements in the email archive ol -->
+						<p id="noLinksPrompt">Links to your scheduled emails will be archived here. Add some!</p>
+
+						<ol>
+							<!-- these links go to blog articles -->
+							<li><a href="#" target="_blank">Article 1</a></li>
+							<li><a href="#" target="_blank">Article 2</a></li>
+							<li><a href="#" target="_blank">Article 3</a></li>
+							<li><a href="#" target="_blank">Article 4</a></li>
+							<li><a href="#" target="_blank">Article 5</a></li>
+						</ol>
+						<div id="addEmailWrap">
+							<div id="addEmailContain">
+								<img src="../images/plus.png" alt="Add Email Link">
+							</div>
+						</div>
+					</div>
 				</section>
 			</div>
 		</div>

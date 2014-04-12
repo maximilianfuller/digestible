@@ -288,6 +288,7 @@ COLLECTIONS
 	padding: 0;
 	border-left: none;
 	font-weight: bold;
+	color: #444;
 }
 #collDescriptInput {
 	resize: none;
@@ -298,15 +299,34 @@ COLLECTIONS
 	max-width: 488px;
 	padding: 0;
 	margin: 0;
-	line-height: 21px;
 	font-size: 16px;
 	vertical-align: top;
 	border: none;
 	outline: none;
 	font-family: "Open Sans", sans-serif;
+	color: #444;
 }
 #collEditEmailExplain {
 	margin-top: 20px;
+}
+#noLinksPrompt {
+	color: #ccc;
+	text-align: center;
+	margin: 10px auto;
+	width: 420px;
+}
+#addEmailWrap {
+	width: 40px;
+	height: 40px;
+	border-radius: 30px;
+	border: 2px solid #ccc;
+	cursor: pointer;
+	margin: 0 auto;
+}
+#addEmailContain {
+	width: 20px;
+	height: 20px;
+	margin: 10px auto;
 }
 
 /*---------------
@@ -348,7 +368,7 @@ CONSUMERS
 }
 #subscriptionsContainer {
 	width: 472px;
-	margin: 0 auto;
+	margin: 0 auto 100px;
 }
 #subscribeTitle {
 	text-align: center;
@@ -362,8 +382,8 @@ CONSUMERS
 #subscriptionsContainer ol li {
 	margin-bottom: 10px;
 }
-#subscriptionsContainer ol li span {
-	color: #444;
+#subscriptionsContainer ol li a {
+	font-weight: 400;
 }
 
 /*---------------
