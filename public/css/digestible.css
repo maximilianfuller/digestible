@@ -253,7 +253,9 @@ CONSUMERS
 ---------------*/
 #sideSignUp {
 	width: 160px;
-	margin: 60px auto 10px;
+	height: 40px;
+	font-size: 16px;
+	margin: 30px auto 10px;
 }
 #collectionTitle {
 	font-size: 50px;
@@ -268,10 +270,8 @@ CONSUMERS
 }
 #emailExplain {
 	margin-top: 70px;
-	text-align: center;
 }
 #consumerForm {
-	width: 472px;
 	margin: 0 auto 100px;
 }
 .consumerInput {
