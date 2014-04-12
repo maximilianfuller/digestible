@@ -105,6 +105,7 @@ button, .formSubmit {
     cursor: pointer;
     border: none;
     outline: none;
+    padding: 0;
 }
 section#howItWorks {
 	background: #0071bc;
@@ -276,11 +277,14 @@ CONSUMERS
 }
 .consumerInput {
 	height: 40px;
+	width: 165px;
 	display: inline-block;
 }
 #consumerSubmit {
-	width: 100%;
-	margin-top: 10px;
+	font-size: 16px;
+	height: 36px;
+	display: inline-block;
+	width: 153px;
 }
 #subscriptionsContainer {
 	width: 472px;
