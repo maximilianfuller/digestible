@@ -255,14 +255,36 @@ COLLECTIONS
 	margin: 10px 0 0 20px;
 	font-size: 13px;
 }
-
+#collEditForm {
+	margin: 45px 0 50px 0;
+}
 #collTitleInput {
 	font-size: 50px;
-	margin: 0 0 10px 0;
+	margin: 0 0 10px -2px;
 	height: 66px;
+	width: 100%;
 	padding: 0;
 	border-left: none;
 	font-weight: bold;
+}
+#collDescriptInput {
+	resize: none;
+	font-weight: 400;
+	max-height: 200px;
+	min-height: 200px;
+	min-width: 488px;
+	max-width: 488px;
+	padding: 0;
+	margin: 0;
+	line-height: 21px;
+	font-size: 16px;
+	vertical-align: top;
+	border: none;
+	outline: none;
+	font-family: "Open Sans", sans-serif;
+}
+#collEditEmailExplain {
+	margin-top: 20px;
 }
 
 /*---------------
