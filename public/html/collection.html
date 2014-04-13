@@ -69,8 +69,21 @@
 			<p class="sideBarLink"><a href="#">Settings</a></p>
 		</div>
 		<p id="logout"><a href="#">Log Out</a></p>
-		<div id="collSettingsModal">
-			<p id="optionsTitle"></p>
+		<div id="collSettingsOverlay">
+			<div id="overlayContain">
+				<h2 id="optionsTitle">Options</h2>
+				<form id="collOptionsForm">
+					<label for="pageURL">Page URL:</label>
+					<input class="collOptionInput" id="pageURL" type="text" value="digestible.com/important-startup-articles">
+					<label for="byline">Byline:</label>
+					<input class="collOptionInput" id="byline" type="text" value="Ben Smith">
+					<label>Email Frequency:</label>
+					<select name="" id="emailFrequency">
+						<option value="">3</option>
+					</select>
+				</form>
+			</div>
+			
 		</div>
 	</body>
 </html>
