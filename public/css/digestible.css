@@ -413,6 +413,8 @@ EMAIL
 }
 #emailDescriptInput {
 	margin: 10px 0 0 0;
+	max-height: 350px;
+	min-height: 350px;
 }
 
 /*---------------
