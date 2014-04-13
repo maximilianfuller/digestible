@@ -105,6 +105,10 @@ button, .formSubmit {
     cursor: pointer;
     border: none;
     outline: none;
+    padding: 0;
+}
+#landingFirstSignUp {
+	margin-bottom: 30px;
 }
 section#howItWorks {
 	background: #0071bc;
@@ -195,7 +199,7 @@ APP
 #subscriberMainWrap {
 	min-width: 930px;
 }
-#appMainContainer, #subscriberMainContainer {
+#appMainContainer, #subscriberMainContainer, #overlayContain {
 	width: 640px;
 	margin: 0 auto;
 	padding: 50px 50px 0 60px;
@@ -241,11 +245,176 @@ APP
 /*--------------
 COLLECTIONS
 --------------*/
-#picUpload {
-	width: 200px;
-	height: 40px;
-	margin: 20px 0 0 20px;
+#editHeader {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 50px;
+}
+.headerButton {
+	width: 80px;
+	height: 30px;
+	margin: 10px 0 0 20px;
 	font-size: 13px;
+	float: right;
+}
+#deleteColl {
+	float: left;
+}
+#previewColl {
+	background: #aaa;
+}
+#saveColl {
+	background: #aaa;
+}
+#publishColl {
+	background: #1095EC;
+	margin-right: 20px;
+}
+#settingsHolder {
+	width: 30px;
+	height: 30px;
+	float: right;
+	margin: 10px 5px 0 0;
+	cursor: pointer;
+}
+
+#collEditForm, #emailForm {
+	margin: 45px 0 50px 0;
+}
+#collTitleInput, #emailTitleInput {
+	font-size: 50px;
+	margin: 0 0 10px -2px;
+	height: 66px;
+	width: 100%;
+	padding: 0;
+	border-left: none;
+	font-weight: bold;
+	color: #444;
+}
+#collDescriptInput, #emailDescriptInput {
+	resize: none;
+	font-weight: 400;
+	max-height: 200px;
+	min-height: 200px;
+	min-width: 488px;
+	max-width: 488px;
+	padding: 0;
+	margin: 0;
+	font-size: 16px;
+	vertical-align: top;
+	border: none;
+	outline: none;
+	font-family: "Open Sans", sans-serif;
+	color: #444;
+}
+#collEditEmailExplain {
+	margin-top: 20px;
+}
+#noLinksPrompt {
+	color: #ccc;
+	text-align: center;
+	margin: 10px auto;
+	width: 420px;
+}
+#addEmailWrap {
+	width: 40px;
+	height: 40px;
+	border-radius: 30px;
+	border: 2px solid #ccc;
+	cursor: pointer;
+	margin: 0 auto;
+}
+#addEmailContain {
+	width: 20px;
+	height: 20px;
+	margin: 10px auto;
+}
+
+#collSettingsOverlay {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(255,255,255,0.95);
+	display: none;
+}
+
+#optionsTitle {
+	text-align: center;
+	font-size: 44px;
+	margin-top: 70px;
+}
+#collOptionsForm label {
+	width: 150px;
+	float: left;
+	height: 36px;
+	padding: 7px 8px 0 0;
+	text-align: right;
+	box-sizing: border-box;
+	color: #ccc;
+	margin-bottom: 20px;
+}
+.collOptionInput {
+	width: 350px;
+	margin-bottom: 20px;
+}
+#emailFrequency {
+	width: 150px;
+	margin: 28px 0 0 0;
+}
+
+/*---------------
+EMAIL
+---------------*/
+.emailEditInput {
+	width: 100%;
+}
+#richTextBar {
+	margin: 40px 0 0 0;
+}
+.richTextSection {
+	border-right: 2px solid #ccc;
+	display: inline-block;
+	height: 22px;
+	padding: 2px 9px 0 0;
+	margin: 0 7px 0 0;
+}
+.richTextSection:nth-child(3) {
+	padding-right: 12px;
+}
+.richTextSection:nth-child(4) {
+	padding-right: 12px;
+	margin-right: 5px;
+}
+.richTextSection:last-child {
+	border-right: none;
+}
+.richTextItem {
+	width: 20px;
+	height: 20px;
+	/*background: gray;*/
+	float: left;
+	margin: 0 10px 0 0;
+	padding: 0;
+	cursor: pointer;
+}
+.richTextItem:last-child {
+	margin-right: 0;
+} 
+.richTextItem p {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	font-weight: bold;
+	color: #444;
+}
+#emailDescriptInput {
+	margin: 10px 0 0 0;
+	max-height: 350px;
+	min-height: 350px;
 }
 
 /*---------------
@@ -253,7 +422,9 @@ CONSUMERS
 ---------------*/
 #sideSignUp {
 	width: 160px;
-	margin: 60px auto 10px;
+	height: 40px;
+	font-size: 16px;
+	margin: 30px auto 10px;
 }
 #collectionTitle {
 	font-size: 50px;
@@ -268,23 +439,24 @@ CONSUMERS
 }
 #emailExplain {
 	margin-top: 70px;
-	text-align: center;
 }
 #consumerForm {
-	width: 472px;
 	margin: 0 auto 100px;
 }
 .consumerInput {
 	height: 40px;
+	width: 165px;
 	display: inline-block;
 }
 #consumerSubmit {
-	width: 100%;
-	margin-top: 10px;
+	font-size: 16px;
+	height: 36px;
+	display: inline-block;
+	width: 153px;
 }
 #subscriptionsContainer {
 	width: 472px;
-	margin: 0 auto;
+	margin: 0 auto 100px;
 }
 #subscribeTitle {
 	text-align: center;
@@ -298,8 +470,8 @@ CONSUMERS
 #subscriptionsContainer ol li {
 	margin-bottom: 10px;
 }
-#subscriptionsContainer ol li span {
-	color: #444;
+#subscriptionsContainer ol li a {
+	font-weight: 400;
 }
 
 /*---------------

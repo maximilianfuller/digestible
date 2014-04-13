@@ -6,14 +6,54 @@
 		<title>Digestible - An easy way for readers to read an online collection of work.</title>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="../css/digestible.css" />
+		<script type="text/javascript" src="../clientjs/jquery-2.1.0.min.js"></script>
+		<script type="text/javascript" src="../clientjs/collection.js"></script>
 	</head>
 
 	<body>
 		<div id="mainWrap">
-			<button id="picUpload">Upload Background Image</button>
+			<div id="editHeader">
+				<button class="headerButton" id="deleteColl">Delete</button>
+				<button class="headerButton" id="publishColl">Publish</button>
+				<button class="headerButton" id="saveColl">Save</button>
+				<button class="headerButton" id="previewColl">Preview</button>
+				<div id="settingsHolder">
+					<img src="../images/settings.png" alt="Collection Settings">
+				</div>
+			</div>
 			<div id="appMainContainer">
 				<section>
-					<h2>something</h2>
+					<form id="collEditForm">
+						<input type="text" id="collTitleInput" placeholder="Name your collection">
+						<p id="author">By: Ben Smith</p>
+						<textarea id="collDescriptInput" rows="4" cols="50" placeholder="Describe your collection of articles"></textarea>
+						<p id="collEditEmailExplain">Sign up to recieve each article in an easy to read email every three days.</p>
+						<input type="text" placeholder="Name" class="consumerInput" id="name" disabled>
+						<input type="text" placeholder="Email Address" class="consumerInput" id="email" disabled>
+						<input class="formSubmit" id="consumerSubmit" type="submit" name="" value="Subscribe">
+					</form>
+				</section>
+				<section>
+					<div id="subscriptionsContainer">
+						<h2 id="subscribeTitle">Email Archive</h2>
+
+						<!-- this only shows up if there are no li elements in the email archive ol -->
+						<p id="noLinksPrompt">Links to your scheduled emails will be archived here. Add some!</p>
+
+						<ol>
+							<!-- these links go to blog articles -->
+							<li><a href="#" target="_blank">Article 1</a></li>
+							<li><a href="#" target="_blank">Article 2</a></li>
+							<li><a href="#" target="_blank">Article 3</a></li>
+							<li><a href="#" target="_blank">Article 4</a></li>
+							<li><a href="#" target="_blank">Article 5</a></li>
+						</ol>
+						<div id="addEmailWrap">
+							<div id="addEmailContain">
+								<img src="../images/plus.png" alt="Add Email Link">
+							</div>
+						</div>
+					</div>
 				</section>
 			</div>
 		</div>
@@ -29,6 +69,23 @@
 			<p class="sideBarLink"><a href="#">Settings</a></p>
 		</div>
 		<p id="logout"><a href="#">Log Out</a></p>
+		<div id="collSettingsOverlay">
+			<div id="overlayContain">
+				<h2 id="optionsTitle">Options</h2>
+				<form id="collOptionsForm">
+					<label for="pageURL">Page URL:</label>
+					<input class="collOptionInput" id="pageURL" type="text" value="digestible.com/important-startup-articles">
+					<label for="byline">Byline:</label>
+					<input class="collOptionInput" id="byline" type="text" value="Ben Smith">
+					<label>Email Frequency:</label>
+					<select name="" id="emailFrequency">
+						<option value="">3</option>
+					</select>
+					<input class="formSubmit" type="submit" name="" value="Save Settings"/>
+				</form>
+			</div>
+			
+		</div>
 	</body>
 </html>
 
