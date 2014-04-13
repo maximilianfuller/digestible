@@ -2,10 +2,10 @@
 
 //RUN TESTS/PRIMERS:
 
-var runDBTests = false;
+var runDBTests = true;
 var runEmailTests = false;
-var primeDataBase = true;
-var printDataBase = true;
+var primeDataBase = false;
+var printDataBase = false;
 
 //dependencies
 var http = require('http');
@@ -139,7 +139,7 @@ if(runEmailTests) {
 var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu");
 addCollection(c1, function(c1_id) {
     
-    var e1 = new Entry(null, c1_id, "max", 
+    var e1 = new Entry(null, c1_id, 1, "max", 
         "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss.</b>");
     addEntry(e1, function(e1_id) {
         var email1 = new Email(null, 
@@ -220,9 +220,10 @@ Database wrappers
 
 //constructor for a new Entry object
 //eg var entry = new Entry(blah, blah, blah)
-function Entry(entry_id, collection_id, author, title, date_submitted, subject, content) {
+function Entry(entry_id, collection_id, entry_number, author, title, date_submitted, subject, content) {
     this.entry_id = entry_id;
     this.collection_id = collection_id;
+    this.entry_number = entry_number;
     this.author = author;
     this.title = title;
     this.date_submitted = date_submitted;
@@ -283,6 +284,7 @@ function getEntry(entry_id, callback) {
                 callback(new Entry(
                     entry_id,
                     result.rows[0].collection_id,
+                    result.rows[0].entry_number,
                     result.rows[0].author,
                     result.rows[0].title,
                     result.rows[0].date_submitted,
@@ -306,6 +308,7 @@ function getEntriesWithCollectionID(collection_id, callback) {
                 entries.push(new Entry(
                     result.rows[i].entry_id,
                     collection_id,
+                    result.rows[i].entry_number,
                     result.rows[i].author,
                     result.rows[i].title,
                     result.rows[i].date_submitted,
@@ -320,9 +323,10 @@ function getEntriesWithCollectionID(collection_id, callback) {
 
 //updates an entry in the database (based on its entry id)
 function editEntry(entry){
-    conn.query('UPDATE Entries SET collection_id=$1, author=$2, title=$3, date_submitted=$4, subject=$5, content=$6 WHERE entry_id=$7;',
+    conn.query('UPDATE Entries SET collection_id=$1, entry_number=$2, author=$3, title=$4, date_submitted=$5, subject=$6, content=$7 WHERE entry_id=$8;',
         [
             entry.collection_id,
+            entry.entry_number,
             entry.author, 
             entry.title,
             entry.date_submitted,
@@ -561,9 +565,9 @@ var c1 = new Collection(null, "boss instructions", "max@gmail.com");
 
 addCollection(c1, function(c1_id) {
     
-    var e1 = new Entry(null, c1_id, "max", 
+    var e1 = new Entry(null, c1_id, 1, "max", 
         "how to be a boss", new Date(Date.now()), "hello", "be a boss.");
-    var e2 = new Entry(null, c1_id, "max", 
+    var e2 = new Entry(null, c1_id, 2, "max", 
         "how to be a boss2", new Date(Date.now()), "hello", "be a boss.");
     addEntry(e1, function(e1_id) {
         addEntry(e2, function(e2_id) {
@@ -656,13 +660,13 @@ setTimeout(function() {
 var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu");
 addCollection(c1, function(c1_id) {
     
-    var e1 = new Entry(null, c1_id, "max", 
+    var e1 = new Entry(null, c1_id, 1, "max", 
         "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss.</b>");
-    var e2 = new Entry(null, c1_id, "max", 
+    var e2 = new Entry(null, c1_id, 2, "max", 
         "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss TWICE");
-    var e3 = new Entry(null, c1_id, "max", 
+    var e3 = new Entry(null, c1_id, 3, "max", 
         "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss THRICE.</b>");
-    var e4 = new Entry(null, c1_id, "max", 
+    var e4 = new Entry(null, c1_id, 4, "max", 
         "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss FOUR TIMES");
     addEntry(e1, function(e1_id) {
         addEntry(e2, function(e2_id) {

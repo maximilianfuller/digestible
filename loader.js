@@ -8,7 +8,7 @@ conn.query('CREATE TABLE Emails (email_id INTEGER PRIMARY KEY AUTOINCREMENT, rec
     });
 
 conn.query('CREATE TABLE Entries (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, collection_id TEXT, ' + 
-    'author TEXT, title TEXT, date_submitted INT, subject TEXT, content TEXT);') 
+    'entry_number INT, author TEXT, title TEXT, date_submitted INT, subject TEXT, content TEXT);') 
     .on('error', function() {
     	console.error; 
     });
