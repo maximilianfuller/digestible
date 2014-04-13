@@ -336,6 +336,7 @@ COLLECTIONS
 	left: 0;
 	right: 0;
 	background: rgba(255,255,255,0.9);
+	display: none;
 }
 
 #optionsTitle {
