@@ -13,7 +13,6 @@ var	colors = require('colors');
 var	express = require('express');
 var engines = require('consolidate');
 var anyDB = require('any-db');
-var begin = require('any-db-transaction');
 var mailer = require('nodemailer');
 var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
@@ -211,6 +210,13 @@ app.get('/consumer/:collection_id', function(request, response){
         console.log("invalid collection access attempt");
     }   */
 });
+
+
+app.get('/consumer/:collection_id/:entry_id') {
+    
+}
+
+
 
 
 /* ////////////////////////////////////////////
