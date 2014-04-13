@@ -372,6 +372,12 @@ EMAIL
 .emailEditInput {
 	width: 100%;
 }
+#pullContent {
+	height: 30px;
+	width: 120px;
+	font-size: 14px;
+	margin: 10px 0 0 0;
+}
 #richTextBar {
 	margin: 40px 0 0 0;
 }
