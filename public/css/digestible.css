@@ -107,6 +107,9 @@ button, .formSubmit {
     outline: none;
     padding: 0;
 }
+#landingFirstSignUp {
+	margin-bottom: 30px;
+}
 section#howItWorks {
 	background: #0071bc;
 	margin: 0;
@@ -277,10 +280,10 @@ COLLECTIONS
 	cursor: pointer;
 }
 
-#collEditForm {
+#collEditForm, #emailForm {
 	margin: 45px 0 50px 0;
 }
-#collTitleInput {
+#collTitleInput, #emailTitleInput {
 	font-size: 50px;
 	margin: 0 0 10px -2px;
 	height: 66px;
@@ -290,7 +293,7 @@ COLLECTIONS
 	font-weight: bold;
 	color: #444;
 }
-#collDescriptInput {
+#collDescriptInput, #emailDescriptInput {
 	resize: none;
 	font-weight: 400;
 	max-height: 200px;
@@ -361,6 +364,55 @@ COLLECTIONS
 #emailFrequency {
 	width: 150px;
 	margin: 28px 0 0 0;
+}
+
+/*---------------
+EMAIL
+---------------*/
+.emailEditInput {
+	width: 100%;
+}
+#richTextBar {
+	margin: 40px 0 0 0;
+}
+.richTextSection {
+	border-right: 2px solid #ccc;
+	display: inline-block;
+	height: 22px;
+	padding: 2px 9px 0 0;
+	margin: 0 7px 0 0;
+}
+.richTextSection:nth-child(3) {
+	padding-right: 12px;
+}
+.richTextSection:nth-child(4) {
+	padding-right: 12px;
+	margin-right: 5px;
+}
+.richTextSection:last-child {
+	border-right: none;
+}
+.richTextItem {
+	width: 20px;
+	height: 20px;
+	/*background: gray;*/
+	float: left;
+	margin: 0 10px 0 0;
+	padding: 0;
+	cursor: pointer;
+}
+.richTextItem:last-child {
+	margin-right: 0;
+} 
+.richTextItem p {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	font-weight: bold;
+	color: #444;
+}
+#emailDescriptInput {
+	margin: 10px 0 0 0;
 }
 
 /*---------------
