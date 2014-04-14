@@ -3,7 +3,6 @@
 //RUN TESTS/PRIMERS:
 
 var runDBTests = true;
-var runEmailTests = false;
 var primeDataBase = false;
 var printDataBase = false;
 
@@ -21,7 +20,7 @@ var app = express();
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
 app.set('views', __dirname + '/templates'); // tell Express where to find templates
 app.use(express.bodyParser());
-app.use('/public', express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 
 // create reusable transport method (opens pool of SMTP connections)
 //NOTE: we may want to use a different transport method
@@ -134,7 +133,7 @@ function unsubscribe(collection_id, reader_email){
 /* ////////////////////////////////////////////
 email testing
 *//////////////////////////////////////////////
-if(runEmailTests) {
+/*if(runEmailTests) {
 var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu");
 addCollection(c1, function(c1_id) {
     
@@ -146,13 +145,13 @@ addCollection(c1, function(c1_id) {
         addEmail(email1, function(email1_id) {
             sendEmail(email1_id);
 
-            /*deleteEmail(email1_id);
+            deleteEmail(email1_id);
             deleteEntry(e1_id);
-            deleteCollection(c1_id);*/
+            deleteCollection(c1_id);
         });
     });
 });
-}
+}*/
 
 
 
@@ -161,7 +160,7 @@ addCollection(c1, function(c1_id) {
 ajax/server request handling
 *//////////////////////////////////////////////
 
-
+//consumer page handling
 app.post('/consumer/sign_up', function(request, response){
     console.log("received sign_up request");
 
@@ -177,40 +176,57 @@ app.post('/consumer/sign_up', function(request, response){
 
 
 app.get('/consumer/:collection_id', function(request, response){
-    var collection_id = request.params.collection_id;
-    console.log("consumer requested collection_id: " + collection_id);
+    var cl_id = request.params.collection_id;
+    console.log("consumer requested collection_id: " + cl_id);
 
     //start storing relevant moustache params
     var moustacheParams = [];
-    moustacheParams.push({collectionName: collection_id});
-/*
-    //check if the collection exists
-    if(getCollection(collection_id) !== null){
-        
-        //create moustache field for entry names
-        var entryList =  [];
-        var entries = getEntriesWithCollectionID(collection_id); //db entry return results
-        var orderedEntries = []; //ordered db results
-        
-        //order the entries by entry_number
-        for(var i = 0; i < entries.length; i++){ 
-            orderedEntries[entries[i].entry_number] = entries[i];
-        }//generate the moustache fields
-        for(var i = 0; i < entries.length; i++){ 
-            entryList.push({entryTitle: orderedEntries[i].title});
-        }
+    //moustacheParams.push({collectionName: cl_id});
+    moustacheParams.collectionName = cl_id;
+    /*(function(currentMills) {
+                addEmail(email, function(email_id) {
+                    //console.log("currentMills=" + currentMills + "(callback)");
+                    scheduleEmail(email_id, currentMills);
+                });
+    })(currentMills);
+*/
 
-        //add the entry name fields to the moustacheParams
-        moustacheParams.push(entryList);*/
+    getCollection(cl_id, function(collection) {
+        getEntriesWithCollectionID(cl_id, function(entries){
+            //check if the collection exists
+            if(collection !== null){
+                
+                //create moustache field for entry names
+                var entryList =  [];
+                var orderedEntries = []; //ordered db results
+                
+                console.log(entries[0].title);
+                //order the entries by entry_number
+                for(var i = 0; i < entries.length; i++){ 
+                    orderedEntries[entries[i].entry_number-1] = entries[i];
+                }//generate the moustache fields
+                for(var i = 0; i < entries.length; i++){ 
+                    var entry = [];
+                    entry.entryTitle = orderedEntries[i].title;
+                    entry.entryId = orderedEntries[i].entry_id;
+                    entryList.push(entry);
+                }
 
-        //render the webpage
-        response.render('consumer.html',{collectionName: collection_id});    
-  /*  }
-    else{ //render a 404 page
-        console.log("invalid collection access attempt");
-    }   */
+                //add the entry name fields to the moustacheParams
+                moustacheParams.entries = entryList;
+                console.log(moustacheParams);
+          
+                //render the webpage
+                response.render('consumer.html',moustacheParams);    
+            }
+            else{ //render a 404 page
+                console.log("invalid collection access attempt");
+                response.render('page_not_found.html',{});
+            } 
+        });
+    });
+  
 });
-
 
 app.get('/consumer/:collection_id/:entry_id', function (request, response) {
     getEntry(request.params.entry_id, function(entry) {
@@ -274,12 +290,13 @@ function Creator_Data(email, password, name, street_address, city, state, zipcod
 //puts an entry into the database and calls callback on the entry id
 function addEntry(entry, callback){
     var id = generateEntryID();
-    conn.query('INSERT INTO Entries (entry_id, collection_id, author, title, '+
+    conn.query('INSERT INTO Entries (entry_id, collection_id, entry_number, author, title, '+
         'date_submitted, subject, content)' + 
-        'VALUES ($1, $2, $3, $4, $5, $6, $7)', 
+        'VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
         [
             id,
             entry.collection_id,
+            entry.entry_number,
             entry.author, 
             entry.title,
             entry.date_submitted,
@@ -568,7 +585,6 @@ function editCreator(creator_data) {
 
 //deletes the creator_data with the given creator_email
 function deleteCreator(creator_email) {
-    console.log("creator_email: " + creator_email);
     conn.query('DELETE FROM Creator_Data WHERE email=$1', [creator_email])
         .on('error', console.error);
 }

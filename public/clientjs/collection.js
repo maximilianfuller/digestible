@@ -15,4 +15,11 @@ $(document).ready(function() {
     alert("This is just an example of what the the sign up form looks like for your readers.");
   });
 
+  $('#deleteColl').click(function() {
+    $('#deleteOverlay').show();
+  });
+  $('#cancelDelete, #finalDelete').click(function() {
+    $('#deleteOverlay').hide();
+  });
+
 });
