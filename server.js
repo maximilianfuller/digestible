@@ -1,8 +1,8 @@
 //digestable node.js based server
 
 //RUN TESTS/PRIMERS:
-var runDBTests = true;
-var primeDataBase = false;
+var runDBTests = false;
+var primeDataBase = true;
 var printDataBase = false;
 
 //dependencies
