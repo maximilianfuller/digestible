@@ -160,39 +160,41 @@ addCollection(c1, function(c1_id) {
 ajax/server request handling
 *//////////////////////////////////////////////
 
-//consumer page handling
-app.post('/consumer/sign_up', function(request, response){
-    console.log("received sign_up request");
+//////////////////////////////////////////////
+//home page log in 
+app.post('/html/log_in', function(request, response){
+    console.log("received log_in request");
+    var email = request.body.email; //format params for a subscription
+    var password = request.body.pass;
 
-    var name = request.body.name; //format params for a subscription
-    var reader_email = request.body.email;
-    var collection_id = request.body.collection_id;
-    var millisToFirst = 0;
-    var millisInterval = 60000; //1 min
-    subscribe(collection_id, reader_email, millisToFirst, millisInterval);
-
-    response.send("success");//on successful signup
+    getCreator(email, function(creator_info) { //get info from the database
+       if(creator_info !== null){ //if this user exists
+        if(password === creator_info.password){
+            //signed = true for authentication purposes
+            response.cookie('user', request.query.username, {signed: true});
+        }
+        else{
+            response.send("invalid_pass");
+        }
+       }
+       else{
+        response.send("invalid_email");//on successful log_in
+       }
+    });
 });
 
-
+//////////////////////////////////////////////
+//consumer page
 app.get('/consumer/:collection_id', function(request, response){
     var cl_id = request.params.collection_id;
     console.log("consumer requested collection_id: " + cl_id);
 
-    //start storing relevant moustache params
-    var moustacheParams = [];
-    //moustacheParams.push({collectionName: cl_id});
-    moustacheParams.collectionName = cl_id;
-    /*(function(currentMills) {
-                addEmail(email, function(email_id) {
-                    //console.log("currentMills=" + currentMills + "(callback)");
-                    scheduleEmail(email_id, currentMills);
-                });
-    })(currentMills);
-*/
-
-    getCollection(cl_id, function(collection) {
+    getCollection(cl_id, function(collection) { //get info from the database
         getEntriesWithCollectionID(cl_id, function(entries){
+
+            var moustacheParams = [];
+            moustacheParams.collectionName = collection.collection_title;
+
             //check if the collection exists
             if(collection !== null){
                 
@@ -213,9 +215,7 @@ app.get('/consumer/:collection_id', function(request, response){
                 }
 
                 //add the entry name fields to the moustacheParams
-                moustacheParams.entries = entryList;
-                console.log(moustacheParams);
-          
+                moustacheParams.entries = entryList;          
                 //render the webpage
                 response.render('consumer.html',moustacheParams);    
             }
@@ -228,6 +228,22 @@ app.get('/consumer/:collection_id', function(request, response){
   
 });
 
+//consumer page sign up requests
+app.post('/consumer/sign_up', function(request, response){
+    console.log("received sign_up request");
+
+    var name = request.body.name; //format params for a subscription
+    var reader_email = request.body.email;
+    var collection_id = request.body.collection_id;
+    var millisToFirst = 0;
+    var millisInterval = 60000; //1 min
+    subscribe(collection_id, reader_email, millisToFirst, millisInterval);
+
+    response.send("success");//on successful signup
+});
+
+
+//consumer page view entry requests
 app.get('/consumer/:collection_id/:entry_id', function (request, response) {
     getEntry(request.params.entry_id, function(entry) {
         if(entry == null) {
@@ -241,12 +257,9 @@ app.get('/consumer/:collection_id/:entry_id', function (request, response) {
     });
 });
 
-
-
 /* ////////////////////////////////////////////
 Database wrappers
 *//////////////////////////////////////////////
-
 
 //constructor for a new Entry object
 //eg var entry = new Entry(blah, blah, blah)
