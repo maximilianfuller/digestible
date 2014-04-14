@@ -193,6 +193,13 @@ app.post('/html/log_in', function(request, response){
 });
 
 //////////////////////////////////////////////
+//creator home (collections page)
+app.get('/collection/:user', function(request, response){
+    console.log("collection page");
+    response.render('collection.html',{});  
+});
+
+//////////////////////////////////////////////
 //consumer page
 app.get('/consumer/:collection_id', function(request, response){
     var cl_id = request.params.collection_id;
@@ -203,6 +210,7 @@ app.get('/consumer/:collection_id', function(request, response){
 
             var moustacheParams = [];
             moustacheParams.collectionName = collection.collection_title;
+            moustacheParams.collectionId = cl_id;
 
             //check if the collection exists
             if(collection !== null){

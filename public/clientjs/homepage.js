@@ -18,7 +18,7 @@ $(document).ready(function() {
       else{
         //successful login, redirect to creator page
         //alert(data);
-        window.location.href = "http://localhost:8080/html/collection.html"
+        window.location.href = "http://localhost:8080/collection"
       }
     });
   });
