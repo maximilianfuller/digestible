@@ -2,7 +2,7 @@
 
 //RUN TESTS/PRIMERS:
 
-var runDBTests = true;
+var runDBTests = false;
 var runEmailTests = false;
 var primeDataBase = false;
 var printDataBase = true;
@@ -21,7 +21,7 @@ var app = express();
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
 app.set('views', __dirname + '/templates'); // tell Express where to find templates
 app.use(express.bodyParser());
-app.use(express.static(__dirname + '/public/html'));
+app.use(express.static(__dirname + '/public'));
 
 // create reusable transport method (opens pool of SMTP connections)
 //NOTE: we may want to use a different transport method
@@ -182,8 +182,8 @@ app.get('/consumer/:collection_id', function(request, response){
 
     //start storing relevant moustache params
     var moustacheParams = [];
-    moustacheParams.push({collectionName: cl_id});
-
+    //moustacheParams.push({collectionName: cl_id});
+    moustacheParams.collectionName = cl_id;
     /*(function(currentMills) {
                 addEmail(email, function(email_id) {
                     //console.log("currentMills=" + currentMills + "(callback)");
@@ -204,19 +204,21 @@ app.get('/consumer/:collection_id', function(request, response){
                 console.log(entries[0].title);
                 //order the entries by entry_number
                 for(var i = 0; i < entries.length; i++){ 
-                    console.log(entries[i].entry_number);
-                    orderedEntries[entries[i].entry_number] = entries[i];
+                    orderedEntries[entries[i].entry_number-1] = entries[i];
                 }//generate the moustache fields
                 for(var i = 0; i < entries.length; i++){ 
-                    entryList.push({entryTitle: orderedEntries[i].title});
+                    var entry = [];
+                    entry.entryTitle = orderedEntries[i].title;
+                    entry.entryId = orderedEntries[i].entry_id;
+                    entryList.push(entry);
                 }
 
                 //add the entry name fields to the moustacheParams
-                moustacheParams.push(entryList);
-
-
+                moustacheParams.entries = entryList;
+                console.log(moustacheParams);
+          
                 //render the webpage
-                response.render('consumer.html',{collectionName: cl_id, collectionTest: 'asdf'});    
+                response.render('consumer.html',moustacheParams);    
             }
             else{ //render a 404 page
                 console.log("invalid collection access attempt");
