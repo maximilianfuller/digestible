@@ -1,5 +1,9 @@
 $(document).ready(function() {
 
+
+  /*
+  *Pete's stuff
+  */
   if ($('#subscriptionsContainer ol').html().length > 0) {
     $('#noLinksPrompt').hide();
   }
@@ -21,5 +25,8 @@ $(document).ready(function() {
   $('#cancelDelete, #finalDelete').click(function() {
     $('#deleteOverlay').hide();
   });
+  /*
+  *end of Pete's stuff
+  */
 
 });

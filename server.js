@@ -1,9 +1,9 @@
 //digestable node.js based server
 
 //RUN TESTS/PRIMERS:
-var runDBTests = false;
+var runDBTests = true;
 var primeDataBase = false;
-var printDataBase = true;
+var printDataBase = false;
 
 //dependencies
 var http = require('http');
@@ -19,6 +19,7 @@ var app = express();
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
 app.set('views', __dirname + '/templates'); // tell Express where to find templates
 app.use(express.bodyParser());
+app.use(express.cookieParser('aacb87*nnai'));
 app.use(express.static(__dirname + '/public'));
 
 // create reusable transport method (opens pool of SMTP connections)
@@ -145,10 +146,16 @@ app.post('/html/log_in', function(request, response){
     var password = request.body.pass;
 
     getCreator(email, function(creator_info) { //get info from the database
+        console.log("got here");
        if(creator_info !== null){ //if this user exists
         if(password === creator_info.password){
+            console.log("got here");
+            
             //signed = true for authentication purposes
-            response.cookie('user', email, {signed: true});
+            //response.cookie('user', email, {signed: true});
+
+            //no cookies in prototype
+            response.send("this should be a cookie");
         }
         else{
             response.send("invalid_pass");
@@ -157,7 +164,15 @@ app.post('/html/log_in', function(request, response){
        else{
         response.send("invalid_email");//on successful log_in
        }
+
     });
+});
+
+//////////////////////////////////////////////
+//creator home (collections page)
+app.get('/collection/:user', function(request, response){
+    console.log("collection page");
+    response.render('collection.html',{});  
 });
 
 //////////////////////////////////////////////
@@ -171,6 +186,7 @@ app.get('/consumer/:collection_id', function(request, response){
 
             var moustacheParams = [];
             moustacheParams.collectionName = collection.collection_title;
+            moustacheParams.collectionId = cl_id;
 
             //check if the collection exists
             if(collection !== null){
@@ -826,7 +842,9 @@ addCollection(c1, function(c1_id) {
 if(primeDataBase) {
 //wait to avoid collision with table id primers
 setTimeout(function() {
+
 var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu", "true");
+
 addCollection(c1, function(c1_id) {
     
     var e1 = new Entry(null, c1_id, 1, "max", 
@@ -837,11 +855,15 @@ addCollection(c1, function(c1_id) {
         "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss THRICE.</b>");
     var e4 = new Entry(null, c1_id, 4, "max", 
         "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss FOUR TIMES");
+    var cre1 = new Creator_Data("benjamin_resnick@brown.edu", "password", "Ben","99 walnut", "Boston", "Ohio", "12346");
+    
     addEntry(e1, function(e1_id) {
         addEntry(e2, function(e2_id) {
             addEntry(e3, function(e3_id) {
                 addEntry(e4, function(e4_id) {
-                    console.log("database is primed");
+                    addCreator(cre1,function(c1_id){
+                        console.log("database is primed");
+                    });
                 });
             });
         });
