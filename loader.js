@@ -14,7 +14,7 @@ conn.query('CREATE TABLE Entries (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, co
     });
 
 conn.query('CREATE TABLE Collections (collection_id INTEGER PRIMARY KEY AUTOINCREMENT, ' + 
-    'collection_title TEXT, creator_email TEXT);') 
+    'collection_title TEXT, creator_email TEXT, public TEXT);') 
     .on('error', function() {
         console.error; 
     });

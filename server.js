@@ -2,9 +2,9 @@
 
 //RUN TESTS/PRIMERS:
 
-var runDBTests = true;
+var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = false;
+var printDataBase = true;
 
 //dependencies
 var http = require('http');
@@ -48,6 +48,7 @@ Email Scheduling
 *//////////////////////////////////////////////
 
 function scheduleEmail(email_id, millisFromNow) {
+    console.log("email with id " + email_id + " scheduled for " + millisFromNow + " milliseconds from now");
     var job = setTimeout(function() {
         sendEmail(email_id);
     },millisFromNow);
@@ -257,6 +258,12 @@ app.get('/consumer/:collection_id/:entry_id', function (request, response) {
     });
 });
 
+
+app.get('/suscriber/login', function(request, response) {
+    //TODO
+});
+
+
 /* ////////////////////////////////////////////
 Database wrappers
 *//////////////////////////////////////////////
@@ -289,6 +296,7 @@ function Collection(collection_id, collection_title, creator_email) {
     this.collection_title = collection_title;
     this.creator_email = creator_email;
 }
+
 
 function Creator_Data(email, password, name, street_address, city, state, zipcode) {
     this.email = email;
