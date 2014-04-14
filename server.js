@@ -173,7 +173,6 @@ app.post('/html/log_in', function(request, response){
         console.log("got here");
        if(creator_info !== null){ //if this user exists
         if(password === creator_info.password){
-            console.log("got here");
             
             //signed = true for authentication purposes
             //response.cookie('user', email, {signed: true});
@@ -196,7 +195,13 @@ app.post('/html/log_in', function(request, response){
 //creator home (collections page)
 app.get('/collection/:user', function(request, response){
     console.log("collection page");
-    response.render('collection.html',{});  
+    var user = request.params.user;
+    if(user === "benjamin_resnick@brown.edu"){//if prototype-showoff thing
+        response.render('prototype.html',{});  
+    }
+    else{
+        response.render('collection.html',{});  
+    }
 });
 
 //////////////////////////////////////////////
