@@ -171,7 +171,7 @@ app.post('/html/log_in', function(request, response){
        if(creator_info !== null){ //if this user exists
         if(password === creator_info.password){
             //signed = true for authentication purposes
-            response.cookie('user', request.query.username, {signed: true});
+            response.cookie('user', email, {signed: true});
         }
         else{
             response.send("invalid_pass");
