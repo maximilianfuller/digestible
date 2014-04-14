@@ -212,10 +212,18 @@ app.get('/consumer/:collection_id', function(request, response){
 });
 
 
-app.get('/consumer/:collection_id/:entry_id') {
-    
-}
-
+app.get('/consumer/:collection_id/:entry_id', function (request, response) {
+    getEntry(request.params.entry_id, function(entry) {
+        if(entry == null) {
+            response.render("page_not_found.html");
+        } else {
+            response.render("entry.html",
+                {
+                    "content" : entry.content,
+                });
+        }
+    });
+});
 
 
 
@@ -251,6 +259,16 @@ function Collection(collection_id, collection_title, creator_email) {
     this.collection_id = collection_id;
     this.collection_title = collection_title;
     this.creator_email = creator_email;
+}
+
+function Creator_Data(email, password, name, street_address, city, state, zipcode) {
+    this.email = email;
+    this.password = password;
+    this.name = name;
+    this.street_address = street_address;
+    this.city = city;
+    this.state = state;
+    this.zipcode = zipcode;
 }
 
 //puts an entry into the database and calls callback on the entry id
@@ -480,11 +498,84 @@ function editEmail(email){
     */
 
 
-//deletes an entry
+//deletes an Email
 function deleteEmail(email_id){
     conn.query('DELETE FROM Emails WHERE email_id=$1', [email_id])
         .on('error', console.error);
 }
+
+//adds a creator to the database. Optional function callback (which takes no arguments) fires
+//upon completion
+function addCreator(creator_data, callback) {
+    conn.query('INSERT INTO Creator_Data (email, password, name, ' + 
+        'street_address, city, state, zipcode) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+    [
+        creator_data.email,
+        creator_data.password,
+        creator_data.name,
+        creator_data.street_address,
+        creator_data.city,
+        creator_data.state,
+        creator_data.zipcode
+    ], function(error, result) {
+        if(error) console.error(error);
+        else {
+            if(callback != null) {
+                callback();
+            }
+        }
+    });
+}
+
+//call callback on the creator_data object given the creator_email
+function getCreator(creator_email, callback) {
+    conn.query("SELECT * FROM Creator_Data WHERE email=$1", [creator_email],
+        function(error, result) {
+            if(error) {
+                console.error(error);
+            } else if(result.rowCount>=2) {
+                console.log('ERROR: multiple creator ids in the database');
+            } else if(result.rowCount==0){
+                callback(null);
+            } else {
+                callback(new Creator_Data(
+                    creator_email,
+                    result.rows[0].password,
+                    result.rows[0].name,
+                    result.rows[0].street_address,
+                    result.rows[0].city,
+                    result.rows[0].state,
+                    result.rows[0].zipcode
+                    ));
+            }
+        });
+}
+
+//updates the creator_data with email equal to creator_data.email, does nothing 
+function editCreator(creator_data) {
+    conn.query('UPDATE Creator_Data SET password=$1, name=$2, street_address=$3, '
+         + 'city=$4, state=$5, zipcode=$6 WHERE email=$7',
+         [
+            creator_data.password,
+            creator_data.name,
+            creator_data.street_address,
+            creator_data.city,
+            creator_data.state,
+            creator_data.zipcode,
+            creator_data.email
+         ]).on('error', console.error);
+}
+
+//deletes the creator_data with the given creator_email
+function deleteCreator(creator_email) {
+    console.log("creator_email: " + creator_email);
+    conn.query('DELETE FROM Creator_Data WHERE email=$1', [creator_email])
+        .on('error', console.error);
+}
+
+
+
+
 
 //define and prime the unique identifiers for each table
 var lastEmailID;
@@ -582,71 +673,95 @@ addCollection(c1, function(c1_id) {
             var email2 = new Email(null, 
                 "javier@gmail.com", new Date(Date.now()+120000), e1_id, c1_id);
             addEmail(email1, function(email1_id) {
+                var creator1 = new Creator_Data("spanishcurls@gmail.com", "1234", "Javier Sandoval", 
+                    "1747 Legion Road", "Chapel Hill", "North Carolina", "27517")
+                addCreator(creator1, function() {
 
-                //GET EMAILS WITH COLLECTION ID
-                getEntriesWithCollectionID(c1_id, function(entries) {
-                    //console.log(entries);
-                    assert(entries[0].title === "how to be a boss" && entries[1].title === "how to be a boss2");
-                });
+                    //GET EMAILS WITH COLLECTION ID
+                    getEntriesWithCollectionID(c1_id, function(entries) {
+                        //console.log(entries);
+                        assert(entries[0].title === "how to be a boss" && entries[1].title === "how to be a boss2");
+                    });
 
-                //GET COLLECTIONS WITH CREATOR
-                getCollectionsWithCreator('max@gmail.com', function (collections) {
-                    assert(collections[0].collection_title === "boss instructions");
-                });
+                    //GET COLLECTIONS WITH CREATOR
+                    getCollectionsWithCreator('max@gmail.com', function (collections) {
+                        assert(collections[0].collection_title === "boss instructions");
+                    });
 
-                //EMAIL ADDING/GETTING
-                getEmail(email1_id, function (email) {
-                    assert(email.recipient === 'ben@gmail.com');
-                });
+                    //EMAIL ADDING/GETTING
+                    getEmail(email1_id, function (email) {
+                        assert(email.recipient === 'ben@gmail.com');
+                    });
 
-                deleteEmail(email1_id);
+                    deleteEmail(email1_id);
 
-                //EMAIL DELETING
-                getEmail(email1_id, function (email) {
-                    assert(email == null);
-                });
+                    //EMAIL DELETING
+                    getEmail(email1_id, function (email) {
+                        assert(email == null);
+                    });
 
-                //ENTRY ADDING/GETTING
-                getEntry(e1_id, function(entry) {
-                    assert(entry.author === "max");
-                });
-                
-                e1.entry_id = e1_id;
-                e1.author = "pete";
-                editEntry(e1);
+                    //ENTRY ADDING/GETTING
+                    getEntry(e1_id, function(entry) {
+                        assert(entry.author === "max");
+                    });
+                    
+                    e1.entry_id = e1_id;
+                    e1.author = "pete";
+                    editEntry(e1);
 
-                //ENTRY EDITING
-                getEntry(e1_id, function(entry) {
-                    assert(entry.author === "pete");
-                });
-                
-                deleteEntry(e1_id);
-                deleteEntry(e2_id);
+                    //ENTRY EDITING
+                    getEntry(e1_id, function(entry) {
+                        assert(entry.author === "pete");
+                    });
+                    
+                    deleteEntry(e1_id);
+                    deleteEntry(e2_id);
 
-                //ENTRY DELETION
-                getEntry(e1_id, function(entry) {
-                    assert(entry == null);
-                });
+                    //ENTRY DELETION
+                    getEntry(e1_id, function(entry) {
+                        assert(entry == null);
+                    });
 
-                //COLLECTION ADDING/GETTING
-                getCollection(c1_id, function(collection) {
-                    assert(collection.collection_title === "boss instructions");
-                });
-                
-                c1.collection_id = c1_id;
-                c1.collection_title = "new boss instructions";
-                editCollection(c1);
+                    //COLLECTION ADDING/GETTING
+                    getCollection(c1_id, function(collection) {
+                        assert(collection.collection_title === "boss instructions");
+                    });
+                    
+                    c1.collection_id = c1_id;
+                    c1.collection_title = "new boss instructions";
+                    editCollection(c1);
 
-                //COLLECTION EDITING
-                getCollection(c1_id, function(collection) {
-                    assert(collection.collection_title === "new boss instructions");
-                });
+                    //COLLECTION EDITING
+                    getCollection(c1_id, function(collection) {
+                        assert(collection.collection_title === "new boss instructions");
+                    });
 
-                deleteCollection(c1_id);
+                    deleteCollection(c1_id);
 
-                //COLLECTION DELETION
-                getCollection(c1_id, function(collection) {
-                    assert(collection == null);
+                    //COLLECTION DELETION
+                    getCollection(c1_id, function(collection) {
+                        assert(collection == null);
+                    });
+
+                    //CREATOR_DATA ADDING/GETTING
+                    getCreator(creator1.email, function(creator) {
+                        assert(creator.zipcode === "27517");
+                    });
+
+                    creator1.password = "4321";
+                    editCreator(creator1);
+
+                    //CREATOR_DATA EDITING
+                    getCreator(creator1.email, function(creator) {
+                        assert(creator.password === "4321");
+                    });
+
+                    deleteCreator(creator1.email);
+
+                    //CREATOR_DATA DELETION
+                    getCreator(creator1.email, function(creator) {
+                        assert(creator == null);
+                    });
                 });
             });
         });
