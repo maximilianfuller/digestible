@@ -1,10 +1,9 @@
 //digestable node.js based server
 
 //RUN TESTS/PRIMERS:
-
-var runDBTests = false;
+var runDBTests = true;
 var primeDataBase = false;
-var printDataBase = true;
+var printDataBase = false;
 
 //dependencies
 var http = require('http');
@@ -94,7 +93,7 @@ function sendEmail(email_id) {
                         console.log("Message sent: " + response.message.cyan);
                     }
                 });
-                deleteEmail(email);
+                deleteEmail(email_id);
                 scheduled_emails.remove(email_id);
             });
         });
@@ -109,13 +108,12 @@ function sendEmail(email_id) {
 function subscribe(collection_id, reader_email, millsToFirst, millsInterval){   
     getEntriesWithCollectionID(collection_id, function(entries) {
         var currentMills = millsToFirst;
+        console.log(entries);
         for(var i = 0; i < entries.length; i++) {
             var email = new Email(null, reader_email, 
                 Date.now() + currentMills, entries[i].entry_id, collection_id);
-            //console.log("currentMills=" + currentMills + "(function)");
             (function(currentMills) {
                 addEmail(email, function(email_id) {
-                    //console.log("currentMills=" + currentMills + "(callback)");
                     scheduleEmail(email_id, currentMills);
                 });
             })(currentMills);
@@ -129,32 +127,10 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
 
 //unsubscribes
 function unsubscribe(collection_id, reader_email){
-    
+    conn.query("DELETE FROM Emails WHERE collection_id = $1 AND recipient = $2",
+        [collection_id, reader_email]).on('error', console.error);
+    scheduled_emails.remove(email_id);
 }
-
-/* ////////////////////////////////////////////
-email testing
-*//////////////////////////////////////////////
-/*if(runEmailTests) {
-var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu");
-addCollection(c1, function(c1_id) {
-    
-    var e1 = new Entry(null, c1_id, 1, "max", 
-        "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss.</b>");
-    addEntry(e1, function(e1_id) {
-        var email1 = new Email(null, 
-            "benjamin_resnick@brown.edu", new Date(Date.now()+60000), e1_id, c1_id);
-        addEmail(email1, function(email1_id) {
-            sendEmail(email1_id);
-
-            deleteEmail(email1_id);
-            deleteEntry(e1_id);
-            deleteCollection(c1_id);
-        });
-    });
-});
-}*/
-
 
 
 
@@ -224,7 +200,6 @@ app.get('/consumer/:collection_id', function(request, response){
                 var entryList =  [];
                 var orderedEntries = []; //ordered db results
                 
-                console.log(entries[0].title);
                 //order the entries by entry_number
                 for(var i = 0; i < entries.length; i++){ 
                     orderedEntries[entries[i].entry_number-1] = entries[i];
@@ -280,8 +255,23 @@ app.get('/consumer/:collection_id/:entry_id', function (request, response) {
 });
 
 
-app.get('/suscriber/login', function(request, response) {
-    //TODO
+app.post('/sign_up', function(request, response) {
+    console.log("creator " + request.body.email + " is creating an account")
+    var creator = new Creator_Data(request.body.email, request.body.password, 
+        request.body.name, request.body.street, request.body.city, 
+        request.body.state, request.body.zip);
+    getCreator(request.body.email, function(creator_data) {
+        if(creator_data == null) {
+            //creator email doesn't exist in the db
+             addCreator(creator);
+             response.end("Thanks for creating an acount!");
+        } else {
+             //creator email alread exists
+             response.end("Sorry, the email you gave us is already in use.");
+        }
+       
+    })
+   
 });
 
 
@@ -312,10 +302,11 @@ function Email(email_id, recipient, date_to_send, entry_id, collection_id) {
 }
 
 //constructor for a Collection object
-function Collection(collection_id, collection_title, creator_email) {
+function Collection(collection_id, collection_title, creator_email, public, visible) {
     this.collection_id = collection_id;
     this.collection_title = collection_title;
     this.creator_email = creator_email;
+    this.visible = visible ? visible : "true";
 }
 
 
@@ -362,7 +353,7 @@ function getEntry(entry_id, callback) {
                 callback(null);
             }
             else if(result.rowCount >= 2) {
-                console.log('ERROR: entry id corresponds to multiple entries')
+                console.error('ERROR: entry id corresponds to multiple entries')
             } else {
                 callback(new Entry(
                     entry_id,
@@ -431,12 +422,13 @@ function deleteEntry(entry_id){
 //puts a collection into the database and calls callback on its id
 function addCollection(collection, callback){
     var id = generateCollectionID();
-    conn.query('INSERT INTO Collections (collection_id, collection_title, creator_email)' + 
-        'VALUES ($1, $2, $3)', 
+    conn.query('INSERT INTO Collections (collection_id, collection_title, creator_email, visible)' + 
+        'VALUES ($1, $2, $3, $4)', 
         [
             id,
             collection.collection_title,
             collection.creator_email,
+            collection.visible
         ]).on('error', console.error).on('end', function() {
             callback(id);
         });
@@ -458,10 +450,11 @@ function getCollection(collection_id, callback) {
             if(result.rowCount == 0) {
                 callback(null);
             } else if(result.rowCount >= 2) {
-                console.log('ERROR: collection id corresponds to multiple collections')
+                console.error('ERROR: collection id corresponds to multiple collections')
             } else {
                 callback(new Collection(result.rows[0].collection_id, 
-                    result.rows[0].collection_title, result.rows[0].creator_email));
+                    result.rows[0].collection_title, result.rows[0].creator_email, 
+                    result.rows[0].visible));
             }
         });
 }
@@ -475,7 +468,8 @@ function getCollectionsWithCreator(creator_email, callback) {
                 collections.push(new Collection(
                     result.rows[i].collection_id,
                     result.rows[i].collection_title,
-                    creator_email
+                    creator_email,
+                    result.rows[i].visible
                 ));
             }
             callback(collections);
@@ -485,11 +479,12 @@ function getCollectionsWithCreator(creator_email, callback) {
 //updates a collection in the database
 function editCollection(collection) {
     conn.query('UPDATE Collections ' + 
-        'SET collection_title=$1, creator_email=$2 ' +
-        'WHERE collection_id=$3',
+        'SET collection_title=$1, creator_email=$2, visible=$3 ' +
+        'WHERE collection_id=$4',
     [
         collection.collection_title,
         collection.creator_email,
+        collection.visible,
         collection.collection_id
     ]).on('error', console.error);
 }
@@ -527,7 +522,7 @@ function getEmail(email_id, callback) {
                 console.error(error);
             }
             if(result.rowCount >= 2) {
-                console.log('ERROR: email id corresponds to multiple emails');
+                console.error('ERROR: email id corresponds to multiple emails');
             } else if(result.rowCount == 0) {
                 callback(null);
             } else {
@@ -593,7 +588,7 @@ function getCreator(creator_email, callback) {
             if(error) {
                 console.error(error);
             } else if(result.rowCount>=2) {
-                console.log('ERROR: multiple creator ids in the database');
+                console.error('ERROR: multiple creator ids in the database');
             } else if(result.rowCount==0){
                 callback(null);
             } else {
@@ -632,8 +627,15 @@ function deleteCreator(creator_email) {
 }
 
 
-
-
+//NEEDS TESTING
+//restore the scheduled emails
+conn.query("SELECT * FROM Emails", function(error, result) {
+    for(var i = 0; i < result.rowCount; i++) {
+        var millis_until_send = result.rows[i].date_to_send - Date.now();
+        millis_until_send = millis_until_send >= 0 ? millis_until_send : 0;
+        scheduleEmail(result.rows[i].email_id, millis_until_send);
+    }
+});
 
 //define and prime the unique identifiers for each table
 var lastEmailID;
@@ -676,6 +678,8 @@ function generateEntryID() {
     return ++lastEmailID;
 }
 
+
+
 //printing for debugging
 function printEmails() {
     conn.query("SELECT * FROM Emails", function(error, response) {
@@ -694,10 +698,17 @@ function printCollections() {
     });
 }
 
+function printCreators() {
+    conn.query("SELECT * FROM Creator_Data", function(error, response) {
+        console.log(response);
+    });
+}
+
 function printDB() {
     printCollections();
     printEntries();
     printEmails();
+    printCreators();
 }
 
 
@@ -716,7 +727,7 @@ function assert(cond) {
 
 if(runDBTests) {
 setTimeout(function() {
-var c1 = new Collection(null, "boss instructions", "max@gmail.com");
+var c1 = new Collection(null, "boss instructions", "max@gmail.com", "true");
 
 addCollection(c1, function(c1_id) {
     
@@ -837,7 +848,8 @@ if(primeDataBase) {
 //wait to avoid collision with table id primers
 setTimeout(function() {
 
-var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu");
+var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu", "true");
+
 addCollection(c1, function(c1_id) {
     
     var e1 = new Entry(null, c1_id, 1, "max", 
