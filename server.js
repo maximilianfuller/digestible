@@ -28,8 +28,8 @@ var smtpTransport = mailer.createTransport("SMTP",{
 
     service: "Gmail",
     auth: {
-        user: "benjamin_resnick@brown.edu",
-        pass: "cindy301" //now don't go doin mischevious things with my password y'all
+        user: "digestableapp@gmail.com",
+        pass: "javierisaboss" 
     }
 });
 
