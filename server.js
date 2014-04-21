@@ -692,7 +692,7 @@ function deleteCreator(creator_email) {
 
 //NEEDS TESTING
 //restore the scheduled emails
-conn.query("SELECT * FROM Emails WHERE status=PENDING", function(error, result) {
+conn.query("SELECT * FROM Emails WHERE status=$1", ["PENDING"], function(error, result) {
     for(var i = 0; i < result.rowCount; i++) {
         var millis_until_send = result.rows[i].date_to_send - Date.now();
         millis_until_send = millis_until_send >= 0 ? millis_until_send : 0;
