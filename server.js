@@ -2,9 +2,9 @@
 
 //RUN TESTS/PRIMERS:
 
-var runDBTests = true;
+var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = false;
+var printDataBase = true;
 
 //dependencies
 var http = require('http');
@@ -72,32 +72,29 @@ scheduleEmail(senderName,senderEmail,receiver,subject,body,dateToEmail);
 function sendEmail(email_id) {
     console.log("sending email with id: " + email_id);
     getEmail(email_id, function(email) {
-        getCollection(email.collection_id, function (collection) {
-            getEntry(email.entry_id, function (entry) {
+       
+    	// setup e-mail data with unicode symbols
+    	var mailOptions = {
+    	    from: "John Doe" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
+    	    to: email.recipient, // list of receivers
+    	    subject: email.subject, // Subject line
+    	    //text: contents // plaintext body
 
-            	// setup e-mail data with unicode symbols
-            	var mailOptions = {
-            	    from: "John Doe" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
-            	    to: email.recipient, // list of receivers
-            	    subject: entry.subject, // Subject line
-            	    //text: contents // plaintext body
+    	    //remember to add comma if using html field
+    	    html: email.content // html bodies can also be sent
+    	};	
 
-            	    //remember to add comma if using html field
-            	    html: entry.content // html bodies can also be sent
-            	};	
-
-                // send mail with defined transport object
-                smtpTransport.sendMail(mailOptions, function(error, response){
-                    if(error){
-                        console.log(error);
-                    }else{
-                        console.log("Message sent: " + response.message.cyan);
-                    }
-                });
-                deleteEmail(email_id);
-                scheduled_emails.remove(email_id);
-            });
+        // send mail with defined transport object
+        smtpTransport.sendMail(mailOptions, function(error, response){
+            if(error){
+                console.log(error);
+            }else{
+                console.log("Message sent: " + response.message.cyan);
+            }
         });
+        updateEmailStatus(email_id, "SENT");
+        scheduled_emails.remove(email_id);
+          
     });
 }
 
@@ -112,7 +109,8 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
         console.log(entries);
         for(var i = 0; i < entries.length; i++) {
             var email = new Email(null, reader_email, 
-                Date.now() + currentMills, entries[i].entry_id, collection_id);
+                Date.now() + currentMills, entries[i].entry_id, collection_id,
+                entries[i].subject, entries[i].content, "PENDING");
             (function(currentMills) {
                 addEmail(email, function(email_id) {
                     scheduleEmail(email_id, currentMills);
@@ -127,9 +125,25 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
 }
 
 //unsubscribes
-function unsubscribe(collection_id, reader_email){
-    conn.query("DELETE FROM Emails WHERE collection_id = $1 AND recipient = $2",
-        [collection_id, reader_email]).on('error', console.error);
+function unsubscribe(email_id){
+    getEmail(email_id, function(email) {
+        conn.query("SELECT * FROM Emails WHERE collection_id = $1 AND recipient = $2",
+        [email.collection_id, reader_email], function(error, result) {
+            if(error) {
+                console.error(error);
+            } else {
+                for(var i = 0; i < result.rowCount; i++) {
+                    //for any emails in the db scheduled to send after the
+                    //cancelled email, set them to cancelled
+                    if(result.rows[i].date_to_send > email.date_to_send) {
+                        updateEmailStatus(result.rows[i].email_id, "CANCELLED");
+                        scheduled_email.remove(result.rows[i].email_id);
+                    }
+                }
+            }
+        });
+    }); 
+    
     scheduled_emails.remove(email_id);
 }
 
@@ -208,30 +222,36 @@ app.get('/consumer/:collection_id', function(request, response){
 
             //check if the collection exists
             if(collection !== null){
-                console.log(entries);
-                var moustacheParams = [];
-                moustacheParams.collectionName = collection.collection_title;
-                moustacheParams.collectionId = cl_id;
-                
-                //create moustache field for entry names
-                var entryList =  [];
-                var orderedEntries = []; //ordered db results
-                
-                //order the entries by entry_number
-                for(var i = 0; i < entries.length; i++){ 
-                    orderedEntries[entries[i].entry_number-1] = entries[i];
-                }//generate the moustache fields
-                for(var i = 0; i < entries.length; i++){ 
-                    var entry = [];
-                    entry.entryTitle = orderedEntries[i].title;
-                    entry.entryId = orderedEntries[i].entry_id;
-                    entryList.push(entry);
-                }
+                    getCreator(collection.creator_email, function(creator) {
 
-                //add the entry name fields to the moustacheParams
-                moustacheParams.entries = entryList;          
-                //render the webpage
-                response.render('consumer.html',moustacheParams);    
+
+                    console.log(entries);
+                    var moustacheParams = {};
+                    moustacheParams.collectionName = collection.collection_title;
+                    moustacheParams.collectionId = cl_id;
+                    moustacheParams.creatorName = creator.name;
+                    moustacheParams.description = collection.collection_description;
+                    
+                    //create moustache field for entry names
+                    var entryList =  [];
+                    var orderedEntries = []; //ordered db results
+                    
+                    //order the entries by entry_number
+                    for(var i = 0; i < entries.length; i++){ 
+                        orderedEntries[entries[i].entry_number-1] = entries[i];
+                    }//generate the moustache fields
+                    for(var i = 0; i < entries.length; i++){ 
+                        var entry = [];
+                        entry.entryTitle = orderedEntries[i].title;
+                        entry.entryId = orderedEntries[i].entry_id;
+                        entryList.push(entry);
+                    }
+
+                    //add the entry name fields to the moustacheParams
+                    moustacheParams.entries = entryList;          
+                    //render the webpage
+                    response.render('consumer.html',moustacheParams);  
+                }); 
             }
             else{ //render a 404 page
                 console.log("invalid collection access attempt");
@@ -310,12 +330,15 @@ function Entry(entry_id, collection_id, entry_number, author, title, date_submit
 }
 
 //constructor for an Email object
-function Email(email_id, recipient, date_to_send, entry_id, collection_id) {
+function Email(email_id, recipient, date_to_send, entry_id, collection_id, subject, content, status) {
     this.email_id = email_id;
     this.recipient = recipient;
     this.date_to_send = date_to_send;
     this.entry_id = entry_id;
     this.collection_id = collection_id;
+    this.subject = subject;
+    this.content = content;
+    this.status = status;
 }
 
 //constructor for a Collection object
@@ -522,14 +545,16 @@ function deleteCollection(collection_id) {
 //puts an email into the database and calls callback on its id
 function addEmail(email, callback) {
     var id = generateEmailID();
-    conn.query('INSERT INTO Emails (email_id, recipient, date_to_send , entry_id , collection_id)' + 
-        'VALUES ($1, $2, $3, $4, $5);',
+    conn.query('INSERT INTO Emails (email_id, recipient, date_to_send , entry_id , collection_id, subject, content)' + 
+        'VALUES ($1, $2, $3, $4, $5, $6, $7);',
         [
             id,
             email.recipient,
             email.date_to_send,
             email.entry_id,
-            email.collection_id
+            email.collection_id,
+            email.subject,
+            email.content
         ]).on('error', console.error)
         .on('end', function() {
             callback(id);
@@ -553,33 +578,32 @@ function getEmail(email_id, callback) {
                     result.rows[0].recipient, 
                     result.rows[0].date_to_send, 
                     result.rows[0].entry_id, 
-                    result.rows[0].collection_id));
+                    result.rows[0].collection_id,
+                    result.rows[0].subject,
+                    result.rows[0].content,
+                    result.rows[0].status));
             }
         });
 }
 
-/* NOT TO BE USED
+
 //updates an email in the database (based on its email_id)
-function editEmail(email){
-    conn.query('UPDATE Emails ' + 
-        'SET recipient=$2, date_to_send=$3, entry_id=$4, collection_id=$5' +
-        'WHERE email_id=$1',
+function updateEmailStatus(email_id, status){
+    conn.query('UPDATE Emails SET status=$1 WHERE email_id=$2',
     [
-        email.email_id,
-        email.recipient,
-        email.date_to_send,
-        email.entry_id,
-        email.collection_id
+        status,
+        email_id
     ]).on('error', console.error);
-    }
-    */
+}
+    
 
-
+/*NOT TO BE USED
 //deletes an Email
 function deleteEmail(email_id){
     conn.query('DELETE FROM Emails WHERE email_id=$1', [email_id])
         .on('error', console.error);
 }
+*/
 
 //adds a creator to the database. Optional function callback (which takes no arguments) fires
 //upon completion
@@ -649,10 +673,9 @@ function deleteCreator(creator_email) {
         .on('error', console.error);
 }
 
-
 //NEEDS TESTING
 //restore the scheduled emails
-conn.query("SELECT * FROM Emails", function(error, result) {
+conn.query("SELECT * FROM Emails WHERE status=PENDING", function(error, result) {
     for(var i = 0; i < result.rowCount; i++) {
         var millis_until_send = result.rows[i].date_to_send - Date.now();
         millis_until_send = millis_until_send >= 0 ? millis_until_send : 0;
@@ -761,9 +784,9 @@ addCollection(c1, function(c1_id) {
     addEntry(e1, function(e1_id) {
         addEntry(e2, function(e2_id) {
             var email1 = new Email(null, 
-                "ben@gmail.com", new Date(Date.now()+60000), e1_id, c1_id);
+                "ben@gmail.com", new Date(Date.now()+60000), e1_id, c1_id, "subject", "content", "PENDING");
             var email2 = new Email(null, 
-                "javier@gmail.com", new Date(Date.now()+120000), e1_id, c1_id);
+                "javier@gmail.com", new Date(Date.now()+120000), e1_id, c1_id, "subject", "content", "PENDING");
             addEmail(email1, function(email1_id) {
                 var creator1 = new Creator_Data("spanishcurls@gmail.com", "1234", "Javier Sandoval", 
                     "1747 Legion Road", "Chapel Hill", "North Carolina", "27517")
@@ -785,11 +808,12 @@ addCollection(c1, function(c1_id) {
                         assert(email.recipient === 'ben@gmail.com');
                     });
 
-                    deleteEmail(email1_id);
+                    
+                    updateEmailStatus(email1_id, "SENT");
 
-                    //EMAIL DELETING
+                    //UPDATE EMAIL STATUS
                     getEmail(email1_id, function (email) {
-                        assert(email == null);
+                        assert(email.status === 'SENT');
                     });
 
                     //ENTRY ADDING/GETTING
