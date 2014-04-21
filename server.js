@@ -2,7 +2,7 @@
 
 //RUN TESTS/PRIMERS:
 var runDBTests = false;
-var primeDataBase = true;
+var primeDataBase = false;
 var printDataBase = false;
 
 //dependencies
@@ -180,6 +180,11 @@ app.get('/collection/:user', function(request, response){
     }
 });
 
+//emailcreation
+app.post('/html/protoEmailCreation/save', function(request, response){
+    console.log("received protoemail");
+});
+
 //////////////////////////////////////////////
 //consumer page
 app.get('/consumer/:collection_id', function(request, response){
@@ -254,7 +259,7 @@ app.get('/consumer/:collection_id/:entry_id', function (request, response) {
     });
 });
 
-
+//sign up
 app.post('/sign_up', function(request, response) {
     console.log("creator " + request.body.email + " is creating an account")
     var creator = new Creator_Data(request.body.email, request.body.password, 
