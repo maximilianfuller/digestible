@@ -562,8 +562,8 @@ function deleteCollection(collection_id) {
 //puts an email into the database and calls callback on its id
 function addEmail(email, callback) {
     var id = generateEmailID();
-    conn.query('INSERT INTO Emails (email_id, recipient, date_to_send , entry_id , collection_id, subject, content)' + 
-        'VALUES ($1, $2, $3, $4, $5, $6, $7);',
+    conn.query('INSERT INTO Emails (email_id, recipient, date_to_send , entry_id , collection_id, subject, content, status)' + 
+        'VALUES ($1, $2, $3, $4, $5, $6, $7, $8);',
         [
             id,
             email.recipient,
@@ -571,7 +571,8 @@ function addEmail(email, callback) {
             email.entry_id,
             email.collection_id,
             email.subject,
-            email.content
+            email.content,
+            email.status
         ]).on('error', console.error)
         .on('end', function() {
             callback(id);
@@ -604,7 +605,7 @@ function getEmail(email_id, callback) {
 }
 
 
-//updates an email in the database (based on its email_id)
+//updates an email status in the database (based on its email_id)
 function updateEmailStatus(email_id, status){
     conn.query('UPDATE Emails SET status=$1 WHERE email_id=$2',
     [
