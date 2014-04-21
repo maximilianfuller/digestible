@@ -1,6 +1,7 @@
 //digestable node.js based server
 
 //RUN TESTS/PRIMERS:
+
 var runDBTests = true;
 var primeDataBase = false;
 var printDataBase = false;
@@ -139,6 +140,14 @@ ajax/server request handling
 *//////////////////////////////////////////////
 
 //////////////////////////////////////////////
+
+//debugging function to println where requests are sent to
+/*app.post('*',function(req,res){
+    console.log("debug post url");
+    console.log(req.url);
+    //console.log(Object.keys(req));//logs available req fields
+});*/
+
 //home page log in 
 app.post('/html/log_in', function(request, response){
     console.log("received log_in request");
@@ -178,6 +187,14 @@ app.get('/collection/:user', function(request, response){
     else{
         response.render('collection.html',{});  
     }
+});
+
+//emailcreation
+app.post('/html/save', function(request, response){
+    console.log("received protoemail");
+    var email = request.body.email.emailInput.value;
+    console.log(email);
+    
 });
 
 //////////////////////////////////////////////
@@ -254,7 +271,7 @@ app.get('/consumer/:collection_id/:entry_id', function (request, response) {
     });
 });
 
-
+//sign up
 app.post('/sign_up', function(request, response) {
     console.log("creator " + request.body.email + " is creating an account")
     var creator = new Creator_Data(request.body.email, request.body.password, 
