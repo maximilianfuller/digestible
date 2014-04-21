@@ -14,7 +14,7 @@ conn.query('CREATE TABLE Entries (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, co
     });
 
 conn.query('CREATE TABLE Collections (collection_id INTEGER PRIMARY KEY AUTOINCREMENT, ' + 
-    'collection_title TEXT, creator_email TEXT, visible TEXT);') 
+    'collection_title TEXT, collection_description TEXT, creator_email TEXT, visible TEXT);') 
     .on('error', function() {
         console.error; 
     });
@@ -51,6 +51,7 @@ conn.end();
     //collections TABLE
         //(primary) collection_id
         //collection title
+        //collection description
         //creator email
         //visible (true or false string; determines 
             //whether the public (suscribers, can view this collection))

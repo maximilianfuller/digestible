@@ -1,8 +1,8 @@
 //digestable node.js based server
 
 //RUN TESTS/PRIMERS:
-var runDBTests = false;
-var primeDataBase = true;
+var runDBTests = true;
+var primeDataBase = false;
 var printDataBase = false;
 
 //dependencies
@@ -189,12 +189,12 @@ app.get('/consumer/:collection_id', function(request, response){
     getCollection(cl_id, function(collection) { //get info from the database
         getEntriesWithCollectionID(cl_id, function(entries){
 
-            var moustacheParams = [];
-            moustacheParams.collectionName = collection.collection_title;
-            moustacheParams.collectionId = cl_id;
-
             //check if the collection exists
             if(collection !== null){
+                console.log(entries);
+                var moustacheParams = [];
+                moustacheParams.collectionName = collection.collection_title;
+                moustacheParams.collectionId = cl_id;
                 
                 //create moustache field for entry names
                 var entryList =  [];
@@ -302,9 +302,10 @@ function Email(email_id, recipient, date_to_send, entry_id, collection_id) {
 }
 
 //constructor for a Collection object
-function Collection(collection_id, collection_title, creator_email, public, visible) {
+function Collection(collection_id, collection_title, collection_description, creator_email, public, visible) {
     this.collection_id = collection_id;
     this.collection_title = collection_title;
+    this.collection_description = collection_description;
     this.creator_email = creator_email;
     this.visible = visible ? visible : "true";
 }
@@ -422,11 +423,12 @@ function deleteEntry(entry_id){
 //puts a collection into the database and calls callback on its id
 function addCollection(collection, callback){
     var id = generateCollectionID();
-    conn.query('INSERT INTO Collections (collection_id, collection_title, creator_email, visible)' + 
-        'VALUES ($1, $2, $3, $4)', 
+    conn.query('INSERT INTO Collections (collection_id, collection_title, collection_description, creator_email, visible)' + 
+        'VALUES ($1, $2, $3, $4, $5)', 
         [
             id,
             collection.collection_title,
+            collection.collection_description,
             collection.creator_email,
             collection.visible
         ]).on('error', console.error).on('end', function() {
@@ -453,7 +455,9 @@ function getCollection(collection_id, callback) {
                 console.error('ERROR: collection id corresponds to multiple collections')
             } else {
                 callback(new Collection(result.rows[0].collection_id, 
-                    result.rows[0].collection_title, result.rows[0].creator_email, 
+                    result.rows[0].collection_title,
+                    result.rows[0].collection_description,
+                    result.rows[0].creator_email, 
                     result.rows[0].visible));
             }
         });
@@ -468,6 +472,7 @@ function getCollectionsWithCreator(creator_email, callback) {
                 collections.push(new Collection(
                     result.rows[i].collection_id,
                     result.rows[i].collection_title,
+                    result.rows[i].collection_description,
                     creator_email,
                     result.rows[i].visible
                 ));
@@ -479,10 +484,11 @@ function getCollectionsWithCreator(creator_email, callback) {
 //updates a collection in the database
 function editCollection(collection) {
     conn.query('UPDATE Collections ' + 
-        'SET collection_title=$1, creator_email=$2, visible=$3 ' +
-        'WHERE collection_id=$4',
+        'SET collection_title=$1, collection_description=$2, creator_email=$3, visible=$4 ' +
+        'WHERE collection_id=$5',
     [
         collection.collection_title,
+        collection.collection_description,
         collection.creator_email,
         collection.visible,
         collection.collection_id
@@ -727,7 +733,7 @@ function assert(cond) {
 
 if(runDBTests) {
 setTimeout(function() {
-var c1 = new Collection(null, "boss instructions", "max@gmail.com", "true");
+var c1 = new Collection(null, "boss instructions", "MY DESCRIPTION", "max@gmail.com", "true");
 
 addCollection(c1, function(c1_id) {
     
@@ -848,7 +854,7 @@ if(primeDataBase) {
 //wait to avoid collision with table id primers
 setTimeout(function() {
 
-var c1 = new Collection(null, "boss instructions", "benjamin_resnick@brown.edu", "true");
+var c1 = new Collection(null, "boss instructions", "MY DESCRIPTION", "benjamin_resnick@brown.edu", "true");
 
 addCollection(c1, function(c1_id) {
     
