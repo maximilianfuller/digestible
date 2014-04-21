@@ -5,8 +5,9 @@ $(document).ready(function() {
   //save the email to the database
   $('#saveColl').click(function() {
     alert(editor.serialize());
+
     $.post("save",{
-       email: editor.serialize 
+       email: editor.serialize() 
     },function(data,status){
       if(data === "success"){
         alert("successfully saved email");
@@ -14,6 +15,7 @@ $(document).ready(function() {
       else if(data === "invalid_email"){
         alert("error");
       }
+    });
   });
 
 

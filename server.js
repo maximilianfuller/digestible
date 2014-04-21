@@ -139,6 +139,14 @@ ajax/server request handling
 *//////////////////////////////////////////////
 
 //////////////////////////////////////////////
+
+//debugging function to println where requests are sent to
+/*app.post('*',function(req,res){
+    console.log("debug post url");
+    console.log(req.url);
+    //console.log(Object.keys(req));//logs available req fields
+});*/
+
 //home page log in 
 app.post('/html/log_in', function(request, response){
     console.log("received log_in request");
@@ -181,8 +189,11 @@ app.get('/collection/:user', function(request, response){
 });
 
 //emailcreation
-app.post('/html/protoEmailCreation/save', function(request, response){
+app.post('/html/save', function(request, response){
     console.log("received protoemail");
+    var email = request.body.email.emailInput.value;
+    console.log(email);
+    
 });
 
 //////////////////////////////////////////////
