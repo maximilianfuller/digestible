@@ -195,19 +195,38 @@ app.post('/html/log_in', function(request, response){
 app.get('/collection/:user', function(request, response){
     console.log("collection page");
     var user = request.params.user;
-    if(user === "benjamin_resnick@brown.edu"){//if prototype-showoff thing
-        response.render('prototype.html',{});  
-    }
-    else{
-        response.render('collection.html',{});  
+    getCollectionsWithCreator(user,fucntion(collections)){
+        if(collections !== null){
+            var moustacheParams = [];
+
+            //create moustache field for collection names
+            var collectionNamesList = [];
+            for(var i = 0; i < collections.length; i++){
+                collectionNamesList.push(collections[i].collection_title);
+            }
+
+            //add the entry name fields to the moustahceParams
+            moustahceParams.collectionNames = collectionNamesList;
+            console.log(MoustacheParams);
+            response.render('collection.html',moustacheParams);
+        }
     }
 });
 
 //emailcreation
+//*****************************************************unfinished
 app.post('/html/save', function(request, response){
     console.log("received protoemail");
     var email = request.body.email.emailInput.value;
     console.log(email);
+
+    var content = request.body.email.emailInput.value;
+    var title = request.body.title;
+    var collection_id = request.body.collection_id;
+    var entry_number = request.body.entry_number;
+    var date = new Date(Date.now());
+    var entry = new Entry(null, collection_id,entry_number,null,null,date,subject,content)
+
     
 });
 
