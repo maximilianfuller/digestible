@@ -195,7 +195,7 @@ app.post('/html/log_in', function(request, response){
 app.get('/collection/:user', function(request, response){
     console.log("collection page");
     var user = request.params.user;
-    getCollectionsWithCreator(user,fucntion(collections)){
+    getCollectionsWithCreator(user,function(collections){
         if(collections !== null){
             var moustacheParams = [];
 
@@ -210,7 +210,7 @@ app.get('/collection/:user', function(request, response){
             console.log(MoustacheParams);
             response.render('collection.html',moustacheParams);
         }
-    }
+    });
 });
 
 //emailcreation
