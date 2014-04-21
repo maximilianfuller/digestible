@@ -304,9 +304,7 @@ app.post('/sign_up', function(request, response) {
              //creator email alread exists
              response.end("Sorry, the email you gave us is already in use.");
         }
-       
     })
-   
 });
 
 
