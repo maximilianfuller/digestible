@@ -1,12 +1,13 @@
+alert("adf");
+
 $(document).ready(function() {
   
   var editor = new MediumEditor('.editable');
 
   //save the email to the database
   $('#saveColl').click(function() {
-    alert(editor.serialize());
-
-    $.post("save",{
+   $.post("save",{
+       title: $('#emailTitleInput').val(),
        email: editor.serialize() 
     },function(data,status){
       if(data === "success"){
