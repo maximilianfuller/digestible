@@ -217,7 +217,7 @@ APP
 }
 
 #sideBar {
-	position: absolute;
+	position: fixed;
 	left: 0;
 	top: 0;
 	width: 200px;
@@ -242,7 +242,7 @@ APP
 }
 
 #logout {
-	position: absolute;
+	position: fixed;
 	bottom: 20px;
 	left: 0;
 	width: 172px;
