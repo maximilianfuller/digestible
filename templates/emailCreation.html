@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Digestible - An easy way for readers to read an online collection of work.</title>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="../css/digestible.css">
+		<link rel="stylesheet" href="../css/medium-editor.css"> <!-- Core -->
+		<link rel="stylesheet" href="../css/medium-themes/default.css"> <!-- theme -->
+		<script type="text/javascript" src="../clientjs/jquery-2.1.0.min.js"></script>
+	</head>
+
+	<body>
+		<div id="mainWrap">
+			<div id="editHeader">
+				<button class="headerButton" id="deleteColl">Delete</button>
+				<button class="headerButton" id="publishColl">Publish</button>
+				<button class="headerButton" id="saveColl">Save</button>
+			</div>
+			<div id="appMainContainer">
+				<section>
+					<form id="emailForm">
+						<input type="text" id="emailTitleInput" placeholder="Type your subject">
+						<input type="text" placeholder="Or paste the article link here and we'll make the email for you" class="emailEditInput">
+						<button id="pullContent">Pull Content</button>
+						<div id="emailInput" class="editable" ></div>
+
+					</form>
+				</section>
+			</div>
+		</div>
+		<div id="sideBar">
+			<p id="logo">Digestible</p>
+			<select name="" id="collections">
+				<option value="">Collection One</option>
+				<option value="">Collection Two</option>
+				<option value="">Collection Three</option>
+				<option value="">Collection Four</option>
+			</select>
+			<p class="sideBarLink"><a href="#">Subscribers</a></p>
+			<p class="sideBarLink"><a href="#">Settings</a></p>
+		</div>
+		<p id="logout"><a href="#">Log Out</a></p>
+		<div id="deleteOverlay">
+			<div class="overlayContain">
+				<h2 class="optionsTitle">Are you sure?</h2>
+				<button id="finalDelete">Delete</button>
+				<button id="cancelDelete">Cancel</button>
+			</div>
+		</div>
+		<script src="../clientjs/medium-editor.js"></script>
+
+		<script type="text/javascript" src="../clientjs/emailCreation.js"></script>
+	</body>
+</html> 
+
+
+
