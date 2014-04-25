@@ -18,6 +18,14 @@ $(document).ready(function() {
   });
 
 
+  //populate the subject
+  var subject = document.querySelector('meta[name=subject]').content;
+ if(subject != ""){
+    $('#emailTitleInput').val(subject);  
+ }
+
+
+
   //Pete's stuff
   $('#deleteColl').click(function() {
     $('#deleteOverlay').show();

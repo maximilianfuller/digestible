@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = true;
+var printDataBase = false;
 
 //dependencies
 var http = require('http');
@@ -215,10 +215,29 @@ app.get('/collection/:user', function(request, response){
     });
 });
 
+//email creation page
+app.get('/collection/:user/:entry_id', function(request,response){
+    var entry_id = request.params.entry_id;
+    getEntry(entry_id, function(entry){
+        if(entry != null){
+            var moustacheParams = [];
+            moustacheParams.entry_id = entry.entry_id;
+            moustacheParams.collection_id = entry.collection_id;
+            moustacheParams.entry_number = entry.entry_number;
+            moustacheParams.author = entry.author;
+            moustacheParams.title = entry.title;
+            moustacheParams.date_submitted = entry.date_submitted;
+            moustacheParams.subject = entry.subject;
+            moustacheParams.content = entry.content;
+            response.render('emailCreation.html',moustacheParams);
+        }
+    });
+
+});
 
 //emailcreation
 //*****************************************************unfinished
-app.post('/html/save', function(request, response){
+app.post('/save', function(request, response){
     console.log("received protoemail");
     var email = request.body.email.emailInput.value;
     console.log(email);
@@ -227,8 +246,13 @@ app.post('/html/save', function(request, response){
     var title = request.body.title;
     var collection_id = request.body.collection_id;
     var entry_number = request.body.entry_number;
-    var date = new Date(Date.now());
-    var entry = new Entry(null, collection_id,entry_number,null,null,date,subject,content)    
+    var subject = request.body.subject;
+
+    //check that none of the fields are null
+    if(content != null && title != null && collection_id != null && entry_number != null && subject != null){
+        var date = new Date(Date.now());
+        var entry = new Entry(null, collection_id,entry_number,null,null,date,subject,content);        
+    }
 });
 
 //////////////////////////////////////////////
