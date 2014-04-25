@@ -253,6 +253,7 @@ APP
    border-radius: 0;
    height: 34px;
    -webkit-appearance: none;
+   color: #444;
 }
 #selectArrow {
 	position: absolute;
