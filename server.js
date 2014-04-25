@@ -15,6 +15,8 @@ var anyDB = require('any-db');
 var mailer = require('nodemailer');
 var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
+var passport = require('passport');
+//var LocalStrategy = require('passport-local').Strategy;
 var app = express();
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
@@ -22,6 +24,8 @@ app.set('views', __dirname + '/templates'); // tell Express where to find templa
 app.use(express.bodyParser());
 app.use(express.cookieParser('aacb87*nnai'));
 app.use(express.static(__dirname + '/public'));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // create reusable transport method (opens pool of SMTP connections)
 //NOTE: we may want to use a different transport method
@@ -34,6 +38,12 @@ var smtpTransport = mailer.createTransport("SMTP",{
     }
 });
 
+/*// passport config
+var Account = require('./models/account');
+passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
+*/
 
 //data structure initializations 
 var scheduled_emails = new HashMap(); //key: email_id, value: a scheduled email
