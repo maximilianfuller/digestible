@@ -19,5 +19,13 @@ $(document).ready(function() {
     }
   });
 
-  console.log('loaded');
+  $('#addEmailWrap').mousedown(function() {
+    $(this).css('border', '2px solid #aaa');
+  });
+  $('#addEmailWrap').mouseup(function() {
+    $(this).css('border', '2px solid #ccc');
+  });
+  $('#addEmailWrap').mouseleave(function() {
+    $(this).css('border', '2px solid #ccc');
+  });
 });
