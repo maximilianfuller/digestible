@@ -31,14 +31,29 @@ $(document).ready(function() {
 
   //MAX'S STUFF
 
+function getCollectionData(collectionID)
+$.get("collection/" + meta("creatorEmail") + "/ajax/" + collectionID function(data) {
+  $("$collTitleInput").val(data.collection_title);
+  $("#author").val(data.collection_author);
+  $("#collDescriptInput").val(data.collection_description);
 
+  var $ol = $("$subscriptionsContainer ol");
+  $ol.empty();
+  for(var i = 0; i < data.entries.length; i++) {
+    $ol.append(
+      $("<li>").append(
+        $("<a>").attr('href', "/collection/" + meta(email) + 
+          "/" + data.entries[i].entry_id).html(data.entries[i].title);
+    ));
+  }
+});
 
-
-
-
-
-
-
+function meta(name) {
+    var tag = document.querySelector('meta[name=' + name + ']');
+    if (tag != null)
+        return tag.content;
+    return '';
+}
 
 
   //END OF MAX'S STUFF

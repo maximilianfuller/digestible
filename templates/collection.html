@@ -3,6 +3,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
+		<meta name="creatorEmail" content="{{creatorEmail}}">
 		<title>Digestible - An easy way for readers to read an online collection of work.</title>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="../css/digestible.css" />
@@ -41,12 +42,7 @@
 						<p id="noLinksPrompt">Links to your scheduled emails will be archived here. Add some!</p>
 
 						<ol>
-							<!-- these links go to blog articles -->
-							<li><a href="#" target="_blank">Article 1</a></li>
-							<li><a href="#" target="_blank">Article 2</a></li>
-							<li><a href="#" target="_blank">Article 3</a></li>
-							<li><a href="#" target="_blank">Article 4</a></li>
-							<li><a href="#" target="_blank">Article 5</a></li>
+							
 						</ol>
 						<div id="addEmailWrap">
 							<div id="addEmailContain">
@@ -62,7 +58,7 @@
 			<select name="" id="collections">
 				{{#collectionNames}}
 				<option value="">{{collectionTitle}}</option>
-				<div id = "collectionId" style="visibility: hidden;">{{collectionId}}</div>
+				<div id = "collectionId" style="visibility: hidden;">{{collectionID}}</div>
 				{{/collectionNames}}
 			</select>
 			<p class="sideBarLink"><a href="#">Subscribers</a></p>

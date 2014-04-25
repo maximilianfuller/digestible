@@ -214,6 +214,21 @@ app.get('/collection/:user', function(request, response){
     });
 });
 
+//ajax for populating collections page with data
+app.get('/collection/:user/ajax/:collectionID', function(request, response) {
+    //cookie verification required
+    getCollection(request.params.collectionID, function (collection) {
+        getEntriesWithCollectionID(request.params.collection_id, function(entries) {
+            getCreator(collection.creator_email, function(creator_data) {
+                collection.creator_name = creator_data.name;
+                collection.entries = entries;
+                response.send(collection);
+
+            });
+        });
+    });
+});
+
 
 //emailcreation
 //*****************************************************unfinished
