@@ -57,8 +57,7 @@
 			<p id="logo">Digestible</p>
 			<select name="" id="collections">
 				{{#collectionNames}}
-				<option value="">{{collectionTitle}}</option>
-				<div id = "collectionId" style="visibility: hidden;">{{collectionID}}</div>
+				<option value={{collectionID}}>{{collectionTitle}}</option>
 				{{/collectionNames}}
 			</select>
 			<p class="sideBarLink"><a href="#">Subscribers</a></p>

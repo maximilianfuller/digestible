@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = false;
+var printDataBase = true;
 
 //dependencies
 var http = require('http');
@@ -125,6 +125,7 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
 }
 
 //unsubscribes
+//NOTE: NEEDS TESTING
 function unsubscribe(email_id){
     getEmail(email_id, function(email) {
         conn.query("SELECT * FROM Emails WHERE collection_id = $1 AND recipient = $2",
@@ -219,9 +220,10 @@ app.get('/collection/:user', function(request, response){
 app.get('/collection/:user/ajax/:collectionID', function(request, response) {
     //cookie verification required
     getCollection(request.params.collectionID, function (collection) {
-        getEntriesWithCollectionID(request.params.collection_id, function(entries) {
+        getEntriesWithCollectionID(request.params.collectionID, function(entries) {
             getCreator(collection.creator_email, function(creator_data) {
                 collection.creator_name = creator_data.name;
+                console.log(entries);
                 collection.entries = entries;
                 response.send(collection);
 
