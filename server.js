@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = true;
+var printDataBase = false;
 
 //dependencies
 var http = require('http');
@@ -225,6 +225,22 @@ app.get('/collection/:user', function(request, response){
 
 //ajax for populating collections page with data
 app.get('/collection/:user/ajax/:collectionID', function(request, response) {
+    //cookie verification required
+    getCollection(request.params.collectionID, function (collection) {
+        getEntriesWithCollectionID(request.params.collectionID, function(entries) {
+            getCreator(collection.creator_email, function(creator_data) {
+                collection.creator_name = creator_data.name;
+                console.log(entries);
+                collection.entries = entries;
+                response.send(collection);
+
+            });
+        });
+    });
+});
+
+//ajax for editing collection data from the front end
+app.post('/collection/:user/ajax', function(request, response) {
     //cookie verification required
     getCollection(request.params.collectionID, function (collection) {
         getEntriesWithCollectionID(request.params.collectionID, function(entries) {
@@ -963,25 +979,27 @@ if(primeDataBase) {
 setTimeout(function() {
 
 var c1 = new Collection(null, "boss instructions", "MY DESCRIPTION", "benjamin_resnick@brown.edu", "true");
+var c2 = new Collection(null, "Collection 2", "This is my awesome collection of articles", "benjamin_resnick@brown.edu", "false");
 
 addCollection(c1, function(c1_id) {
-    
-    var e1 = new Entry(null, c1_id, 1, "max", 
-        "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss.</b>");
-    var e2 = new Entry(null, c1_id, 2, "max", 
-        "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss TWICE");
-    var e3 = new Entry(null, c1_id, 3, "max", 
-        "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss THRICE.</b>");
-    var e4 = new Entry(null, c1_id, 4, "max", 
-        "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss FOUR TIMES");
-    var cre1 = new Creator_Data("benjamin_resnick@brown.edu", "password", "Ben","99 walnut", "Boston", "Ohio", "12346");
-    
-    addEntry(e1, function(e1_id) {
-        addEntry(e2, function(e2_id) {
-            addEntry(e3, function(e3_id) {
-                addEntry(e4, function(e4_id) {
-                    addCreator(cre1,function(c1_id){
-                        console.log("database is primed");
+    addCollection(c2, function(c2_id) {
+        var e1 = new Entry(null, c1_id, 1, "max", 
+            "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss.</b>");
+        var e2 = new Entry(null, c1_id, 2, "max", 
+            "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss TWICE");
+        var e3 = new Entry(null, c1_id, 3, "max", 
+            "how to be a boss", new Date(Date.now()), "hello", "<b>be a boss THRICE.</b>");
+        var e4 = new Entry(null, c1_id, 4, "max", 
+            "how to be a boss, the sql", new Date(Date.now()), "hello", "<b>be a boss FOUR TIMES");
+        var cre1 = new Creator_Data("benjamin_resnick@brown.edu", "password", "Ben","99 walnut", "Boston", "Ohio", "12346");
+        
+        addEntry(e1, function(e1_id) {
+            addEntry(e2, function(e2_id) {
+                addEntry(e3, function(e3_id) {
+                    addEntry(e4, function(e4_id) {
+                        addCreator(cre1,function(c1_id){
+                            console.log("database is primed");
+                        });
                     });
                 });
             });

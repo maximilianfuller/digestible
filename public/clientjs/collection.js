@@ -35,8 +35,17 @@ $(document).ready(function() {
 getCollectionData($("#collections").val());
 //change data upon selecting a new collection
 $("#collections").on("change", function() {
-  alert("b");
   getCollectionData($("#collections").val());
+});
+
+$("#publishColl").click(function() {
+  var collection = {
+    collection_id: $("#collections").val(),
+    collection_title: $("#collTitleInput").val(),
+    collection_description: $("#collDescriptInput").val(),
+    visible: "true"
+  }
+  postCollectionData(collection);
 });
 
 function getCollectionData(collectionId) {
@@ -53,7 +62,20 @@ function getCollectionData(collectionId) {
           $("<a>").attr('href', "/collection/" + meta("creatorEmail") + "/" + data.entries[i].entry_id).html(data.entries[i].title)
       ));
     }
+    if ($('#subscriptionsContainer ol').html().length > 0) {
+      $('#noLinksPrompt').hide();
+    } else {
+      $('#noLinksPrompt').show();
+    }
   });
+
+}
+
+function postCollectionData(collection) {
+  $.post("/collection/" + meta("creatorEmail") + "/ajax", collection)
+    .fail(function() {
+      alert("error");
+    });
 }
 
 function meta(name) {
