@@ -58,12 +58,16 @@
 		</div>
 		<div id="sideBar">
 			<p id="logo">Digestible</p>
-			<select name="" id="collections">
-				{{#collectionNames}}
-				<option value={{collectionId}}>{{collectionTitle}}</option>
+			<div id="selectContainer">
+				<select name="" id="collections">
+					{{#collectionNames}}
+					<option value={{collectionId}}>{{collectionTitle}}</option>
 
-				{{/collectionNames}}
-			</select>
+					{{/collectionNames}}
+				</select>
+				<div id="selectArrow"></div>
+			</div>
+			<p class="sideBarLink"><a href="#">Add Collection</a></p>
 			<p class="sideBarLink"><a href="#">Subscribers</a></p>
 			<p class="sideBarLink"><a href="#">Settings</a></p>
 		</div>

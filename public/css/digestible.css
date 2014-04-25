@@ -236,9 +236,34 @@ APP
 	margin: 30px 0 0 0;
 }
 
-#collections {
+#selectContainer {
 	margin: 50px auto 0;
 	width: 150px;
+   height: 34px;
+   overflow: hidden;
+   position: relative;
+}
+#collections {
+	width: 142px;
+   background: transparent;
+   padding: 5px;
+   font-size: 16px;
+   line-height: 1;
+   border: 0;
+   border-radius: 0;
+   height: 34px;
+   -webkit-appearance: none;
+}
+#selectArrow {
+	position: absolute;
+	width: 0; 
+	height: 0; 
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	
+	border-top: 6px solid #444;
+	right: 0;
+	top: 16px;
 }
 
 #logout {
