@@ -3,7 +3,7 @@
 //RUN TESTS/PRIMERS:
 
 var runDBTests = false;
-var primeDataBase = true;
+var primeDataBase = false;
 var printDataBase = false;
 
 //dependencies
@@ -206,13 +206,14 @@ app.get('/collection/:user', function(request, response){
                 collectionNamesList.push(collect);
             }
 
-            //add the entry name fields to the moustahceParams
+            //add the entry name fields to the moustacheParams
             moustacheParams.collectionNames = collectionNamesList;
-            console.log(MoustacheParams);
+            console.log(moustacheParams);
             response.render('collection.html',moustacheParams);
         }
     });
 });
+
 
 //emailcreation
 //*****************************************************unfinished
