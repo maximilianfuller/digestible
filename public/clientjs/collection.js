@@ -25,6 +25,15 @@ $(document).ready(function() {
   $('#cancelDelete, #finalDelete').click(function() {
     $('#deleteOverlay').hide();
   });
+  $('#addEmailWrap').mousedown(function() {
+    $(this).css('border', '2px solid #aaa');
+  });
+  $('#addEmailWrap').mouseup(function() {
+    $(this).css('border', '2px solid #ccc');
+  });
+  $('#addEmailWrap').mouseleave(function() {
+    $(this).css('border', '2px solid #ccc');
+  });
   /*
   *end of Pete's stuff
   */

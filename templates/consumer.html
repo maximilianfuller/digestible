@@ -8,12 +8,13 @@
 		<title>Digestible - {{collectionName}}</title>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="/css/digestible.css"/>
+		<link rel="stylesheet" href="../public/css/digestible.css" /><!-- This is so javier can edit the css file statically-->
 		<script type="text/javascript" src="/clientjs/jquery-2.1.0.min.js"></script>
 		<script type="text/javascript" src="/clientjs/consumer.js"></script>
 	</head>
 
 	<body>
-		<div id="mainWrap">
+		<div id="mainWrap" class="noMenuFix">
 			<div id="appMainContainer">
 				<section>
 					<h1 id="collectionTitle">{{collectionName}}</h1>
@@ -26,10 +27,11 @@
 						<input class="formSubmit" id="consumerSubmit" type="submit" name="" value="Subscribe">
 					</form>
 				</section>
+				<div id="separator"></div>
 				<section>
 					<div id="subscriptionsContainer">
 						
-						<h2 id="subscribeTitle">Subscription Contents</h2>
+						<h2 id="subscribeTitle">Email Archive</h2>
 						<ol>
 							<!-- these links go to blog articles -->
 							{{#entries}}

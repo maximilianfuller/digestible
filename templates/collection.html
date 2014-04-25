@@ -31,20 +31,20 @@
 						<p id="author">By: Ben Smith</p>
 						<textarea id="collDescriptInput" rows="4" cols="50" placeholder="Describe your collection of articles"></textarea>
 						<p id="collEditEmailExplain">Sign up to recieve each article in an easy to read email every three days.</p>
-						<input type="text" placeholder="Name" class="consumerInput" id="name" disabled>
-						<input type="text" placeholder="Email Address" class="consumerInput" id="email" disabled>
-						<input class="formSubmit" id="consumerSubmit" type="submit" name="" value="Subscribe">
+						<input type="text" placeholder="Name" class="consumerInput collEditOpacity" id="name" disabled>
+						<input type="text" placeholder="Email Address" class="consumerInput collEditOpacity" id="email" disabled>
+						<input class="formSubmit collEditOpacity" id="consumerSubmit" type="submit" name="" value="Subscribe">
 					</form>
 				</section>
+				<div id="separator"></div>
 				<section>
 					<div id="subscriptionsContainer">
 						<h2 id="subscribeTitle">Email Archive</h2>
 
 						<!-- this only shows up if there are no li elements in the email archive ol -->
-						<p id="noLinksPrompt">Links to your scheduled emails will be archived here. Add some!</p>
+						<p id="noLinksPrompt">1. Links to your scheduled emails will be archived here.</p>
 
 						<ol>
-							
 						</ol>
 						<div id="addEmailWrap">
 							<div id="addEmailContain">
@@ -57,12 +57,16 @@
 		</div>
 		<div id="sideBar">
 			<p id="logo">Digestible</p>
-			<select name="" id="collections">
-				{{#collectionNames}}
-				<option value={{collectionId}}>{{collectionTitle}}</option>
+			<div id="selectContainer">
+				<select name="" id="collections">
+					{{#collectionNames}}
+					<option value={{collectionId}}>{{collectionTitle}}</option>
 
-				{{/collectionNames}}
-			</select>
+					{{/collectionNames}}
+				</select>
+				<div id="selectArrow"></div>
+			</div>
+			<p class="sideBarLink"><a href="#">Add Collection</a></p>
 			<p class="sideBarLink"><a href="#">Subscribers</a></p>
 			<p class="sideBarLink"><a href="#">Settings</a></p>
 		</div>
