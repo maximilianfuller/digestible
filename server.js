@@ -3,8 +3,8 @@
 //RUN TESTS/PRIMERS:
 
 var runDBTests = false;
-var primeDataBase = false;
-var printDataBase = true;
+var primeDataBase = true;
+var printDataBase = false;
 
 //dependencies
 var http = require('http');
@@ -143,8 +143,7 @@ function unsubscribe(email_id){
                 }
             }
         });
-    }); 
-    
+    });    
 } 
 
 
@@ -202,11 +201,13 @@ app.get('/collection/:user', function(request, response){
             //create moustache field for collection names
             var collectionNamesList = [];
             for(var i = 0; i < collections.length; i++){
-                collectionNamesList.push(collections[i].collection_title);
+                var collect = [];
+                collect.collectionTitle = collections[i].collection_title;
+                collectionNamesList.push(collect);
             }
 
             //add the entry name fields to the moustahceParams
-            moustahceParams.collectionNames = collectionNamesList;
+            moustacheParams.collectionNames = collectionNamesList;
             console.log(MoustacheParams);
             response.render('collection.html',moustacheParams);
         }
@@ -225,9 +226,7 @@ app.post('/html/save', function(request, response){
     var collection_id = request.body.collection_id;
     var entry_number = request.body.entry_number;
     var date = new Date(Date.now());
-    var entry = new Entry(null, collection_id,entry_number,null,null,date,subject,content)
-
-    
+    var entry = new Entry(null, collection_id,entry_number,null,null,date,subject,content)    
 });
 
 //////////////////////////////////////////////
