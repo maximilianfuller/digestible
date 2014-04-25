@@ -66,6 +66,9 @@ select {
 	color: #e31218;
 	padding: 0;
 }
+.authSubmit:active {
+	color: #BD1217;
+}
 #mainContainer, #subContain {
 	width: 640px;
 	margin: 0 auto;
@@ -106,6 +109,9 @@ button, .formSubmit {
     border: none;
     outline: none;
     padding: 0;
+}
+button:active, .formSubmit:active {
+	box-shadow: inset 0 0 45px rgba(50,50,50,0.35);
 }
 #landingFirstSignUp {
 	margin-bottom: 30px;
@@ -177,6 +183,7 @@ SIGN UP
 
 #addressExplain {
 	font-size: 18px;
+	font-weight: 600;
 }
 
 .formSubmit {
@@ -187,6 +194,13 @@ SIGN UP
 /*--------------
 APP
 --------------*/
+#separator {
+	height: 1px;
+	background: #eee;
+	position: absolute;
+	left: 0;
+	right: 0;
+}
 #mainWrap, #subscriberMainWrap {
 	position: absolute;
 	left: 200px;
@@ -210,7 +224,7 @@ APP
 }
 
 #sideBar {
-	position: absolute;
+	position: fixed;
 	left: 0;
 	top: 0;
 	width: 200px;
@@ -229,13 +243,39 @@ APP
 	margin: 30px 0 0 0;
 }
 
-#collections {
+#selectContainer {
 	margin: 50px auto 0;
 	width: 150px;
+   height: 34px;
+   overflow: hidden;
+   position: relative;
+}
+#collections {
+	width: 142px;
+   background: transparent;
+   padding: 5px;
+   font-size: 16px;
+   line-height: 1;
+   border: 0;
+   border-radius: 0;
+   height: 34px;
+   -webkit-appearance: none;
+   color: #444;
+}
+#selectArrow {
+	position: absolute;
+	width: 0; 
+	height: 0; 
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	
+	border-top: 6px solid #444;
+	right: 0;
+	top: 16px;
 }
 
 #logout {
-	position: absolute;
+	position: fixed;
 	bottom: 20px;
 	left: 0;
 	width: 172px;
@@ -255,17 +295,31 @@ COLLECTIONS
 .headerButton {
 	width: 80px;
 	height: 30px;
-	margin: 10px 0 0 20px;
+	margin: 22px 0 0 20px;
 	font-size: 13px;
 	float: right;
+	opacity: 0.25;
+
+	-webkit-transition: all 100ms;
+	-moz-transition: all 100ms;
+	-ms-transition: all 100ms;
+	-o-transition: all 100ms;
+	transition: all 100ms;
 }
-#deleteColl {
+.headerButton:hover {
+	opacity: 1.0;
+}
+.headerButton:active {
+	/*margin-top: 23px;*/
+	box-shadow: inset 0 0 25px rgba(50,50,50,0.25);
+}
+#deleteColl, #goBack {
 	float: left;
 }
 #previewColl {
 	background: #aaa;
 }
-#saveColl {
+#saveColl, #goBack {
 	background: #aaa;
 }
 #publishColl {
@@ -276,16 +330,16 @@ COLLECTIONS
 	width: 30px;
 	height: 30px;
 	float: right;
-	margin: 10px 5px 0 0;
+	margin: 22px 5px 0 0;
 	cursor: pointer;
 }
 
 #collEditForm, #emailForm {
-	margin: 45px 0 50px 0;
+	margin: 45px 0 25px 0;
 }
 #collTitleInput, #emailTitleInput {
 	font-size: 50px;
-	margin: 0 0 10px -2px;
+	margin: 0 0 6px -2px;
 	height: 66px;
 	width: 100%;
 	padding: 0;
@@ -311,11 +365,13 @@ COLLECTIONS
 }
 #collEditEmailExplain {
 	margin-top: 20px;
+	opacity: 0.2;
+}
+.collEditOpacity {
+	opacity: 0.2;
 }
 #noLinksPrompt {
 	color: #ccc;
-	text-align: center;
-	margin: 10px auto;
 	width: 420px;
 }
 #addEmailWrap {
@@ -375,14 +431,27 @@ COLLECTIONS
 /*---------------
 EMAIL
 ---------------*/
-.emailEditInput {
-	width: 100%;
+#articleLinkInput {
+	font-size: 14px;
+	width: 420px;
+	display: inline-block;
+	margin-bottom: 20px;
 }
 #pullContent {
 	height: 30px;
 	width: 120px;
 	font-size: 14px;
-	margin: 10px 0 0 0;
+	margin: 0;
+	opacity: 0.25;
+	display: none;
+	-webkit-transition: all 100ms;
+	-moz-transition: all 100ms;
+	-ms-transition: all 100ms;
+	-o-transition: all 100ms;
+	transition: all 100ms;
+}
+#pullContent:hover {
+	opacity: 1.0;
 }
 #richTextBar {
 	margin: 40px 0 0 0;
@@ -432,6 +501,9 @@ EMAIL
 /*---------------
 CONSUMERS
 ---------------*/
+#mainWrap.noMenuFix {
+	left: 0;
+}
 #sideSignUp {
 	width: 160px;
 	height: 40px;
@@ -443,7 +515,8 @@ CONSUMERS
 	margin-bottom: 10px;
 }
 #author {
-	font-size: 16px;
+	font-size: 14px;
+	color: #888;
 	margin: 0 0 20px 0;
 }
 #description {
@@ -453,7 +526,7 @@ CONSUMERS
 	margin-top: 70px;
 }
 #consumerForm {
-	margin: 0 auto 100px;
+	margin: 0 auto 20px;
 }
 .consumerInput {
 	height: 40px;
@@ -468,7 +541,7 @@ CONSUMERS
 }
 #subscriptionsContainer {
 	width: 472px;
-	margin: 0 auto 100px;
+	margin: 80px auto 100px;
 }
 #subscribeTitle {
 	text-align: center;

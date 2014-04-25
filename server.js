@@ -15,13 +15,18 @@ var anyDB = require('any-db');
 var mailer = require('nodemailer');
 var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 var app = express();
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
 app.set('views', __dirname + '/templates'); // tell Express where to find templates
 app.use(express.bodyParser());
 app.use(express.cookieParser('aacb87*nnai'));
+app.use(express.session({secret: 'yupyupyup'}));
 app.use(express.static(__dirname + '/public'));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // create reusable transport method (opens pool of SMTP connections)
 //NOTE: we may want to use a different transport method
@@ -34,6 +39,47 @@ var smtpTransport = mailer.createTransport("SMTP",{
     }
 });
 
+//passport config
+//note: some of this code adapted from 
+//https://github.com/jaredhanson/passport-local/blob/master/examples/login/app.js
+passport.use('local-login', new LocalStrategy({
+    usernameField : 'email',
+    passwordField : 'pass',
+  },
+  function(email, pass, done) {
+    console.log("auth strat called");
+    getCreator(email, function(creator_info) { //get info from the database
+       if(creator_info !== null){ //if this user exists
+        if(pass === creator_info.password){ //if the password is valid
+            return done(null,creator_info);
+        }
+        else{//invalid password\
+            console.log("invalid login attempt");
+            return done(null, false, { message: 'invalid password' });
+        }
+       } else{
+            console.log("invalid login attempt");
+            return done(null, false, { message: 'invalid email' });
+       }
+    });  
+  }
+));
+
+passport.serializeUser(function(creator_info, done) {
+    console.log("user serialized");
+    user_email = creator_info.email;
+    done(null, user_email);
+});
+
+passport.deserializeUser(function(email, done) {
+    console.log("user deserialized");
+    getCreator(email, function(creator_info) { //get info from the database
+    if(creator_info !== null){ //if this user exists
+        return done(null,creator_info);
+    }
+  });
+});
+//end of passport config
 
 //data structure initializations 
 var scheduled_emails = new HashMap(); //key: email_id, value: a scheduled email
@@ -162,32 +208,21 @@ ajax/server request handling
 });*/
 
 //home page log in 
-app.post('/html/log_in', function(request, response){
-    console.log("received log_in request");
-    var email = request.body.email; //format params for a subscription
-    var password = request.body.pass;
-
-    getCreator(email, function(creator_info) { //get info from the database
-        console.log("got here");
-       if(creator_info !== null){ //if this user exists
-        if(password === creator_info.password){
-            
-            //signed = true for authentication purposes
-            //response.cookie('user', email, {signed: true});
-
-            //no cookies in prototype
-            response.send("this should be a cookie");
-        }
-        else{
-            response.send("invalid_pass");
-        }
-       }
-       else{
-        response.send("invalid_email");//on successful log_in
-       }
-
+app.post('/html/log_in', function(req, res, next) {
+  passport.authenticate('local-login', function(err, user, info) {
+      console.log("callb1");
+      if (err) { return next(err); }
+      // Redirect if it fails
+      if (!user) { return res.send(info.message); }
+      req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      // Redirect if it succeeds
+      console.log("callb2");
+      res.send('success');
     });
+  })(req, res, next);
 });
+
 
 //////////////////////////////////////////////
 //creator home (collections page)
