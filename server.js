@@ -205,6 +205,12 @@ app.get('/collection/:user', function(request, response){
                 var collect = [];
                 collect.collectionTitle = collections[i].collection_title;
                 collect.collectionId = collections[i].collection_id;
+                if(collections[i].visible === "true"){
+                    collect.visible = "true";
+                }
+                else{
+                    collect.visible = "false";
+                }
                 collectionNamesList.push(collect);
             }
 
