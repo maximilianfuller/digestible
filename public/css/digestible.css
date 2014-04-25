@@ -299,7 +299,7 @@ COLLECTIONS
 }
 #collTitleInput, #emailTitleInput {
 	font-size: 50px;
-	margin: 0 0 10px -2px;
+	margin: 0 0 6px -2px;
 	height: 66px;
 	width: 100%;
 	padding: 0;
@@ -477,7 +477,8 @@ CONSUMERS
 	margin-bottom: 10px;
 }
 #author {
-	font-size: 16px;
+	font-size: 14px;
+	color: #888;
 	margin: 0 0 20px 0;
 }
 #description {
