@@ -216,6 +216,7 @@ app.get('/collection/:user', function(request, response){
 
             //add the entry name fields to the moustacheParams
             moustacheParams.collectionNames = collectionNamesList;
+            moustacheParams.creatorEmail = user;
             console.log(moustacheParams);
             response.render('collection.html',moustacheParams);
         }

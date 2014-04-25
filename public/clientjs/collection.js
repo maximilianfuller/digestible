@@ -33,25 +33,24 @@ $(document).ready(function() {
 
 //get data from server
 getCollectionData($("#collections").val());
-alert($("#collections").val());
 //change data upon selecting a new collection
 $("#collections").on("change", function() {
   alert("b");
   getCollectionData($("#collections").val());
 });
 
-function getCollectionData(collectionID) {
-  $.get("collection/" + meta("creatorEmail") + "/ajax/" + collectionID, function(data) {
-    $("$collTitleInput").val(data.collection_title);
+function getCollectionData(collectionId) {
+  $.get("/collection/" + meta("creatorEmail") + "/ajax/" + collectionId, function(data) {
+    $("#collTitleInput").val(data.collection_title);
     $("#author").val(data.creator_name);
     $("#collDescriptInput").val(data.collection_description);
 
-    var $ol = $("$subscriptionsContainer ol");
+    var $ol = $("#subscriptionsContainer ol");
     $ol.empty();
     for(var i = 0; i < data.entries.length; i++) {
       $ol.append(
         $("<li>").append(
-          $("<a>").attr('href', "/collection/" + meta(email) + "/" + data.entries[i].entry_id).html(data.entries[i].title)
+          $("<a>").attr('href', "/collection/" + meta("creatorEmail") + "/" + data.entries[i].entry_id).html(data.entries[i].title)
       ));
     }
   });
