@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = false;
+var printDataBase = true;
 
 //dependencies
 var http = require('http');
@@ -87,7 +87,7 @@ function sendEmail(email_id) {
         // send mail with defined transport object
         smtpTransport.sendMail(mailOptions, function(error, response){
             if(error){
-                console.log(error);
+                console.error(error);
             }else{
                 console.log("Message sent: " + response.message.cyan);
             }
@@ -106,7 +106,6 @@ function sendEmail(email_id) {
 function subscribe(collection_id, reader_email, millsToFirst, millsInterval){   
     getEntriesWithCollectionID(collection_id, function(entries) {
         var currentMills = millsToFirst;
-        console.log(entries);
         for(var i = 0; i < entries.length; i++) {
             var email = new Email(null, reader_email, 
                 Date.now() + currentMills, entries[i].entry_id, collection_id,
@@ -192,9 +191,9 @@ app.post('/html/log_in', function(request, response){
 
 //////////////////////////////////////////////
 //creator home (collections page)
-app.get('/collection/:user', function(request, response){
+app.get('/home', function(request, response){
     console.log("collection page");
-    var user = request.params.user;
+    var user = "benjamin_resnick@brown.edu"; //NOTE: need to get this from cookie!!!!!!!
     getCollectionsWithCreator(user,function(collections){
         if(collections !== null){
             var moustacheParams = [];
@@ -224,43 +223,55 @@ app.get('/collection/:user', function(request, response){
 });
 
 //ajax for populating collections page with data
-app.get('/collection/:user/ajax/:collectionID', function(request, response) {
+app.get('/ajax/:collectionID', function(request, response) {
     //cookie verification required
     getCollection(request.params.collectionID, function (collection) {
         getEntriesWithCollectionID(request.params.collectionID, function(entries) {
             getCreator(collection.creator_email, function(creator_data) {
                 collection.creator_name = creator_data.name;
-                console.log(entries);
                 collection.entries = entries;
                 response.send(collection);
 
             });
         });
     });
+});
+//ajax for adding a collection as requested by the front end
+app.post("/ajax/createCollection", function(request, response) {
+    //cookie verification required
+    var email = "benjamin_resnick@brown.edu"
+    var collection = new Collection(null, "", "", email, "false");
+    addCollection(collection, function(collection_id) {
+        response.send({collection_id: collection_id});
+    })
 });
 
 //ajax for editing collection data from the front end
-app.post('/collection/:user/ajax', function(request, response) {
+app.post('/ajax/editCollection', function(request, response) {
     //cookie verification required
-    getCollection(request.params.collectionID, function (collection) {
-        getEntriesWithCollectionID(request.params.collectionID, function(entries) {
-            getCreator(collection.creator_email, function(creator_data) {
-                collection.creator_name = creator_data.name;
-                console.log(entries);
-                collection.entries = entries;
-                response.send(collection);
-
-            });
-        });
-    });
+    var email = "benjamin_resnick@brown.edu"; //we need to get this from the cookie, not from information sent by the client.
+    request.body.creator_email = email;
+    editCollection(request.body);
+    response.send(200);
+    
 });
 
+//ajax for deleting collection data as requested by the front end
+app.post('/ajax/deleteCollection', function(request, response) {
+    //cookie verification required
+    deleteCollection(request.body.collection_id);
+    response.send(200);
+    
+});
+
+
+///////////////////////////////////
 //email creation page
-app.get('/collection/:user/:entry_id', function(request,response){
+app.get('/:entry_id', function(request,response){
     var entry_id = request.params.entry_id;
     getEntry(entry_id, function(entry){
         if(entry != null){
-            var moustacheParams = [];
+            /*var moustacheParams = [];
             moustacheParams.entry_id = entry.entry_id;
             moustacheParams.collection_id = entry.collection_id;
             moustacheParams.entry_number = entry.entry_number;
@@ -268,11 +279,36 @@ app.get('/collection/:user/:entry_id', function(request,response){
             moustacheParams.title = entry.title;
             moustacheParams.date_submitted = entry.date_submitted;
             moustacheParams.subject = entry.subject;
-            moustacheParams.content = entry.content;
-            response.render('emailCreation.html',moustacheParams);
+            moustacheParams.content = entry.content;*/
+            response.render('emailCreation.html',entry);
+        } else {
+            response.render('page_not_found.html');
         }
     });
 
+});
+
+//ajax for creating an entry. Reorders the entry_numbers as necessary
+app.post("/ajax/createEntry", function(request, response) {
+    //cookie verification required
+    var entry = new Entry(null, request.body.collection_id, request.body.entry_number, null, null, null, "", "");
+    addEntry(entry, function(entry_id) {
+        response.send({entry_id: entry_id});
+    });
+});
+
+//ajax for editing entries
+app.post("/ajax/editEntry", function(request, response) {
+    //cookie verification needed
+    editEntry(request.body);
+    response.send(200);
+});
+
+//ajax for deleting entries
+app.post("/ajax/deleteEntry", function(request, response) {
+    //cookie verification needed
+    deleteEntry(request.body);
+    response.send(200);
 });
 
 //emailcreation
