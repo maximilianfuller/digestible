@@ -255,17 +255,31 @@ COLLECTIONS
 .headerButton {
 	width: 80px;
 	height: 30px;
-	margin: 10px 0 0 20px;
+	margin: 22px 0 0 20px;
 	font-size: 13px;
 	float: right;
+	opacity: 0.25;
+
+	-webkit-transition: all 100ms;
+	-moz-transition: all 100ms;
+	-ms-transition: all 100ms;
+	-o-transition: all 100ms;
+	transition: all 100ms;
 }
-#deleteColl {
+.headerButton:hover {
+	opacity: 1.0;
+}
+.headerButton:active {
+	/*margin-top: 23px;*/
+	box-shadow: inset 0 0 25px rgba(50,50,50,0.25);
+}
+#deleteColl, #goBack {
 	float: left;
 }
 #previewColl {
 	background: #aaa;
 }
-#saveColl {
+#saveColl, #goBack {
 	background: #aaa;
 }
 #publishColl {
