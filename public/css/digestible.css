@@ -66,6 +66,9 @@ select {
 	color: #e31218;
 	padding: 0;
 }
+.authSubmit:active {
+	color: #BD1217;
+}
 #mainContainer, #subContain {
 	width: 640px;
 	margin: 0 auto;
