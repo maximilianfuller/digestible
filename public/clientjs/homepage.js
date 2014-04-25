@@ -9,16 +9,16 @@ $(document).ready(function() {
        email: $('#authEmail').val(), 
        pass: $('#authPass').val() 
     },function(data,status){
-      if(data === "invalid_pass"){
+      if(data === "invalid password"){
         alert("invalid password");
       }
-      else if(data === "invalid_email"){
+      else if(data === "invalid email"){
         alert("invalid email");
       }
       else{
         //successful login, redirect to creator page
         //alert(data);
-        window.location.href = "http://localhost:8080/collection/" + $('#authEmail').val(); 
+        window.location.href = "http://localhost:8080/home"; 
       }
     });
   });
