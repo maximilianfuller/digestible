@@ -29,4 +29,37 @@ $(document).ready(function() {
   *end of Pete's stuff
   */
 
+  //MAX'S STUFF
+
+
+
+
+
+
+
+
+
+
+
+  //END OF MAX'S STUFF
+
+
+
+
+
+
+  //BEN'S STUFF
+
+
+
+
+
+
+
+
+
+  //END OF BEN'S STUFF
+
+
+
 });
