@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = false;
+var printDataBase = true;
 
 //dependencies
 var http = require('http');
@@ -203,6 +203,7 @@ app.get('/collection/:user', function(request, response){
             for(var i = 0; i < collections.length; i++){
                 var collect = [];
                 collect.collectionTitle = collections[i].collection_title;
+                collect.collectionId = collections[i].collection_id;
                 collectionNamesList.push(collect);
             }
 
