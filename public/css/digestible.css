@@ -325,6 +325,10 @@ COLLECTIONS
 }
 #collEditEmailExplain {
 	margin-top: 20px;
+	opacity: 0.2;
+}
+.collEditOpacity {
+	opacity: 0.2;
 }
 #noLinksPrompt {
 	color: #ccc;
