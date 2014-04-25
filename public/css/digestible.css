@@ -290,7 +290,7 @@ COLLECTIONS
 	width: 30px;
 	height: 30px;
 	float: right;
-	margin: 10px 5px 0 0;
+	margin: 22px 5px 0 0;
 	cursor: pointer;
 }
 
@@ -389,14 +389,27 @@ COLLECTIONS
 /*---------------
 EMAIL
 ---------------*/
-.emailEditInput {
-	width: 100%;
+#articleLinkInput {
+	font-size: 14px;
+	width: 420px;
+	display: inline-block;
+	margin-bottom: 20px;
 }
 #pullContent {
 	height: 30px;
 	width: 120px;
 	font-size: 14px;
-	margin: 10px 0 0 0;
+	margin: 0;
+	opacity: 0.25;
+	display: none;
+	-webkit-transition: all 100ms;
+	-moz-transition: all 100ms;
+	-ms-transition: all 100ms;
+	-o-transition: all 100ms;
+	transition: all 100ms;
+}
+#pullContent:hover {
+	opacity: 1.0;
 }
 #richTextBar {
 	margin: 40px 0 0 0;
