@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = true;
+var printDataBase = false;
 
 //dependencies
 var http = require('http');

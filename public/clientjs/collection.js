@@ -70,8 +70,24 @@ $("#publishColl").click(function() {
 
 });
 
+$("#saveColl").click(function() {
+  var collection_id = $("#collections").val()
+  var collection = {
+    collection_id: collection_id,
+    collection_title: $("#collTitleInput").val(),
+    collection_description: $("#collDescriptInput").val(),
+    visible: "false"
+  }
+  postCollectionData(collection);
+
+});
+
 $("#finalDelete").click(function() {
   deleteCollection($("#collections").val());
+});
+
+$("#addCollection").click(function() {
+  createCollection();
 });
 
 
@@ -96,7 +112,10 @@ function getCollectionData(collectionId) {
     } else {
       $('#noLinksPrompt').show();
     }
-  });
+  })
+    .fail(function() {
+      alert("error");
+    });
 
 }
 
@@ -113,9 +132,11 @@ function postCollectionData(collection) {
 //deletes the collection on the server
 function deleteCollection(collectionId) {
   $.post("/ajax/deleteCollection", {collection_id : collectionId}, function(data) {
-    alert("deleting collection");
     location.reload(true);
-  });
+  })
+    .fail(function() {
+      alert("error");
+    });
 }
 
 //creates a collection on the server
@@ -123,7 +144,10 @@ function createCollection() {
   $.post("/ajax/createCollection", function(data) {
     //refresh page
     location.reload(true);
-  });
+  })
+    .fail(function() {
+      alert("error");
+    });
 }
 
 
