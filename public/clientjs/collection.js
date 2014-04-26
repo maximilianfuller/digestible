@@ -39,6 +39,16 @@ $(document).ready(function() {
   $('#addEmailWrap').mouseleave(function() {
     $(this).css('border', '2px solid #ccc');
   });
+
+  // Checks the hidden div #publishedKey, if html is no, then we are viewing an unpublished page
+  // if html is yes, then we are viewing a published page and all of the button disappear and we see "Unpublish to Edit"
+  if ($('#publishedKey').html() == 'no') {
+    $('.headerButton, #settingsHolder').removeClass('published');
+    $('.headerButton, #settingsHolder').addClass('unpublished');
+  } else {
+    $('.headerButton, #settingsHolder').removeClass('unpublished');
+    $('.headerButton, #settingsHolder').addClass('published');
+  }
   /*
   *end of Pete's stuff
   */
