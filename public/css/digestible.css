@@ -388,7 +388,7 @@ COLLECTIONS
 	opacity: 0.2;
 }
 #noLinksPrompt {
-	color: #ccc;
+	color: #a3a3a3;
 	width: 420px;
 }
 #addEmailWrap {
@@ -429,6 +429,7 @@ COLLECTIONS
 	box-sizing: border-box;
 	color: #ccc;
 	margin-bottom: 20px;
+	font-weight: 600;
 }
 .collOptionInput {
 	width: 350px;
