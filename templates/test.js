@@ -28,4 +28,13 @@ $(document).ready(function() {
   $('#addEmailWrap').mouseleave(function() {
     $(this).css('border', '2px solid #ccc');
   });
+
+
+  if ($('#publishedKey').html() == 'no') {
+    $('.headerButton, #settingsHolder').removeClass('published');
+    $('.headerButton, #settingsHolder').addClass('unpublished');
+  } else {
+    $('.headerButton, #settingsHolder').removeClass('unpublished');
+    $('.headerButton, #settingsHolder').addClass('published');
+  }
 });

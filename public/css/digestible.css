@@ -326,12 +326,29 @@ COLLECTIONS
 	background: #1095EC;
 	margin-right: 20px;
 }
+#unpublishColl {
+	width: 160px;
+	background: #1095EC;
+	margin-right: 20px;
+}
 #settingsHolder {
 	width: 30px;
 	height: 30px;
 	float: right;
 	margin: 22px 5px 0 0;
 	cursor: pointer;
+}
+.headerButton.unpublished, #settingsHolder.unpublished {
+	display: block;
+}
+.headerButton.published, #settingsHolder.published  {
+	display: none;
+}
+#unpublishColl.unpublished {
+	display: none;
+}
+#unpublishColl.published {
+	display: block;
 }
 
 #collEditForm, #emailForm {
@@ -371,7 +388,7 @@ COLLECTIONS
 	opacity: 0.2;
 }
 #noLinksPrompt {
-	color: #ccc;
+	color: #a3a3a3;
 	width: 420px;
 }
 #addEmailWrap {
@@ -412,6 +429,7 @@ COLLECTIONS
 	box-sizing: border-box;
 	color: #ccc;
 	margin-bottom: 20px;
+	font-weight: 600;
 }
 .collOptionInput {
 	width: 350px;
