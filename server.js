@@ -227,49 +227,51 @@ app.post('/html/log_in', function(req, res, next) {
 //////////////////////////////////////////////
 //creator home (collections page)
 app.get('/home', function(request, response){
-    console.log("collection page");
-    var user = "benjamin_resnick@brown.edu"; //NOTE: need to get this from cookie!!!!!!!
-    getCollectionsWithCreator(user,function(collections){
-        if(collections !== null){
-            var moustacheParams = [];
+    if(request.isAuthenticated()){
+        var user = request.user.email; //from the cookie!!!!!!!
+        getCollectionsWithCreator(user,function(collections){
+            if(collections !== null){
+                var moustacheParams = [];
 
-            //create moustache field for collection names
-            var collectionNamesList = [];
-            for(var i = 0; i < collections.length; i++){
-                var collect = [];
-                collect.collectionTitle = collections[i].collection_title;
-                collect.collectionId = collections[i].collection_id;
-                if(collections[i].visible === "true"){
-                    collect.visible = "true";
+                //create moustache field for collection names
+                var collectionNamesList = [];
+                for(var i = 0; i < collections.length; i++){
+                    var collect = [];
+                    collect.collectionTitle = collections[i].collection_title;
+                    collect.collectionId = collections[i].collection_id;
+                    if(collections[i].visible === "true"){
+                        collect.visible = "true";
+                    }
+                    else{
+                        collect.visible = "false";
+                    }
+                    collectionNamesList.push(collect);
                 }
-                else{
-                    collect.visible = "false";
-                }
-                collectionNamesList.push(collect);
+
+                //add the entry name fields to the moustacheParams
+                moustacheParams.collectionNames = collectionNamesList;
+                moustacheParams.creatorEmail = user;
+                console.log(moustacheParams);
+                response.render('collection.html',moustacheParams);
             }
-
-            //add the entry name fields to the moustacheParams
-            moustacheParams.collectionNames = collectionNamesList;
-            moustacheParams.creatorEmail = user;
-            console.log(moustacheParams);
-            response.render('collection.html',moustacheParams);
-        }
-    });
+        });
+    }
 });
 
 //ajax for populating collections page with data
 app.get('/ajax/:collectionID', function(request, response) {
-    //cookie verification required
-    getCollection(request.params.collectionID, function (collection) {
-        getEntriesWithCollectionID(request.params.collectionID, function(entries) {
-            getCreator(collection.creator_email, function(creator_data) {
-                collection.creator_name = creator_data.name;
-                collection.entries = entries;
-                response.send(collection);
+    if(request.isAuthenticated()){
+        getCollection(request.params.collectionID, function (collection) {
+            getEntriesWithCollectionID(request.params.collectionID, function(entries) {
+                getCreator(collection.creator_email, function(creator_data) {
+                    collection.creator_name = creator_data.name;
+                    collection.entries = entries;
+                    response.send(collection);
 
+                });
             });
         });
-    });
+    }
 });
 //ajax for adding a collection as requested by the front end
 app.post("/ajax/createCollection", function(request, response) {
