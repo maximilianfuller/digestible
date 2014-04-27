@@ -17,6 +17,7 @@ var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var scraper = require('./scraper');
 var app = express();
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
@@ -27,6 +28,8 @@ app.use(express.session({secret: 'yupyupyup'}));
 app.use(express.static(__dirname + '/public'));
 app.use(passport.initialize());
 app.use(passport.session());
+
+console.log(scraper.answer);
 
 // create reusable transport method (opens pool of SMTP connections)
 //NOTE: we may want to use a different transport method
