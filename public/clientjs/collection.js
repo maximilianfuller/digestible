@@ -103,6 +103,11 @@ $("#addCollection").click(function() {
   createCollection();
 });
 
+$("#addEmailWrap").click(function() {
+  alert("here");
+  addEntry();
+});
+
 
 
 //gets collection data from the server
@@ -168,6 +173,12 @@ function createCollection() {
     .fail(function() {
       alert("error");
     });
+}
+
+function addEntry() {
+  $.post("/ajax/createEntry", function(data) {
+    window.location = "/" + data.entry_id;
+  });
 }
 
 
