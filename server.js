@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = true;
+var printDataBase = false;
 
 //dependencies
 var http = require('http');
@@ -165,8 +165,6 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
 
         }
     });
-    
-
 }
 
 //unsubscribes
@@ -256,6 +254,9 @@ app.get('/home', function(request, response){
             }
         });
     }
+    else{ //this should redirect to home page
+        response.render('page_not_found.html',{});
+    }
 });
 
 //ajax for populating collections page with data
@@ -275,96 +276,104 @@ app.get('/ajax/:collectionID', function(request, response) {
 });
 //ajax for adding a collection as requested by the front end
 app.post("/ajax/createCollection", function(request, response) {
-    //cookie verification required
-    var email = "benjamin_resnick@brown.edu"
-    var collection = new Collection(null, "", "", email, "false");
-    addCollection(collection, function(collection_id) {
-        response.send({collection_id: collection_id});
-    })
+    if(request.isAuthenticated()){
+        var email = "benjamin_resnick@brown.edu"
+        var collection = new Collection(null, "", "", email, "false");
+        addCollection(collection, function(collection_id) {
+            response.send({collection_id: collection_id});
+        })  
+    }
 });
 
 //ajax for editing collection data from the front end
 app.post('/ajax/editCollection', function(request, response) {
-    //cookie verification required
-    var email = "benjamin_resnick@brown.edu"; //we need to get this from the cookie, not from information sent by the client.
-    request.body.creator_email = email;
-    editCollection(request.body);
-    response.send(200);
-    
+    if(request.isAuthenticated()){
+        var email = "benjamin_resnick@brown.edu"; //we need to get this from the cookie, not from information sent by the client.
+        request.body.creator_email = email;
+        editCollection(request.body);
+        response.send(200);
+    }    
 });
 
 //ajax for deleting collection data as requested by the front end
 app.post('/ajax/deleteCollection', function(request, response) {
-    //cookie verification required
-    deleteCollection(request.body.collection_id);
-    response.send(200);
-    
+    if(request.isAuthenticated()){
+        deleteCollection(request.body.collection_id);
+        response.send(200);
+    }
 });
 
 
 ///////////////////////////////////
 //email creation page
 app.get('/:entry_id', function(request,response){
-    var entry_id = request.params.entry_id;
-    getEntry(entry_id, function(entry){
-        if(entry != null){
-            /*var moustacheParams = [];
-            moustacheParams.entry_id = entry.entry_id;
-            moustacheParams.collection_id = entry.collection_id;
-            moustacheParams.entry_number = entry.entry_number;
-            moustacheParams.author = entry.author;
-            moustacheParams.title = entry.title;
-            moustacheParams.date_submitted = entry.date_submitted;
-            moustacheParams.subject = entry.subject;
-            moustacheParams.content = entry.content;*/
-            response.render('emailCreation.html',entry);
-        } else {
-            response.render('page_not_found.html');
-        }
-    });
+    if(request.isAuthenticated()){
+        var entry_id = request.params.entry_id;
+        getEntry(entry_id, function(entry){
+            if(entry != null){
+                /*var moustacheParams = [];
+                moustacheParams.entry_id = entry.entry_id;
+                moustacheParams.collection_id = entry.collection_id;
+                moustacheParams.entry_number = entry.entry_number;
+                moustacheParams.author = entry.author;
+                moustacheParams.title = entry.title;
+                moustacheParams.date_submitted = entry.date_submitted;
+                moustacheParams.subject = entry.subject;
+                moustacheParams.content = entry.content;*/
+                response.render('emailCreation.html',entry);
+            } else {
+                response.render('page_not_found.html');
+            }
+        });
+    }
 
 });
 
 //ajax for creating an entry. Reorders the entry_numbers as necessary
 app.post("/ajax/createEntry", function(request, response) {
-    //cookie verification required
-    var entry = new Entry(null, request.body.collection_id, request.body.entry_number, null, null, null, "", "");
-    addEntry(entry, function(entry_id) {
-        response.send({entry_id: entry_id});
-    });
+    if(request.isAuthenticated()){
+        var entry = new Entry(null, request.body.collection_id, request.body.entry_number, null, null, null, "", "");
+        addEntry(entry, function(entry_id) {
+            response.send({entry_id: entry_id});
+        });
+    }
 });
 
 //ajax for editing entries
 app.post("/ajax/editEntry", function(request, response) {
-    //cookie verification needed
-    editEntry(request.body);
-    response.send(200);
+    if(request.isAuthenticated()){
+        editEntry(request.body);
+        response.send(200);
+    }
 });
 
 //ajax for deleting entries
 app.post("/ajax/deleteEntry", function(request, response) {
-    //cookie verification needed
-    deleteEntry(request.body);
-    response.send(200);
+    if(request.isAuthenticated()){
+        deleteEntry(request.body);
+        response.send(200);
+    }
 });
 
 //emailcreation
 //*****************************************************unfinished
 app.post('/save', function(request, response){
-    console.log("received protoemail");
-    var email = request.body.email.emailInput.value;
-    console.log(email);
+    if(request.isAuthenticated()){
+        console.log("received protoemail");
+        var email = request.body.email.emailInput.value;
+        console.log(email);
 
-    var content = request.body.email.emailInput.value;
-    var title = request.body.title;
-    var collection_id = request.body.collection_id;
-    var entry_number = request.body.entry_number;
-    var subject = request.body.subject;
+        var content = request.body.email.emailInput.value;
+        var title = request.body.title;
+        var collection_id = request.body.collection_id;
+        var entry_number = request.body.entry_number;
+        var subject = request.body.subject;
 
-    //check that none of the fields are null
-    if(content != null && title != null && collection_id != null && entry_number != null && subject != null){
-        var date = new Date(Date.now());
-        var entry = new Entry(null, collection_id,entry_number,null,null,date,subject,content);        
+        //check that none of the fields are null
+        if(content != null && title != null && collection_id != null && entry_number != null && subject != null){
+            var date = new Date(Date.now());
+            var entry = new Entry(null, collection_id,entry_number,null,null,date,subject,content);        
+        }
     }
 });
 
