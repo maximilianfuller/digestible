@@ -162,7 +162,7 @@ section#howItWorks {
 	height: 520px;
 	background: white;
 	border-radius: 2px;
-	border: 2px solid white;
+	border: none;
 	overflow: hidden;
 }
 #howToImgContain img {
