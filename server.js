@@ -198,8 +198,8 @@ ajax/server request handling
 
 //////////////////////////////////////////////
 
-//debugging function to println where requests are sent to
-/*app.post('*',function(req,res){
+/*//debugging function to println where requests are sent to
+app.post('*',function(req,res){
     console.log("debug post url");
     console.log(req.url);
     //console.log(Object.keys(req));//logs available req fields
@@ -452,7 +452,7 @@ app.get('/consumer/:collection_id/:entry_id', function (request, response) {
     });
 });
 
-//sign up
+//sign up for a creator account
 app.post('/sign_up', function(request, response) {
     console.log("creator " + request.body.email + " is creating an account")
     var creator = new Creator_Data(request.body.email, request.body.password, 
