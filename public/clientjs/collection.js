@@ -54,13 +54,16 @@ $(document).ready(function() {
   */
 
   //MAX'S STUFF
+refresh();
 
 //get data from server
-var currentCollectionId = $("#collections").val();
-if(currentCollectionId == null) {
-  //what do we do when the creator has no collections?
-} else {
-  getCollectionData(currentCollectionId);
+function refresh() {
+  var currentCollectionId = $("#collections").val();
+  if(currentCollectionId == null) {
+    //what do we do when the creator has no collections?
+  } else {
+    getCollectionData(currentCollectionId);
+  }
 }
 
 //change data upon selecting a new collection
@@ -76,7 +79,7 @@ $("#publishColl").click(function() {
     collection_description: $("#collDescriptInput").val(),
     visible: "true"
   }
-  postCollectionData(collection);
+  editCollectionData(collection);
 
 });
 
@@ -88,7 +91,7 @@ $("#saveColl").click(function() {
     collection_description: $("#collDescriptInput").val(),
     visible: "false"
   }
-  postCollectionData(collection);
+  editCollectionData(collection);
 
 });
 
@@ -130,9 +133,12 @@ function getCollectionData(collectionId) {
 }
 
 //edits collection data on the server
-function postCollectionData(collection) {
+function editCollectionData(collection) {
   $.post("/ajax/editCollection", collection, function(data) {
     getCollectionData(collection.collection_id);
+    //update sidebar
+    $('#collections option[value="' + collection.collection_id + '"]')
+      .html(collection.collection_title);
   })
     .fail(function() {
       alert("error");
@@ -142,7 +148,8 @@ function postCollectionData(collection) {
 //deletes the collection on the server
 function deleteCollection(collectionId) {
   $.post("/ajax/deleteCollection", {collection_id : collectionId}, function(data) {
-    location.reload(true);
+    $('#collections option[value="' + collectionId + '"]').remove();
+    refresh();
   })
     .fail(function() {
       alert("error");
@@ -153,7 +160,10 @@ function deleteCollection(collectionId) {
 function createCollection() {
   $.post("/ajax/createCollection", function(data) {
     //refresh page
-    location.reload(true);
+    var $option = $('<option>').val(data.collection_id).html(data.collection_title);
+    $('#collections').append($option);
+    $option.attr("selected", true);
+    refresh();
   })
     .fail(function() {
       alert("error");
