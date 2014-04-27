@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = false;
+var printDataBase = true;
 
 //dependencies
 var http = require('http');
@@ -268,7 +268,6 @@ app.get('/ajax/:collectionID', function(request, response) {
                     collection.creator_name = creator_data.name;
                     collection.entries = entries;
                     response.send(collection);
-
                 });
             });
         });
@@ -328,6 +327,7 @@ app.get('/:entry_id', function(request,response){
 app.post("/ajax/createEntry", function(request, response) {
     if(request.isAuthenticated()){
         var entry = new Entry(null, request.body.collection_id, request.body.entry_number, null, null, Date.now(), "", "");
+        console.log(entry);
         addEntry(entry, function(entry_id) {
             response.send({entry_id: entry_id});
         });
@@ -501,7 +501,7 @@ function Email(email_id, recipient, date_to_send, entry_id, collection_id, subje
 }
 
 //constructor for a Collection object
-function Collection(collection_id, collection_title, collection_description, creator_email, public, visible) {
+function Collection(collection_id, collection_title, collection_description, creator_email, visible) {
     this.collection_id = collection_id;
     this.collection_title = collection_title;
     this.collection_description = collection_description;
@@ -523,6 +523,7 @@ function Creator_Data(email, password, name, street_address, city, state, zipcod
 //puts an entry into the database and calls callback on the entry id
 function addEntry(entry, callback){
     var id = generateEntryID();
+    console.log("addEntry " + id);
     conn.query('INSERT INTO Entries (entry_id, collection_id, entry_number, author, title, '+
         'date_submitted, subject, content)' + 
         'VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
@@ -869,6 +870,7 @@ conn.query("SELECT MAX(entry_id) FROM Entries", function(error, result) {
         console.error(error);
     } else  {
         lastEntryID = result.rows[0]['MAX(entry_id)'];
+        console.log("lastEntryID" + lastEntryID);
     }
 });
 
@@ -881,7 +883,7 @@ function generateCollectionID() {
 }
 
 function generateEntryID() {
-    return ++lastEmailID;
+    return ++lastEntryID;
 }
 
 
