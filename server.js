@@ -281,9 +281,13 @@ app.get('/ajax/:collectionID', function(request, response) {
 app.post("/ajax/createCollection", function(request, response) {
     if(request.isAuthenticated()){
         var email = "benjamin_resnick@brown.edu"
-        var collection = new Collection(null, "", "", email, "false");
+        var collection = new Collection(null, "new collection", "", email, "false");
         addCollection(collection, function(collection_id) {
-            response.send({collection_id: collection_id});
+            response.send(
+            {
+                collection_id: collection_id,
+                collection_title: "new collection"
+            });
         })  
     }
 });
@@ -314,15 +318,6 @@ app.get('/:entry_id', function(request,response){
         var entry_id = request.params.entry_id;
         getEntry(entry_id, function(entry){
             if(entry != null){
-                /*var moustacheParams = [];
-                moustacheParams.entry_id = entry.entry_id;
-                moustacheParams.collection_id = entry.collection_id;
-                moustacheParams.entry_number = entry.entry_number;
-                moustacheParams.author = entry.author;
-                moustacheParams.title = entry.title;
-                moustacheParams.date_submitted = entry.date_submitted;
-                moustacheParams.subject = entry.subject;
-                moustacheParams.content = entry.content;*/
                 response.render('emailCreation.html',entry);
             } else {
                 response.render('page_not_found.html');
@@ -335,7 +330,7 @@ app.get('/:entry_id', function(request,response){
 //ajax for creating an entry. Reorders the entry_numbers as necessary
 app.post("/ajax/createEntry", function(request, response) {
     if(request.isAuthenticated()){
-        var entry = new Entry(null, request.body.collection_id, request.body.entry_number, null, null, null, "", "");
+        var entry = new Entry(null, request.body.collection_id, request.body.entry_number, null, null, Date.now(), "", "");
         addEntry(entry, function(entry_id) {
             response.send({entry_id: entry_id});
         });
