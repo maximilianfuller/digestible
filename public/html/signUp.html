@@ -6,8 +6,8 @@
 		<title>Digestible - An easy way for readers to read an online collection of work.</title>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="../css/digestible.css" />
-		<script type="text/javascript" src="../public/clientjs/jquery-2.1.0.min.js"></script>
-		<script type="text/javascript" src="../public/clientjs/signUp.js"></script>
+		<script type="text/javascript" src="../clientjs/jquery-2.1.0.min.js"></script>
+		<script type="text/javascript" src="../clientjs/signUp.js"></script>
 	</header>
 
 	<body>
@@ -16,7 +16,7 @@
 				<h1 id="title">Digestible</h1>
 				<h2>Once you fill out this page, all you'll have to do is paste your article URLs.</h2>
 				<!--we need to change action to match our actual server address once thats up and running-->
-				<form id = "signForm" action="http://127.0.0.1:8080/sign_up" method="post">
+				<form id = "signForm" action="/sign_up" method="post">
 					<input type="text" name="name" id="name" class="textInput" placeholder="Your real name">
 					<input type="text" name="email" id="email" class="textInput" placeholder="Email address">
 					<input type="password" name="password" id="password" class="textInput" placeholder="Password">

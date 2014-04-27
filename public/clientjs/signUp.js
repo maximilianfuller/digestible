@@ -1,20 +1,21 @@
 function sendMessage(e) {
-    // prevent the page from redirecting
-    e.preventDefault();
 
-    $.post('',
-    {
-       name: $('name').val(),
-       email: $('email').val(), 
-       password: $('password').val(),
-       street: $('street').val(),
-       city: $('city').val(),
-       state: $('state').val(),
-       zip: $('zip').val()
-    },
-    function(data,status){
-    //TODO 
+    var emptyFields = "false"; //check if the form has been filled out
+    $.each($('#signForm').serializeArray(), function() {             
+        if(this.value === ""){
+          emptyFields = "true";
+        }    
     });
+
+    if(emptyFields === "false"){ 
+      //let the normal event execute
+    }
+    else{
+      alert("please fill out all fields");
+      // prevent the page from redirecting
+      e.preventDefault();
+    }
+
 }
 
 //overrides default behavior of messageForm

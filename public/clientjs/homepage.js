@@ -1,5 +1,10 @@
 $(document).ready(function() { 
 
+  $(".signUp").click(function(){
+    window.location = "/html/signUp.html";//needs to be changed when we move to digestable.io***
+    //window.location.href = "http://digestable.io/signUp";
+  });
+
   $("#authForm").submit(function( event ) {
 
     // prevent the page from redirecting
@@ -7,18 +12,18 @@ $(document).ready(function() {
     //send data to the server
     $.post("log_in",{
        email: $('#authEmail').val(), 
-       pass: $('#authPass').val() 
+       pass: $('#authPass').val(),
     },function(data,status){
       if(data === "invalid password"){
-        alert("invalid password");
+        alert("invalid email or password"); //don't specify which for security reasons
       }
       else if(data === "invalid email"){
-        alert("invalid email");
+        alert("invalid email or password");
       }
       else{
         //successful login, redirect to creator page
-        //alert(data);
-        window.location.href = "http://localhost:8080/home"; 
+        window.location = "/home"; //needs to be changed when we move to digestable.io***
+        //window.location.href = "http://digestable.io/home";
       }
     });
   });
