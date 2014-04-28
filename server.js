@@ -4,7 +4,7 @@
 
 var runDBTests = false;
 var primeDataBase = false;
-var printDataBase = false;
+var printDataBase = true;
 
 //dependencies
 var http = require('http');
@@ -17,7 +17,6 @@ var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var scraper = require('./scraper');
 var app = express();
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
@@ -28,6 +27,7 @@ app.use(express.session({secret: 'yupyupyup'}));
 app.use(express.static(__dirname + '/public'));
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 // create reusable transport method (opens pool of SMTP connections)
 //NOTE: we may want to use a different transport method
@@ -48,7 +48,6 @@ passport.use('local-login', new LocalStrategy({
     passwordField : 'pass',
   },
   function(email, pass, done) {
-    console.log("auth strat called");
     getCreator(email, function(creator_info) { //get info from the database
        if(creator_info !== null){ //if this user exists
         if(pass === creator_info.password){ //if the password is valid
@@ -67,13 +66,11 @@ passport.use('local-login', new LocalStrategy({
 ));
 
 passport.serializeUser(function(creator_info, done) {
-    console.log("user serialized");
     user_email = creator_info.email;
     done(null, user_email);
 });
 
 passport.deserializeUser(function(email, done) {
-    console.log("user deserialized");
     getCreator(email, function(creator_info) { //get info from the database
     if(creator_info !== null){ //if this user exists
         return done(null,creator_info);
@@ -209,14 +206,12 @@ app.post('*',function(req,res){
 //home page log in 
 app.post('/html/log_in', function(req, res, next) {
   passport.authenticate('local-login', function(err, user, info) {
-      console.log("callb1");
       if (err) { return next(err); }
       // Redirect if it fails
       if (!user) { return res.send(info.message); }
       req.logIn(user, function(err) {
       if (err) { return next(err); }
       // Redirect if it succeeds
-      console.log("callb2");
       res.send('success');
     });
   })(req, res, next);
@@ -250,7 +245,6 @@ app.get('/home', function(request, response){
                 //add the entry name fields to the moustacheParams
                 moustacheParams.collectionNames = collectionNamesList;
                 moustacheParams.creatorEmail = user;
-                console.log(moustacheParams);
                 response.render('collection.html',moustacheParams);
             }
         });
@@ -269,7 +263,6 @@ app.get('/ajax/:collectionID', function(request, response) {
                     collection.creator_name = creator_data.name;
                     collection.entries = entries;
                     response.send(collection);
-
                 });
             });
         });
@@ -317,40 +310,88 @@ app.get('/:entry_id', function(request,response){
         var entry_id = request.params.entry_id;
         getEntry(entry_id, function(entry){
             if(entry != null){
-                response.render('emailCreation.html',entry);
+                getCollection(entry.collection_id, function(collection) {
+                    entry.visible = collection.visible;
+                    response.render('emailCreation.html',entry);
+                });
             } else {
-                response.render('page_not_found.html');
-            }
+                    response.render('page_not_found.html');
+                }
         });
     }
 
 });
 
-//ajax for creating an entry. Reorders the entry_numbers as necessary
+//ajax for creating an entry.
 app.post("/ajax/createEntry", function(request, response) {
-    if(request.isAuthenticated()){
-        var entry = new Entry(null, request.body.collection_id, request.body.entry_number, null, null, Date.now(), "", "");
-        addEntry(entry, function(entry_id) {
-            response.send({entry_id: entry_id});
-        });
-    }
+    getCollection(request.body.collection_id, function(collection) {
+        if(request.isAuthenticated() && collection != null && 
+            collection.creator_email == request.user.email){
+            var entry = new Entry(null, request.body.collection_id, 
+                request.body.entry_number, null, null, Date.now(), "", "");
+            addEntry(entry, function(entry_id) {
+                response.send({entry_id: entry_id});
+            });
+        }
+    });
 });
 
 //ajax for editing entries
 app.post("/ajax/editEntry", function(request, response) {
     if(request.isAuthenticated()){
-        editEntry(request.body);
-        response.send(200);
+        getEntry(request.body.entry_id, function(entry) {
+            if(entry != null) {
+                getCollection(entry.collection_id, function(collection) {
+                    //verify that the entry belongs to the user
+                    if(request.user.email == collection.creator_email) {
+                        entry.subject = request.body.subject;
+                        entry.content =request.body.content;
+                        editEntry(entry);
+                        response.send(200);
+                    } else {
+                        console.error("ERROR: user cannot edit an entry she does not own");
+                    }
+                });
+            }
+        });
+        
     }
 });
 
 //ajax for deleting entries
 app.post("/ajax/deleteEntry", function(request, response) {
     if(request.isAuthenticated()){
-        deleteEntry(request.body);
-        response.send(200);
+        getEntry(request.body.entry_id, function(entry) {
+            if(entry != null) {
+                getCollection(entry.collection_id, function(collection) {
+                    //verify that the entry belongs to the user
+                    if(request.user.email == collection.creator_email) {
+                        //delete the entry
+                        deleteEntry(request.body.entry_id);
+                        //reorder the  entry_numbers
+                        getEntriesWithCollectionID(entry.collection_id, function(entries) {
+                            console.log("entry_number: " + entry.entry_number);
+                            for(var i = 0; i < entries.length; i++) {
+                                console.log("entry_numberi " + entries[i].entry_number);
+                                if(entries[i].entry_number > entry.entry_number) {
+                                    console.log("ID WITH ENTRY NUMBER before: "+ entries[i].entry_id + " "  +entries[i].entry_number);
+                                    entries[i].entry_number--;
+                                    console.log("ID WITH ENTRY NUMBER after: "+ entries[i].entry_id + " "  +entries[i].entry_number);
+                                    editEntry(entries[i]);
+                                }
+                            }
+                        });
+                        response.send(200);
+                    } else {
+                        console.error("ERROR: user cannot delete an entry she does not own");
+                    }
+                });
+            }
+        });
+        
     }
 });
+
 
 //ajax for scraping
 app.post("/ajax/scrapeUrl", function(request, response) {
@@ -402,8 +443,6 @@ app.get('/consumer/:collection_id', function(request, response){
             if(collection !== null){
                     getCreator(collection.creator_email, function(creator) {
 
-
-                    console.log(entries);
                     var moustacheParams = {};
                     moustacheParams.collectionName = collection.collection_title;
                     moustacheParams.collectionId = cl_id;
@@ -518,7 +557,7 @@ function Email(email_id, recipient, date_to_send, entry_id, collection_id, subje
 }
 
 //constructor for a Collection object
-function Collection(collection_id, collection_title, collection_description, creator_email, public, visible) {
+function Collection(collection_id, collection_title, collection_description, creator_email, visible) {
     this.collection_id = collection_id;
     this.collection_title = collection_title;
     this.collection_description = collection_description;
@@ -898,7 +937,7 @@ function generateCollectionID() {
 }
 
 function generateEntryID() {
-    return ++lastEmailID;
+    return ++lastEntryID;
 }
 
 

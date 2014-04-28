@@ -3,9 +3,9 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<meta name="collectionId" content="{{collectionId}}">
-		<meta name="entryId" content="{{entryId}}">
-		<meta name="subject" content="{{subject}}">
+		<meta name="collectionId" content="{{collection_id}}">
+		<meta name="entryId" content="{{entry_id}}">
+		<meta name="visible" content="{{visible}}">
 		<title>Digestible - An easy way for readers to read an online collection of work.</title>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="/css/digestible.css">
@@ -22,13 +22,12 @@
 			<div id="editHeader">
 				<button class="headerButton" id="goBack">Go Back</button>
 				<button class="headerButton" id="deleteColl">Delete</button>
-				<button class="headerButton" id="publishColl">Publish</button>
 				<button class="headerButton" id="saveColl">Save</button>
 			</div>
 			<div id="appMainContainer">
 				<section>
 					<form id="emailForm">
-						<input type="text" id="emailTitleInput" placeholder="Type your subject">
+						<input type="text" value = "{{subject}}" id="emailTitleInput" placeholder="Type your subject">
 						<input type="text" id="articleLinkInput" placeholder="Or paste the article link here and we'll make the email for you">
 						<button id="pullContent">Pull Content</button>
 						<div id="emailInput" class="editable" >{{{content}}}</div>
