@@ -29,8 +29,6 @@ app.use(express.static(__dirname + '/public'));
 app.use(passport.initialize());
 app.use(passport.session());
 
-console.log(scraper.answer);
-
 // create reusable transport method (opens pool of SMTP connections)
 //NOTE: we may want to use a different transport method
 var smtpTransport = mailer.createTransport("SMTP",{
@@ -277,6 +275,7 @@ app.get('/ajax/:collectionID', function(request, response) {
         });
     }
 });
+
 //ajax for adding a collection as requested by the front end
 app.post("/ajax/createCollection", function(request, response) {
     if(request.isAuthenticated()){
@@ -353,6 +352,21 @@ app.post("/ajax/deleteEntry", function(request, response) {
     }
 });
 
+//ajax for scraping
+app.post("/ajax/scrapeUrl", function(request, response) {
+    if(request.isAuthenticated()){
+        scraper.scrapeUrl(url);//TODO: define url************************
+    }
+});
+
+app.post('/scrape', function(request, response){
+    console.log(request.body.url);
+    
+    scraper.scrapeUrl(request.body.url, function(content){
+        console.log(content);
+        response.send(content);
+    })
+});
 //emailcreation
 //*****************************************************unfinished
 app.post('/save', function(request, response){

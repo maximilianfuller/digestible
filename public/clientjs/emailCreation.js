@@ -24,6 +24,16 @@ $(document).ready(function() {
     $('#emailTitleInput').val(subject);  
  }
 
+ //pulls content
+ $('#pullContent').click(function(){
+   $.post("scrape",{
+       url: $('#articleLinkInput').val(),
+    },function(data,status){
+      alert("asdf");
+      alert(data);
+    });
+ });
+
 
 
   //Pete's stuff
