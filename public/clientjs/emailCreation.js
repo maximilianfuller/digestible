@@ -1,28 +1,39 @@
 $(document).ready(function() {
   
   var editor = new MediumEditor('.editable');
-
   //save the email to the database
   $('#saveColl').click(function() {
-   $.post("save",{
-       title: $('#emailTitleInput').val(),
-       email: editor.serialize() 
-    },function(data,status){
-      if(data === "success"){
-        alert("successfully saved email");
-      }
-      else if(data === "invalid_email"){
-        alert("error");
-      }
+   $.post("/ajax/editEntry",{
+       subject: $('#emailTitleInput').val(),
+       content: editor.serialize().emailInput.value,
+       entry_id: meta("entryId")
     });
   });
 
+  $('#finalDelete').click(function() {
+    $.post("ajax/deleteEntry", {entry_id: meta("entryId")});
+    window.location = "/home"
+  });
 
-  //populate the subject
-  var subject = document.querySelector('meta[name=subject]').content;
- if(subject != ""){
-    $('#emailTitleInput').val(subject);  
- }
+  $('#goBack').click(function() {
+    window.location = "/home"
+  });
+
+
+  
+  //can only edit content when the collection is not published
+  if(meta("visible") == "true") {
+    $('#deleteColl').hide();
+    $('#saveColl').hide();
+    //TODO: set content to non-editable
+  }
+
+  function meta(name) {
+    var tag = document.querySelector('meta[name=' + name + ']');
+    if (tag != null)
+        return tag.content;
+    return '';
+}
 
 
 

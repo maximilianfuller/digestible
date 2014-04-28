@@ -61,10 +61,13 @@ function refresh() {
 
       var $ol = $("#subscriptionsContainer ol");
       $ol.empty();
-      for(var i = 0; i < data.entries.length; i++) {
+      var entries = data.entries.sort(function(a, b) {
+        return a.entry_number - b.entry_number;
+      });
+      for(var i = 0; i < entries.length; i++) {
         $ol.append(
           $("<li>").append(
-            $("<a>").attr('href', "/" + data.entries[i].entry_id).html(data.entries[i].title)
+            $("<a>").attr('href', "/" + entries[i].entry_id).html(entries[i].subject + " " + entries[i].entry_number)
         ));
       }
       if ($('#subscriptionsContainer ol').html().length > 0) {
@@ -171,7 +174,7 @@ function createCollection() {
 function addEntry() {
   var request =  {
     collection_id: $("#collections").val(),
-    entry_number: $('#subscriptionsContainer ol').html().length + 1
+    entry_number: $('#subscriptionsContainer ol li').size() + 1
   };
   $.post("/ajax/createEntry", request, function(data) {
     window.location = "/" + data.entry_id;
