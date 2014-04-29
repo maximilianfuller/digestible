@@ -17,6 +17,7 @@ var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var scraper = require('./scraper');
 var app = express();
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
@@ -250,7 +251,8 @@ app.get('/home', function(request, response){
         });
     }
     else{ //this should redirect to home page
-        response.render('page_not_found.html',{});
+        console.log("unauth redirect");
+        response.sendfile('index.html', {root: './public/html/'});
     }
 });
 
@@ -267,6 +269,9 @@ app.get('/ajax/:collectionID', function(request, response) {
             });
         });
     }
+    else{
+        response.sendfile('index.html', {root: './public/html/'});
+    }
 });
 
 //ajax for adding a collection as requested by the front end
@@ -282,6 +287,9 @@ app.post("/ajax/createCollection", function(request, response) {
             });
         })  
     }
+    else{
+        response.sendfile('index.html', {root: './public/html/'});
+    }
 });
 
 //ajax for editing collection data from the front end
@@ -291,6 +299,9 @@ app.post('/ajax/editCollection', function(request, response) {
         request.body.creator_email = email;
         editCollection(request.body);
         response.send(200);
+    }
+    else{
+        response.sendfile('index.html', {root: './public/html/'});
     }    
 });
 
@@ -299,6 +310,9 @@ app.post('/ajax/deleteCollection', function(request, response) {
     if(request.isAuthenticated()){
         deleteCollection(request.body.collection_id);
         response.send(200);
+    }
+    else{
+        response.sendfile('index.html', {root: './public/html/'});        
     }
 });
 
@@ -319,21 +333,28 @@ app.get('/:entry_id', function(request,response){
                 }
         });
     }
-
+    else{
+        response.sendfile('index.html', {root: './public/html/'});        
+    }
 });
 
 //ajax for creating an entry.
 app.post("/ajax/createEntry", function(request, response) {
-    getCollection(request.body.collection_id, function(collection) {
-        if(request.isAuthenticated() && collection != null && 
-            collection.creator_email == request.user.email){
-            var entry = new Entry(null, request.body.collection_id, 
-                request.body.entry_number, null, null, Date.now(), "", "");
-            addEntry(entry, function(entry_id) {
-                response.send({entry_id: entry_id});
-            });
-        }
-    });
+    if(request.isAuthenticated()){
+        getCollection(request.body.collection_id, function(collection) {
+            if(request.isAuthenticated() && collection != null && 
+                collection.creator_email == request.user.email){
+                var entry = new Entry(null, request.body.collection_id, 
+                    request.body.entry_number, null, null, Date.now(), "", "");
+                addEntry(entry, function(entry_id) {
+                    response.send({entry_id: entry_id});
+                });
+            }
+        });
+    }
+    else{
+        response.sendfile('index.html', {root: './public/html/'});
+    }
 });
 
 //ajax for editing entries
@@ -353,8 +374,10 @@ app.post("/ajax/editEntry", function(request, response) {
                     }
                 });
             }
-        });
-        
+        });  
+    }
+    else{
+        response.sendfile('index.html', {root: './public/html/'});
     }
 });
 
@@ -387,8 +410,7 @@ app.post("/ajax/deleteEntry", function(request, response) {
                     }
                 });
             }
-        });
-        
+        });   
     }
 });
 
