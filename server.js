@@ -1,10 +1,24 @@
-//digestable node.js based server
+//digestable node.js based server:
 
+//approximately 1000 lines of painstakingly crafted 
+//open source, self-publishing facilitating, 
+//scintillating, majestic, cs132-tastic code
+
+/* ////////////////////////////////////////////
 //RUN TESTS/PRIMERS:
+*//////////////////////////////////////////////
+//runs a series of asserts to verify correct db functionality
+var runDBTests = false; 
 
-var runDBTests = false;
-var primeDataBase = false;
-var printDataBase = true;
+//populates the db with some dummy users for testing
+var primeDataBase = false; 
+
+//prints the contents of the database to the console upon initilization
+var printDataBase = true; 
+
+/* ////////////////////////////////////////////
+Initialization
+*//////////////////////////////////////////////
 
 //dependencies
 var http = require('http');
@@ -17,6 +31,7 @@ var HashMap = require('hashmap').HashMap;
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var scraper = require('./scraper'); //a simple scraping routine we wrote
 var app = express();
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
@@ -28,9 +43,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 // create reusable transport method (opens pool of SMTP connections)
-//NOTE: we may want to use a different transport method
 var smtpTransport = mailer.createTransport("SMTP",{
 
     service: "Gmail",
@@ -40,7 +53,7 @@ var smtpTransport = mailer.createTransport("SMTP",{
     }
 });
 
-//passport config
+//passport config (security/user auth)
 //note: some of this code adapted from 
 //https://github.com/jaredhanson/passport-local/blob/master/examples/login/app.js
 passport.use('local-login', new LocalStrategy({
@@ -79,14 +92,8 @@ passport.deserializeUser(function(email, done) {
 });
 //end of passport config
 
-//data structure initializations 
+//data structure initialization
 var scheduled_emails = new HashMap(); //key: email_id, value: a scheduled email
-
-
-
-/* ////////////////////////////////////////////
-End of initialization
-*//////////////////////////////////////////////
 
 /* ////////////////////////////////////////////
 Email Scheduling
@@ -101,18 +108,6 @@ function scheduleEmail(email_id, millisFromNow) {
     scheduled_emails.set(email_id,job);
 }
 
-/*
-*
-* sample params:
-senderName = "Fred Foo";
-senderEmail = "benjamin_resnick@brown.edu";
-receiver = "benjamin_resnick@brown.edu, neb301@yahoo.com";
-subject = "Hello";
-bodymaximilian_fuller@brown.edu = "Hello world";
-var dateToEmail = new Date(2014, 3, 19, 14, 26 ,0,0); //year, month, day, hour, minute, second, millis
-scheduleEmail(senderName,senderEmail,receiver,subject,body,dateToEmail);
-*
-*/
 function sendEmail(email_id) {
     console.log("sending email with id: " + email_id);
     getEmail(email_id, function(email) {
@@ -122,9 +117,6 @@ function sendEmail(email_id) {
     	    from: "John Doe" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
     	    to: email.recipient, // list of receivers
     	    subject: email.subject, // Subject line
-    	    //text: contents // plaintext body
-
-    	    //remember to add comma if using html field
     	    html: email.content // html bodies can also be sent
     	};	
 
@@ -188,13 +180,13 @@ function unsubscribe(email_id){
     });    
 } 
 
-
-
 /* ////////////////////////////////////////////
 ajax/server request handling
 *//////////////////////////////////////////////
 
-//////////////////////////////////////////////
+//a collection of moustache templates and ajax handlers
+//note: some files served statically and not represented
+//by the following handlers
 
 /*//debugging function to println where requests are sent to
 app.post('*',function(req,res){
@@ -217,8 +209,6 @@ app.post('/html/log_in', function(req, res, next) {
   })(req, res, next);
 });
 
-
-//////////////////////////////////////////////
 //creator home (collections page)
 app.get('/home', function(request, response){
     if(request.isAuthenticated()){
@@ -245,9 +235,11 @@ app.get('/home', function(request, response){
             moustacheParams.creatorEmail = user;
             response.render('collection.html',moustacheParams);
         });
-    }
-    else{ //TODO: should redirect to home page
-        response.render('page_not_found.html',{});
+    } else { //this should redirect to home page
+        console.log("unauth redirect");
+        response.statusCode = 302;
+        response.setHeader("Location", "/html");
+        response.end();
     }
 });
 
@@ -267,6 +259,7 @@ app.get('/ajax/:collectionID', function(request, response) {
             //TODO: redirect to home page
         }
     });
+
 });
 
 //ajax for adding a collection as requested by the front end
@@ -280,10 +273,11 @@ app.post("/ajax/createCollection", function(request, response) {
                 collection_id: collection_id,
                 collection_title: "new collection"
             });
-        })  
+        });
     } else {
         //TODO: redirect to home page
     }
+   
 });
 
 //ajax for editing collection data from the front end
@@ -301,7 +295,7 @@ app.post('/ajax/editCollection', function(request, response) {
 
 //ajax for deleting collection data as requested by the front end
 app.post('/ajax/deleteCollection', function(request, response) {
-    getCollection(request.body.collection_id, function(collection() {
+    getCollection(request.body.collection_id, function(collection) {
         if(request.isAuthenticated() && request.user.email === collection.user_email){
             deleteCollection(request.body.collection_id);
             response.send(200);
@@ -309,31 +303,29 @@ app.post('/ajax/deleteCollection', function(request, response) {
             //TODO: redirect to home page
         }
     });
+
 });
 
-
-///////////////////////////////////
 //email creation page
 app.get('/:entry_id', function(request,response){
-        var entry_id = request.params.entry_id;
-        getEntry(entry_id, function(entry){
-            if(entry != null){
-                getCollection(entry.collection_id, function(collection) {
-                    if(request.isAuthenticated() && request.user.email === collection.user_email){
-                        entry.visible = collection.visible;
-                        response.render('emailCreation.html',entry);
-                    } else {
-                        //TODO: redirect to home page
-                    }
-                });
-            } else {
-                    response.render('page_not_found.html');
-            }
-        });
-
+    var entry_id = request.params.entry_id;
+    getEntry(entry_id, function(entry){
+        if(entry != null){
+            getCollection(entry.collection_id, function(collection) {
+                if(request.isAuthenticated() && request.user.email === collection.user_email){
+                    entry.visible = collection.visible;
+                    response.render('emailCreation.html',entry);
+                } else {
+                    //TODO: redirect to home page
+                }
+            });
+        } else {
+            response.render('page_not_found.html');
+        }
+    });
 });
 
-//ajax for creating an entry.
+//ajax for creating an entry
 app.post("/ajax/createEntry", function(request, response) {
     getCollection(request.body.collection_id, function(collection) {
         if(request.isAuthenticated() && collection != null && 
@@ -366,8 +358,6 @@ app.post("/ajax/editEntry", function(request, response) {
             });
         }
     });
-        
-    }
 });
 
 //ajax for deleting entries
@@ -398,8 +388,8 @@ app.post("/ajax/deleteEntry", function(request, response) {
                 }
             });
         }
-    });    
-});
+    });
+}); 
 
 
 //ajax for scraping
@@ -416,27 +406,6 @@ app.post('/scrape', function(request, response){
         console.log(content);
         response.send(content);
     })
-});
-//emailcreation
-//*****************************************************unfinished
-app.post('/save', function(request, response){
-    if(request.isAuthenticated()){
-        console.log("received protoemail");
-        var email = request.body.email.emailInput.value;
-        console.log(email);
-
-        var content = request.body.email.emailInput.value;
-        var title = request.body.title;
-        var collection_id = request.body.collection_id;
-        var entry_number = request.body.entry_number;
-        var subject = request.body.subject;
-
-        //check that none of the fields are null
-        if(content != null && title != null && collection_id != null && entry_number != null && subject != null){
-            var date = new Date(Date.now());
-            var entry = new Entry(null, collection_id,entry_number,null,null,date,subject,content);        
-        }
-    }
 });
 
 //////////////////////////////////////////////
@@ -485,7 +454,6 @@ app.get('/consumer/:collection_id', function(request, response){
             } 
         });
     });
-  
 });
 
 //consumer page sign up requests

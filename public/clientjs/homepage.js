@@ -1,7 +1,7 @@
 $(document).ready(function() { 
 
   $(".signUp").click(function(){
-    window.location = "/html/signUp.html";//needs to be changed when we move to digestable.io***
+    window.location = "/signUp.html";//needs to be changed when we move to digestable.io***
     //window.location.href = "http://digestable.io/signUp";
   });
 
@@ -22,8 +22,7 @@ $(document).ready(function() {
       }
       else{
         //successful login, redirect to creator page
-        window.location = "/home"; //needs to be changed when we move to digestable.io***
-        //window.location.href = "http://digestable.io/home";
+        window.location = "/home"; 
       }
     });
   });
