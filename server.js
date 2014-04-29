@@ -256,7 +256,7 @@ app.get('/ajax/:collectionID', function(request, response) {
                 });
             });
         } else {
-            //TODO: redirect to home page
+            response.redirect('/'); //redirect to home page
         }
     });
 
@@ -275,7 +275,7 @@ app.post("/ajax/createCollection", function(request, response) {
             });
         });
     } else {
-        //TODO: redirect to home page
+        response.redirect('/'); //redirect to home page
     }
    
 });
@@ -283,12 +283,12 @@ app.post("/ajax/createCollection", function(request, response) {
 //ajax for editing collection data from the front end
 app.post('/ajax/editCollection', function(request, response) {
     getCollection(request.body.collection_id, function(collection) {
-        if(request.isAuthenticated() && request.user.email === collection.user_email){
+        if(request.isAuthenticated() && request.user.email === collection.creator_email){
             request.body.creator_email = request.user.email;
             editCollection(request.body);
             response.send(200);
         } else {
-            //TODO: redirect to home page
+            response.redirect('/'); //redirect to home page
         }
     });    
 });
@@ -296,11 +296,11 @@ app.post('/ajax/editCollection', function(request, response) {
 //ajax for deleting collection data as requested by the front end
 app.post('/ajax/deleteCollection', function(request, response) {
     getCollection(request.body.collection_id, function(collection) {
-        if(request.isAuthenticated() && request.user.email === collection.user_email){
+        if(request.isAuthenticated() && request.user.email === collection.creator_email){
             deleteCollection(request.body.collection_id);
             response.send(200);
         } else {
-            //TODO: redirect to home page
+            response.redirect('/'); //redirect to home page
         }
     });
 
@@ -312,13 +312,11 @@ app.get('/:entry_id', function(request,response){
     getEntry(entry_id, function(entry){
         if(entry != null){
             getCollection(entry.collection_id, function(collection) {
-                if(request.isAuthenticated() && request.user.email === collection.user_email){
+                if(request.isAuthenticated() && request.user.email === collection.creator_email){
                     entry.visible = collection.visible;
                     response.render('emailCreation.html',entry);
                 } else {
-                    console.log("asdf");
-                    response.setHeader('Location','/aoiefoaifh');
-                    response.sendfile('index.html', {root: './public/'});
+                    response.redirect('/');
                 }
             });
         } else {
@@ -338,7 +336,7 @@ app.post("/ajax/createEntry", function(request, response) {
                 response.send({entry_id: entry_id});
             });
         } else {
-            //TODO: redirect to home page
+            response.redirect('/'); //redirect to home page
         }
     });
 });
@@ -355,7 +353,7 @@ app.post("/ajax/editEntry", function(request, response) {
                     editEntry(entry);
                     response.send(200);
                 } else {
-                    //TODO: redirect to home page
+                    response.redirect('/'); //redirect to home page
                 }
             });
         }
@@ -386,7 +384,7 @@ app.post("/ajax/deleteEntry", function(request, response) {
                     });
                     response.send(200);
                 } else {
-                    //TODO: redirect to home page
+                    response.redirect('/'); //redirect to home page
                 }
             });
         }
