@@ -196,7 +196,7 @@ app.post('*',function(req,res){
 });*/
 
 //home page log in 
-app.post('/html/log_in', function(req, res, next) {
+app.post('/log_in', function(req, res, next) {
   passport.authenticate('local-login', function(err, user, info) {
       if (err) { return next(err); }
       // Redirect if it fails
@@ -238,7 +238,7 @@ app.get('/home', function(request, response){
     } else { //this should redirect to home page
         console.log("unauth redirect");
         response.statusCode = 302;
-        response.setHeader("Location", "/html");
+        response.setHeader("Location", "/");
         response.end();
     }
 });
@@ -256,7 +256,7 @@ app.get('/ajax/:collectionID', function(request, response) {
                 });
             });
         } else {
-            //TODO: redirect to home page
+            response.redirect('/'); //redirect to home page
         }
     });
 
@@ -275,7 +275,7 @@ app.post("/ajax/createCollection", function(request, response) {
             });
         });
     } else {
-        //TODO: redirect to home page
+        response.redirect('/'); //redirect to home page
     }
    
 });
@@ -283,12 +283,12 @@ app.post("/ajax/createCollection", function(request, response) {
 //ajax for editing collection data from the front end
 app.post('/ajax/editCollection', function(request, response) {
     getCollection(request.body.collection_id, function(collection) {
-        if(request.isAuthenticated() && request.user.email === collection.user_email){
+        if(request.isAuthenticated() && request.user.email === collection.creator_email){
             request.body.creator_email = request.user.email;
             editCollection(request.body);
             response.send(200);
         } else {
-            //TODO: redirect to home page
+            response.redirect('/'); //redirect to home page
         }
     });    
 });
@@ -296,11 +296,11 @@ app.post('/ajax/editCollection', function(request, response) {
 //ajax for deleting collection data as requested by the front end
 app.post('/ajax/deleteCollection', function(request, response) {
     getCollection(request.body.collection_id, function(collection) {
-        if(request.isAuthenticated() && request.user.email === collection.user_email){
+        if(request.isAuthenticated() && request.user.email === collection.creator_email){
             deleteCollection(request.body.collection_id);
             response.send(200);
         } else {
-            //TODO: redirect to home page
+            response.redirect('/'); //redirect to home page
         }
     });
 
@@ -312,11 +312,11 @@ app.get('/:entry_id', function(request,response){
     getEntry(entry_id, function(entry){
         if(entry != null){
             getCollection(entry.collection_id, function(collection) {
-                if(request.isAuthenticated() && request.user.email === collection.user_email){
+                if(request.isAuthenticated() && request.user.email === collection.creator_email){
                     entry.visible = collection.visible;
                     response.render('emailCreation.html',entry);
                 } else {
-                    //TODO: redirect to home page
+                    response.redirect('/');
                 }
             });
         } else {
@@ -336,7 +336,7 @@ app.post("/ajax/createEntry", function(request, response) {
                 response.send({entry_id: entry_id});
             });
         } else {
-            //TODO: redirect to home page
+            response.redirect('/'); //redirect to home page
         }
     });
 });
@@ -353,7 +353,7 @@ app.post("/ajax/editEntry", function(request, response) {
                     editEntry(entry);
                     response.send(200);
                 } else {
-                    //TODO: redirect to home page
+                    response.redirect('/'); //redirect to home page
                 }
             });
         }
@@ -384,7 +384,7 @@ app.post("/ajax/deleteEntry", function(request, response) {
                     });
                     response.send(200);
                 } else {
-                    //TODO: redirect to home page
+                    response.redirect('/'); //redirect to home page
                 }
             });
         }
@@ -393,19 +393,13 @@ app.post("/ajax/deleteEntry", function(request, response) {
 
 
 //ajax for scraping
-app.post("/ajax/scrapeUrl", function(request, response) {
+app.post("/ajax/scrapeUrl", function(request, response) { //ajax coming to right address?
     if(request.isAuthenticated()){
-        scraper.scrapeUrl(url);//TODO: define url************************
-    }
-});
-
-app.post('/scrape', function(request, response){
-    console.log(request.body.url);
-    
-    scraper.scrapeUrl(request.body.url, function(content){
+        scraper.scrapeUrl(request.body.url, function(content){
         console.log(content);
         response.send(content);
-    })
+    });
+    }
 });
 
 //////////////////////////////////////////////
