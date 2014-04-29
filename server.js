@@ -14,7 +14,7 @@ var runDBTests = false;
 var primeDataBase = false; 
 
 //prints the contents of the database to the console upon initilization
-var printDataBase = true; 
+var printDataBase = false; 
 
 /* ////////////////////////////////////////////
 Initialization
@@ -495,10 +495,10 @@ app.post('/sign_up', function(request, response) {
         if(creator_data == null) {
             //creator email doesn't exist in the db
              addCreator(creator);
-             response.end("Thanks for creating an acount!");
+             response.redirect("/");
         } else {
              //creator email alread exists
-             response.end("Sorry, the email you gave us is already in use.");
+             response.send("Sorry, the email you gave us is already in use.");
         }
     })
 });
