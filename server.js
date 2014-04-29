@@ -242,7 +242,7 @@ app.get('/home', function(request, response){
     else{ //this should redirect to home page
         console.log("unauth redirect");
         response.statusCode = 302;
-        response.setHeader("Location", "/html");
+        response.setHeader("Location", "/");
         response.end();
     }
 });
