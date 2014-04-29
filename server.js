@@ -214,32 +214,28 @@ app.get('/home', function(request, response){
     if(request.isAuthenticated()){
         var user = request.user.email; //from the cookie!!!!!!!
         getCollectionsWithCreator(user,function(collections){
-            if(collections !== null){
-                var moustacheParams = [];
-
-                //create moustache field for collection names
-                var collectionNamesList = [];
-                for(var i = 0; i < collections.length; i++){
-                    var collect = [];
-                    collect.collectionTitle = collections[i].collection_title;
-                    collect.collectionId = collections[i].collection_id;
-                    if(collections[i].visible === "true"){
-                        collect.visible = "true";
-                    }
-                    else{
-                        collect.visible = "false";
-                    }
-                    collectionNamesList.push(collect);
+            var moustacheParams = [];
+            //create moustache field for collection names
+            var collectionNamesList = [];
+            for(var i = 0; i < collections.length; i++){
+                var collect = [];
+                collect.collectionTitle = collections[i].collection_title;
+                collect.collectionId = collections[i].collection_id;
+                if(collections[i].visible === "true"){
+                    collect.visible = "true";
                 }
-
-                //add the entry name fields to the moustacheParams
-                moustacheParams.collectionNames = collectionNamesList;
-                moustacheParams.creatorEmail = user;
-                response.render('collection.html',moustacheParams);
+                else{
+                    collect.visible = "false";
+                }
+                collectionNamesList.push(collect);
             }
+
+            //add the entry name fields to the moustacheParams
+            moustacheParams.collectionNames = collectionNamesList;
+            moustacheParams.creatorEmail = user;
+            response.render('collection.html',moustacheParams);
         });
-    }
-    else{ //this should redirect to home page
+    } else { //this should redirect to home page
         console.log("unauth redirect");
         response.statusCode = 302;
         response.setHeader("Location", "/");
@@ -249,8 +245,9 @@ app.get('/home', function(request, response){
 
 //ajax for populating collections page with data
 app.get('/ajax/:collectionID', function(request, response) {
-    if(request.isAuthenticated()){
-        getCollection(request.params.collectionID, function (collection) {
+    
+    getCollection(request.params.collectionID, function (collection) {
+        if(request.isAuthenticated() && request.user.email === collection.creator_email){
             getEntriesWithCollectionID(request.params.collectionID, function(entries) {
                 getCreator(collection.creator_email, function(creator_data) {
                     collection.creator_name = creator_data.name;
@@ -258,17 +255,17 @@ app.get('/ajax/:collectionID', function(request, response) {
                     response.send(collection);
                 });
             });
-        });
-    }
-    else{
-        response.sendfile('index.html', {root: './public/html/'});
-    }
+        } else {
+            //TODO: redirect to home page
+        }
+    });
+
 });
 
 //ajax for adding a collection as requested by the front end
 app.post("/ajax/createCollection", function(request, response) {
     if(request.isAuthenticated()){
-        var email = "benjamin_resnick@brown.edu"
+        var email = request.user.email;
         var collection = new Collection(null, "new collection", "", email, "false");
         addCollection(collection, function(collection_id) {
             response.send(
@@ -276,132 +273,123 @@ app.post("/ajax/createCollection", function(request, response) {
                 collection_id: collection_id,
                 collection_title: "new collection"
             });
-        })  
+        });
+    } else {
+        //TODO: redirect to home page
     }
-    else{
-        response.sendfile('index.html', {root: './public/html/'});
-    }
+   
 });
 
 //ajax for editing collection data from the front end
 app.post('/ajax/editCollection', function(request, response) {
-    if(request.isAuthenticated()){
-        var email = "benjamin_resnick@brown.edu"; //we need to get this from the cookie, not from information sent by the client.
-        request.body.creator_email = email;
-        editCollection(request.body);
-        response.send(200);
-    }
-    else{
-        response.sendfile('index.html', {root: './public/html/'});
-    }    
+    getCollection(request.body.collection_id, function(collection) {
+        if(request.isAuthenticated() && request.user.email === collection.user_email){
+            request.body.creator_email = request.user.email;
+            editCollection(request.body);
+            response.send(200);
+        } else {
+            //TODO: redirect to home page
+        }
+    });    
 });
 
 //ajax for deleting collection data as requested by the front end
 app.post('/ajax/deleteCollection', function(request, response) {
-    if(request.isAuthenticated()){
-        deleteCollection(request.body.collection_id);
-        response.send(200);
-    }
-    else{
-        response.sendfile('index.html', {root: './public/html/'});        
-    }
+    getCollection(request.body.collection_id, function(collection) {
+        if(request.isAuthenticated() && request.user.email === collection.user_email){
+            deleteCollection(request.body.collection_id);
+            response.send(200);
+        } else {
+            //TODO: redirect to home page
+        }
+    });
+
 });
 
 //email creation page
 app.get('/:entry_id', function(request,response){
-    if(request.isAuthenticated()){
-        var entry_id = request.params.entry_id;
-        getEntry(entry_id, function(entry){
-            if(entry != null){
-                getCollection(entry.collection_id, function(collection) {
+    var entry_id = request.params.entry_id;
+    getEntry(entry_id, function(entry){
+        if(entry != null){
+            getCollection(entry.collection_id, function(collection) {
+                if(request.isAuthenticated() && request.user.email === collection.user_email){
                     entry.visible = collection.visible;
                     response.render('emailCreation.html',entry);
-                });
-            } else {
-                    response.render('page_not_found.html');
+                } else {
+                    //TODO: redirect to home page
                 }
-        });
-    }
-    else{
-        response.sendfile('index.html', {root: './public/html/'});        
-    }
+            });
+        } else {
+            response.render('page_not_found.html');
+        }
+    });
 });
 
 //ajax for creating an entry
 app.post("/ajax/createEntry", function(request, response) {
-    if(request.isAuthenticated()){
-        getCollection(request.body.collection_id, function(collection) {
-            if(request.isAuthenticated() && collection != null && 
-                collection.creator_email == request.user.email){
-                var entry = new Entry(null, request.body.collection_id, 
-                    request.body.entry_number, null, null, Date.now(), "", "");
-                addEntry(entry, function(entry_id) {
-                    response.send({entry_id: entry_id});
-                });
-            }
-        });
-    }
-    else{
-        response.sendfile('index.html', {root: './public/html/'});
-    }
+    getCollection(request.body.collection_id, function(collection) {
+        if(request.isAuthenticated() && collection != null && 
+            collection.creator_email == request.user.email){
+            var entry = new Entry(null, request.body.collection_id, 
+                request.body.entry_number, null, null, Date.now(), "", "");
+            addEntry(entry, function(entry_id) {
+                response.send({entry_id: entry_id});
+            });
+        } else {
+            //TODO: redirect to home page
+        }
+    });
 });
 
 //ajax for editing entries
 app.post("/ajax/editEntry", function(request, response) {
-    if(request.isAuthenticated()){
-        getEntry(request.body.entry_id, function(entry) {
-            if(entry != null) {
-                getCollection(entry.collection_id, function(collection) {
-                    //verify that the entry belongs to the user
-                    if(request.user.email == collection.creator_email) {
-                        entry.subject = request.body.subject;
-                        entry.content =request.body.content;
-                        editEntry(entry);
-                        response.send(200);
-                    } else {
-                        console.error("ERROR: user cannot edit an entry she does not own");
-                    }
-                });
-            }
-        });  
-    }
-    else{
-        response.sendfile('index.html', {root: './public/html/'});
-    }
+    getEntry(request.body.entry_id, function(entry) {
+        if(entry != null) {
+            getCollection(entry.collection_id, function(collection) {
+                //verify that the entry belongs to the user
+                if(request.isAuthenticated() && request.user.email == collection.creator_email) {
+                    entry.subject = request.body.subject;
+                    entry.content =request.body.content;
+                    editEntry(entry);
+                    response.send(200);
+                } else {
+                    //TODO: redirect to home page
+                }
+            });
+        }
+    });
 });
 
 //ajax for deleting entries
 app.post("/ajax/deleteEntry", function(request, response) {
-    if(request.isAuthenticated()){
-        getEntry(request.body.entry_id, function(entry) {
-            if(entry != null) {
-                getCollection(entry.collection_id, function(collection) {
-                    //verify that the entry belongs to the user
-                    if(request.user.email == collection.creator_email) {
-                        //delete the entry
-                        deleteEntry(request.body.entry_id);
-                        //reorder the  entry_numbers
-                        getEntriesWithCollectionID(entry.collection_id, function(entries) {
-                            console.log("entry_number: " + entry.entry_number);
-                            for(var i = 0; i < entries.length; i++) {
-                                console.log("entry_numberi " + entries[i].entry_number);
-                                if(entries[i].entry_number > entry.entry_number) {
-                                    console.log("ID WITH ENTRY NUMBER before: "+ entries[i].entry_id + " "  +entries[i].entry_number);
-                                    entries[i].entry_number--;
-                                    console.log("ID WITH ENTRY NUMBER after: "+ entries[i].entry_id + " "  +entries[i].entry_number);
-                                    editEntry(entries[i]);
-                                }
+    getEntry(request.body.entry_id, function(entry) {
+        if(entry != null) {
+            getCollection(entry.collection_id, function(collection) {
+                //verify that the entry belongs to the user
+                if(request.isAuthenticated() && request.user.email == collection.creator_email) {
+                    //delete the entry
+                    deleteEntry(request.body.entry_id);
+                    //reorder the  entry_numbers
+                    getEntriesWithCollectionID(entry.collection_id, function(entries) {
+                        console.log("entry_number: " + entry.entry_number);
+                        for(var i = 0; i < entries.length; i++) {
+                            console.log("entry_numberi " + entries[i].entry_number);
+                            if(entries[i].entry_number > entry.entry_number) {
+                                console.log("ID WITH ENTRY NUMBER before: "+ entries[i].entry_id + " "  +entries[i].entry_number);
+                                entries[i].entry_number--;
+                                console.log("ID WITH ENTRY NUMBER after: "+ entries[i].entry_id + " "  +entries[i].entry_number);
+                                editEntry(entries[i]);
                             }
-                        });
-                        response.send(200);
-                    } else {
-                        console.error("ERROR: user cannot delete an entry she does not own");
-                    }
-                });
-            }
-        });   
-    }
-});
+                        }
+                    });
+                    response.send(200);
+                } else {
+                    //TODO: redirect to home page
+                }
+            });
+        }
+    });
+}); 
 
 
 //ajax for scraping
