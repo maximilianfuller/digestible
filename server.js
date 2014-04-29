@@ -196,7 +196,7 @@ app.post('*',function(req,res){
 });*/
 
 //home page log in 
-app.post('/html/log_in', function(req, res, next) {
+app.post('/log_in', function(req, res, next) {
   passport.authenticate('local-login', function(err, user, info) {
       if (err) { return next(err); }
       // Redirect if it fails
@@ -316,7 +316,9 @@ app.get('/:entry_id', function(request,response){
                     entry.visible = collection.visible;
                     response.render('emailCreation.html',entry);
                 } else {
-                    //TODO: redirect to home page
+                    console.log("asdf");
+                    response.setHeader('Location','/aoiefoaifh');
+                    response.sendfile('index.html', {root: './public/'});
                 }
             });
         } else {
@@ -393,19 +395,13 @@ app.post("/ajax/deleteEntry", function(request, response) {
 
 
 //ajax for scraping
-app.post("/ajax/scrapeUrl", function(request, response) {
+app.post("/ajax/scrapeUrl", function(request, response) { //ajax coming to right address?
     if(request.isAuthenticated()){
-        scraper.scrapeUrl(url);//TODO: define url************************
-    }
-});
-
-app.post('/scrape', function(request, response){
-    console.log(request.body.url);
-    
-    scraper.scrapeUrl(request.body.url, function(content){
+        scraper.scrapeUrl(request.body.url, function(content){
         console.log(content);
         response.send(content);
-    })
+    });
+    }
 });
 
 //////////////////////////////////////////////
