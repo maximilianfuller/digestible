@@ -52,8 +52,12 @@ refresh();
 function refresh() {
   var currentCollectionId = $("#collections").val();
   if(currentCollectionId == null) {
+    //TODO
     //what do we do when the creator has no collections?
   } else {
+    $("#previewColl").click(function() {
+      window.location = "consumer/" + currentCollectionId;
+    });
     $.get("/ajax/" + currentCollectionId, function(data) {
       $("#collTitleInput").val(data.collection_title);
       $("#author").val(data.creator_name);

@@ -1,4 +1,4 @@
-//digestable node.js based server:
+//digestible node.js based server:
 
 //approximately 1000 lines of painstakingly crafted 
 //open source, self-publishing facilitating, 
@@ -114,7 +114,7 @@ function sendEmail(email_id) {
        
     	// setup e-mail data with unicode symbols
     	var mailOptions = {
-    	    from: "John Doe" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
+    	    from: "Digestible" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
     	    to: email.recipient, // list of receivers
     	    subject: email.subject, // Subject line
     	    html: email.content // html bodies can also be sent
@@ -431,7 +431,7 @@ app.get('/consumer/:collection_id', function(request, response){
                     }//generate the moustache fields
                     for(var i = 0; i < entries.length; i++){ 
                         var entry = [];
-                        entry.entryTitle = orderedEntries[i].title;
+                        entry.entrySubject = orderedEntries[i].subject;
                         entry.entryId = orderedEntries[i].entry_id;
                         entryList.push(entry);
                     }
@@ -459,7 +459,12 @@ app.post('/consumer/sign_up', function(request, response){
     var collection_id = request.body.collection_id;
     var millisToFirst = 0;
     var millisInterval = 60000; //1 min
-    subscribe(collection_id, reader_email, millisToFirst, millisInterval);
+    getCollection(collection_id, function(collection) {
+        //only subscribe if the collection exists and is public
+        if(collection != null && collection.visible == "true") {
+            subscribe(collection_id, reader_email, millisToFirst, millisInterval);
+        }
+    })
 
     response.send("success");//on successful signup
 });

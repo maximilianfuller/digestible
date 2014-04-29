@@ -14,13 +14,10 @@ $(document).ready(function() {
        email: $('#authEmail').val(), 
        pass: $('#authPass').val(),
     },function(data,status){
-      if(data === "invalid password"){
+      if(data === "invalid email" || data === "invalid password"){
         alert("invalid email or password"); //don't specify which for security reasons
-      }
-      else if(data === "invalid email"){
-        alert("invalid email or password");
-      }
-      else{
+        $('#authEmail').select();
+      } else{
         //successful login, redirect to creator page
         window.location = "/home"; 
       }
