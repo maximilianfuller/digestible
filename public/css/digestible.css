@@ -324,12 +324,10 @@ COLLECTIONS
 }
 #publishColl {
 	background: #1095EC;
-	margin-right: 20px;
 }
 #unpublishColl {
 	width: 160px;
 	background: #1095EC;
-	margin-right: 20px;
 }
 #settingsHolder {
 	width: 30px;
@@ -337,6 +335,9 @@ COLLECTIONS
 	float: right;
 	margin: 22px 5px 0 0;
 	cursor: pointer;
+}
+.lastButton {
+	margin-right: 20px;
 }
 .headerButton.unpublished, #settingsHolder.unpublished {
 	display: block;
