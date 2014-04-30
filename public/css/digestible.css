@@ -449,6 +449,9 @@ COLLECTIONS
 #yourLink, #theURL {
 	display: inline-block;
 }
+.unpublished {
+	display: none;
+}
 
 /*---------------
 EMAIL
