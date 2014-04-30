@@ -22,9 +22,9 @@
 				<button class="headerButton lastButton" id="publishColl">Publish</button>
 				<button class="headerButton " id="saveColl">Save</button>
 				<button class="headerButton " id="previewColl">Preview</button>
-				<div id="settingsHolder" class="">
+				<!-- <div id="settingsHolder" class="">
 					<img src="../public/images/settings.png" alt="Collection Settings">
-				</div>
+				</div> -->
 			</div>
 			<div id="appMainContainer">
 				<section>
@@ -32,10 +32,14 @@
 						<input type="text" id="collTitleInput" placeholder="Name your collection">
 						<p id="author">By: Ben Smith</p>
 						<textarea id="collDescriptInput" rows="4" cols="50" placeholder="Describe your collection of articles"></textarea>
-						<p id="collEditEmailExplain">Sign up to recieve each article in an easy to read email every three days.</p>
+						<label id="freqLabel">Email Frequency:</label>
+						<select name="" id="emailFrequency">
+							<option value="">3</option>
+						</select>
+						<!-- <p id="collEditEmailExplain">Sign up to recieve each article in an easy to read email every three days.</p>
 						<input type="text" placeholder="Name" class="consumerInput collEditOpacity" id="name" disabled>
 						<input type="text" placeholder="Email Address" class="consumerInput collEditOpacity" id="email" disabled>
-						<input class="formSubmit collEditOpacity" id="consumerSubmit" type="submit" name="" value="Subscribe">
+						<input class="formSubmit collEditOpacity" id="consumerSubmit" type="submit" name="" value="Subscribe"> -->
 					</form>
 				</section>
 				<div id="separator"></div>
@@ -73,7 +77,7 @@
 			<p class="sideBarLink"><a href="#">Settings</a></p>
 		</div>
 		<p id="logout"><a href="#">Log Out</a></p>
-		<div id="collSettingsOverlay">
+		<!-- <div id="collSettingsOverlay">
 			<div class="overlayContain">
 				<h2 class="optionsTitle">Options</h2>
 				<form id="collOptionsForm">
@@ -89,7 +93,7 @@
 				</form>
 			</div>
 			
-		</div>
+		</div> -->
 		<div id="deleteOverlay">
 			<div class="overlayContain">
 				<h2 class="optionsTitle">Are you sure?</h2>

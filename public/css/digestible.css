@@ -381,13 +381,7 @@ COLLECTIONS
 	font-family: "Open Sans", sans-serif;
 	color: #444;
 }
-#collEditEmailExplain {
-	margin-top: 20px;
-	opacity: 0.2;
-}
-.collEditOpacity {
-	opacity: 0.2;
-}
+
 #noLinksPrompt {
 	color: #a3a3a3;
 	width: 420px;
@@ -413,6 +407,9 @@ COLLECTIONS
 	left: 0;
 	right: 0;
 	background: rgba(255,255,255,0.95);
+	/*display: none;*/
+}
+#deleteOverlay {
 	display: none;
 }
 
@@ -436,9 +433,13 @@ COLLECTIONS
 	width: 350px;
 	margin-bottom: 20px;
 }
+#freqLabel {
+	display: inline-block;
+}
 #emailFrequency {
 	width: 150px;
-	margin: 28px 0 0 0;
+	margin: 15px 0 0 10px;
+	display: inline-block;
 }
 #finalDelete {
 	margin-bottom: 20px;
