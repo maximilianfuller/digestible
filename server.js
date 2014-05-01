@@ -398,18 +398,16 @@ app.post("/ajax/deleteEntry", function(request, response) {
 
 
 //ajax for scraping
-app.post("/ajax/scrapeUrl", function(req, res) { //ajax coming to right address?
+app.post("/ajax/scrapeUrl", function(req, res) { 
     console.log("test");
-    res.send('success');
-    /*if(request.isAuthenticated()){
+    if(req.isAuthenticated()){
         console.log("testawefaef");
-        scraper.scrapeUrl(request.body.url, function(content){
-            response.redirect('/');
-            //response.send({content: content});
-            console.log("fewfe");
+        scraper.scrapeUrl(req.body.url, function(content){
+            res.send({content: content});
+            console.log(content);
         });
         //response.send("success");
-    }*/
+    }
 });
 
 //////////////////////////////////////////////
@@ -614,8 +612,6 @@ function getEntry(entry_id, callback) {
                     result.rows[0].content
                 ));
             }
-
-
         });
 }
 
@@ -681,9 +677,6 @@ function addCollection(collection, callback){
         ]).on('error', console.error).on('end', function() {
             callback(id);
         });
-    
-
-
 }
 
 

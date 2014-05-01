@@ -25,7 +25,7 @@ $(document).ready(function() {
   if(meta("visible") == "true") {
     $('#deleteColl').hide();
     $('#saveColl').hide();
-    //TODO: set content to non-editable
+    //TODO: set content to non-editableboss.
   }
 
   function meta(name) {
@@ -33,14 +33,26 @@ $(document).ready(function() {
     if (tag != null)
         return tag.content;
     return '';
-}
+  }
 
  //pulls content
  $('#pullContent').click(function(){
    $.post("ajax/scrapeUrl",{
        url: $('#articleLinkInput').val(),
     },function(data,status){
-      window.location = "/home";
+      if(data.content == "invalid url"){
+        alert("invalid url");
+      }
+      else{
+        $('#emailInput').html(data.content);
+        $.post("/ajax/editEntry",{
+           subject: $('#emailTitleInput').val(),
+           content: data.content,
+           entry_id: meta("entryId")
+        });
+        $('#emailInput').focus();
+        $('#mainWrap').focus();
+      }
     });
  });
 

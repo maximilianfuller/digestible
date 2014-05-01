@@ -13,9 +13,9 @@ module.exports = {
 
 			        var a = "";
 			        $('body').find('p').each(function(){
-			        	a = a + $(this).html();
+			        	a = a + "<p>" + $(this).html() + "</p>";
 			        });
-			        console.log("got here");
+			        console.log("fff");
 					callback(a);	
 		        }    
 		});
