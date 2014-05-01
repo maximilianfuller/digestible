@@ -262,10 +262,6 @@ app.get('/ajax/:collectionID', function(request, response) {
 
 });
 
-app.get("/unsubscribe/:recipentHash"){
-
-});
-
 //ajax for adding a collection as requested by the front end
 app.post("/ajax/createCollection", function(request, response) {
     if(request.isAuthenticated()){
