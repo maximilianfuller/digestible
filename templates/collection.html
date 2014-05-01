@@ -11,6 +11,9 @@
 		<link rel="stylesheet" href="../public/css/digestible.css" /><!-- This is so javier can edit the css file statically-->
 		<script type="text/javascript" src="../clientjs/jquery-2.1.0.min.js"></script>
 		<script type="text/javascript" src="../clientjs/collection.js"></script>
+
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 	</head>
 
 	<body>
@@ -19,7 +22,7 @@
 			<div id="editHeader">
 				<button class="headerButton lastButton" id="unpublishColl">Edit Collection and Emails</button>
 				<button class="headerButton " id="deleteColl">Delete</button>
-				<button class="headerButton lastButton" id="publishColl">Publish</button>
+				<button class="headerButton lastButton" id="publishColl">Publish</button> <!-- THIS TEXT SHOULD BE "Publish" or "Publish Changes" -->
 				<button class="headerButton " id="saveColl">Save</button>
 				<button class="headerButton " id="previewColl">Preview</button>
 				<!-- <div id="settingsHolder" class="">
@@ -57,7 +60,10 @@
 						<!-- this only shows up if there are no li elements in the email archive ol -->
 						<p id="noLinksPrompt">1. Links to your scheduled emails will be archived here.</p>
 
-						<ol>
+						<ol id="sortable">
+							<li><a href="/consumer/{{collectionName}}/{{entryId}}" target="_blank">{{entrySubject}}</a></li>
+							<li><a href="/consumer/{{collectionName}}/{{entryId}}" target="_blank">{{entrySubject}}</a></li>
+							<li><a href="/consumer/{{collectionName}}/{{entryId}}" target="_blank">{{entrySubject}}</a></li>
 						</ol>
 						<div id="addEmailWrap">
 							<div id="addEmailContain">
@@ -108,6 +114,11 @@
 				<button id="cancelDelete">Cancel</button>
 			</div>
 		</div>
+		<script>
+		  $(function() {
+		    $( "#sortable" ).sortable();
+		  });
+		 </script>
 	</body>
 </html>
 

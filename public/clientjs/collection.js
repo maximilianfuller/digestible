@@ -35,7 +35,7 @@ $(document).ready(function() {
   $('#addEmailWrap').mouseleave(function() {
     $(this).css('border', '2px solid #ccc');
   });
-
+  $( "#sortable" ).sortable();
   
   /*
   *end of Pete's stuff
