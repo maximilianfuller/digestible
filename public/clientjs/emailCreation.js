@@ -12,11 +12,11 @@ $(document).ready(function() {
 
   $('#finalDelete').click(function() {
     $.post("ajax/deleteEntry", {entry_id: meta("entryId")});
-    window.location = "/home"
+    window.location = "/home";
   });
 
   $('#goBack').click(function() {
-    window.location = "/home"
+    window.location = "/home";
   });
 
 
@@ -37,11 +37,10 @@ $(document).ready(function() {
 
  //pulls content
  $('#pullContent').click(function(){
-   $.post("scrape",{
+   $.post("ajax/scrapeUrl",{
        url: $('#articleLinkInput').val(),
     },function(data,status){
-      alert("asdf");
-      alert(data);
+      window.location = "/home";
     });
  });
 

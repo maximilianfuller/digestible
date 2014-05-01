@@ -89,7 +89,6 @@ function refresh() {
         alert("error");
       });
   }
-  
 }
 
 //change data upon selecting a new collection
@@ -190,27 +189,16 @@ function meta(name) {
         return tag.content;
     return '';
 }
-
-
   //END OF MAX'S STUFF
-
-
-
-
-
-
   //BEN'S STUFF
 
-
-
-
-
-
-
-
-
+$("#logout").click(function() {
+  $.post("/log_out", function(data) {
+     window.location = "/";
+  })
+    .fail(function() {
+      alert("error");
+    });
+});
   //END OF BEN'S STUFF
-
-
-
 });

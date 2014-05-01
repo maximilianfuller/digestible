@@ -188,8 +188,8 @@ ajax/server request handling
 //note: some files served statically and not represented
 //by the following handlers
 
-/*//debugging function to println where requests are sent to
-app.post('*',function(req,res){
+//debugging function to println where requests are sent to
+/*app.post('*',function(req,res){
     console.log("debug post url");
     console.log(req.url);
     //console.log(Object.keys(req));//logs available req fields
@@ -207,6 +207,12 @@ app.post('/log_in', function(req, res, next) {
       res.send('success');
     });
   })(req, res, next);
+});
+
+app.post('/log_out', function(req,res){
+    console.log("test");
+    req.logout();
+    res.send('success');
 });
 
 //creator home (collections page)
@@ -276,8 +282,7 @@ app.post("/ajax/createCollection", function(request, response) {
         });
     } else {
         response.redirect('/'); //redirect to home page
-    }
-   
+    }  
 });
 
 //ajax for editing collection data from the front end
@@ -393,13 +398,18 @@ app.post("/ajax/deleteEntry", function(request, response) {
 
 
 //ajax for scraping
-app.post("/ajax/scrapeUrl", function(request, response) { //ajax coming to right address?
-    if(request.isAuthenticated()){
+app.post("/ajax/scrapeUrl", function(req, res) { //ajax coming to right address?
+    console.log("test");
+    res.send('success');
+    /*if(request.isAuthenticated()){
+        console.log("testawefaef");
         scraper.scrapeUrl(request.body.url, function(content){
-        console.log(content);
-        response.send(content);
-    });
-    }
+            response.redirect('/');
+            //response.send({content: content});
+            console.log("fewfe");
+        });
+        //response.send("success");
+    }*/
 });
 
 //////////////////////////////////////////////
@@ -494,8 +504,14 @@ app.post('/sign_up', function(request, response) {
         if(creator_data == null) {
             //creator email doesn't exist in the db
              addCreator(creator);
-             response.redirect("/");
-        } else {
+
+             //create a collection for them
+            var coll = new Collection(null, "New Collection", "", creator.email, "true");
+            addCollection(coll, function(id){
+                response.send("success");
+            });
+        }
+        else {
              //creator email alread exists
              response.send("Sorry, the email you gave us is already in use.");
         }

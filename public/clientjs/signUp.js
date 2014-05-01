@@ -1,6 +1,12 @@
-function sendMessage(e) {
+$(document).ready(function() { 
 
-    var emptyFields = "false"; //check if the form has been filled out
+  $("#signForm").submit(function( event ) {
+
+    // prevent the page from redirecting
+    event.preventDefault();
+
+    //check if the form has been filled out
+    var emptyFields = "false"; 
     $.each($('#signForm').serializeArray(), function() {             
         if(this.value === ""){
           emptyFields = "true";
@@ -16,10 +22,31 @@ function sendMessage(e) {
       e.preventDefault();
     }
 
-}
-
-//overrides default behavior of messageForm
-window.addEventListener('load', function(){
-    var messageForm = document.getElementById('signForm');
-    messageForm.addEventListener('submit', sendMessage, false);
-}, false);
+    //send data to the server
+    $.post("sign_up",{
+         name: $('#name').val(),
+         email: $('#email').val(),
+         password: $('#password').val(),
+         id: $('#id').val(),
+         street: $('#street').val(),
+         city:$('#city').val(),
+         state:$('#state').val(), 
+         zip:$('#zip').val()
+    },function(data,status){
+      if(status === "success"){
+        //login, redirect to creator page
+        $.post("log_in",{
+           email: $('#email').val(), 
+           pass: $('#password').val(),
+        },function(data,status){
+          if(data === "invalid email" || data === "invalid password"){
+            alert("server error"); 
+          } else{
+            //successful login, redirect to creator page
+            window.location = "/home"; 
+          }
+        });
+      }
+    });
+  });
+});
