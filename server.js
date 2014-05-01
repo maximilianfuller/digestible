@@ -182,7 +182,7 @@ function unsubscribe(email_id){
 
 /* ////////////////////////////////////////////
 ajax/server request handling
-*//////////////////////////////////////////////
+*///////////////////////////////////recipient///////////
 
 //a collection of moustache templates and ajax handlers
 //note: some files served statically and not represented
@@ -259,6 +259,10 @@ app.get('/ajax/:collectionID', function(request, response) {
             response.redirect('/'); //redirect to home page
         }
     });
+
+});
+
+app.get("/unsubscribe/:recipentHash"){
 
 });
 
