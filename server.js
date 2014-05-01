@@ -218,7 +218,7 @@ function unsubscribe(email_id, successCallback){
 
 /* ////////////////////////////////////////////
 ajax/server request handling
-*//////////////////////////////////////////////
+*///////////////////////////////////recipient///////////
 
 //a collection of moustache templates and ajax handlers
 //note: some files served statically and not represented

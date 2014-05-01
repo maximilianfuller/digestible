@@ -206,7 +206,7 @@ APP
 	left: 200px;
 	top: 0;
 	right: 0;
-	box-shadow: 0 0 10px rgba(50,50,50,.25);
+	border-left: 1px solid #eee;
 	min-height: 100%;
 	min-width: 640px;
 }
@@ -324,12 +324,12 @@ COLLECTIONS
 }
 #publishColl {
 	background: #1095EC;
-	margin-right: 20px;
+	width: auto;
+	padding: 0 20px 0 20px;
 }
 #unpublishColl {
-	width: 160px;
+	width: 210px;
 	background: #1095EC;
-	margin-right: 20px;
 }
 #settingsHolder {
 	width: 30px;
@@ -337,6 +337,9 @@ COLLECTIONS
 	float: right;
 	margin: 22px 5px 0 0;
 	cursor: pointer;
+}
+.lastButton {
+	margin-right: 20px;
 }
 .headerButton.unpublished, #settingsHolder.unpublished {
 	display: block;
@@ -380,13 +383,7 @@ COLLECTIONS
 	font-family: "Open Sans", sans-serif;
 	color: #444;
 }
-#collEditEmailExplain {
-	margin-top: 20px;
-	opacity: 0.2;
-}
-.collEditOpacity {
-	opacity: 0.2;
-}
+
 #noLinksPrompt {
 	color: #a3a3a3;
 	width: 420px;
@@ -405,13 +402,16 @@ COLLECTIONS
 	margin: 10px auto;
 }
 
-#collSettingsOverlay, #deleteOverlay {
+#deleteOverlay, #collSettingsOverlay {
 	position: fixed;
 	top: 0;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	background: rgba(255,255,255,0.95);
+	/*display: none;*/
+}
+#deleteOverlay {
 	display: none;
 }
 
@@ -420,12 +420,10 @@ COLLECTIONS
 	font-size: 44px;
 	margin-top: 70px;
 }
-#collOptionsForm label {
-	width: 150px;
-	float: left;
+#collEditForm label {
+	display: inline-block;
 	height: 36px;
 	padding: 7px 8px 0 0;
-	text-align: right;
 	box-sizing: border-box;
 	color: #ccc;
 	margin-bottom: 20px;
@@ -434,16 +432,27 @@ COLLECTIONS
 .collOptionInput {
 	width: 350px;
 	margin-bottom: 20px;
+	display: inline-block;
+}
+#freqLabel {
+	display: inline-block;
 }
 #emailFrequency {
 	width: 150px;
-	margin: 28px 0 0 0;
+	margin: 15px 0 0 10px;
+	display: inline-block;
 }
 #finalDelete {
 	margin-bottom: 20px;
 }
 #cancelDelete {
 	background: #aaa;
+}
+#yourLink, #theURL {
+	display: inline-block;
+}
+.unpublished {
+	display: none;
 }
 
 /*---------------

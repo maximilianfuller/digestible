@@ -20,10 +20,6 @@ $(document).ready(function() {
     $('#collSettingsOverlay').hide();
   });
 
-  $('#collEditForm .formSubmit').click(function() {
-    alert("This is just an example of what the the sign up form looks like for your readers.");
-  });
-
   $('#deleteColl').click(function() {
     $('#deleteOverlay').show();
   });
@@ -39,7 +35,7 @@ $(document).ready(function() {
   $('#addEmailWrap').mouseleave(function() {
     $(this).css('border', '2px solid #ccc');
   });
-
+  $( "#sortable" ).sortable();
   
   /*
   *end of Pete's stuff
@@ -82,9 +78,11 @@ function refresh() {
       if (data.visible == 'false') {
         $('.headerButton, #settingsHolder').removeClass('published');
         $('.headerButton, #settingsHolder').addClass('unpublished');
+        $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('disabled', false);
       } else {
         $('.headerButton, #settingsHolder').removeClass('unpublished');
         $('.headerButton, #settingsHolder').addClass('published');
+        $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('disabled', true); // these elements can't be edited when pubslished
       }
     })
       .fail(function() {
