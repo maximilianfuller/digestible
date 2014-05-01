@@ -4,6 +4,9 @@
 //open source, self-publishing facilitating, 
 //scintillating, majestic, cs132-tastic code
 
+//IMPORTANT: SET THIS VARIABLE TO THE DOMAIN NAME! THIS IS FOR UNSUBSCRIBING
+var domain = "127.0.0.1";
+
 /* ////////////////////////////////////////////
 //RUN TESTS/PRIMERS:
 *//////////////////////////////////////////////
@@ -14,7 +17,7 @@ var runDBTests = false;
 var primeDataBase = false; 
 
 //prints the contents of the database to the console upon initilization
-var printDataBase = false; 
+var printDataBase = true; 
 
 /* ////////////////////////////////////////////
 Initialization
@@ -33,6 +36,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var scraper = require('./scraper'); //a simple scraping routine we wrote
 var app = express();
+var cheerio = require('cheerio');
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
 app.set('views', __dirname + '/templates'); // tell Express where to find templates
@@ -148,7 +152,13 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
                 entries[i].subject, entries[i].content, "PENDING");
             (function(currentMills) {
                 addEmail(email, function(email_id) {
-                    scheduleEmail(email_id, currentMills);
+                    email.email_id = email_id;
+                    //append extra html to email body
+                    formatEmailBody(email, function(body) {
+                        updateEmailBody(email_id, body, function() {
+                            scheduleEmail(email_id, currentMills);
+                        });
+                    });
                 });
             })(currentMills);
             currentMills+=millsInterval;
@@ -156,29 +166,55 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
         }
     });
 }
+//appends address and unsubscribe html to the body of the email. call callback on the result
+function formatEmailBody(email, callback) {
+    console.log("email.collection_id: " + email.collection_id);
+    getCollection(email.collection_id, function(collection) {
+        getCreator(collection.creator_email, function(creator) {
+            //var $ = cheerio.load(email.content);
+            //console.log("PRECONTENT: " + email.content);
+            var unsub = "<p>If you wish to unsubscribe from this collection, " + 
+                "please go <a href=\"" + domain + "/unsubscribe/" + email.email_id + "\">here</a></p>";
+            var address = "<p>This email was sent on behalf of " + creator.name + ", " + 
+                creator.street_address + " " + creator.city + ", " + 
+                creator.state + ", " + creator.zipcode + "</p>";
+            var result = email.content + unsub + address + "<a href='www.google.com'>hi</a>";
+            //$('body').append(unsub);
+            //$('body').append(address);
+            // console.log("POSTCONTENT: " + result);
+            callback(result);
+        });
+    });
+}
 
 //unsubscribes
 //NOTE: NEEDS TESTING
-function unsubscribe(email_id){
+function unsubscribe(email_id, successCallback){
     getEmail(email_id, function(email) {
         conn.query("SELECT * FROM Emails WHERE collection_id = $1 AND recipient = $2",
-        [email.collection_id, reader_email], function(error, result) {
+        [email.collection_id, email.recipient], function(error, result) {
             if(error) {
                 console.error(error);
+                successCallback(false);
             } else {
-                for(var i = 0; i < result.rowCount; i++) {
-                    //for any emails in the db scheduled to send after the
-                    //cancelled email, set them to cancelled
-                    if(result.rows[i].date_to_send > email.date_to_send) {
-                        updateEmailStatus(result.rows[i].email_id, "CANCELLED");
-                        clearTimeout(scheduled_emails.get(result.rows[i].email_id));
-                        scheduled_emails.remove(result.rows[i].email_id);
+                if(result.rowCount == 0) {
+                    successCallback(false);
+                } else {
+                    for(var i = 0; i < result.rowCount; i++) {
+                        //for any emails in the db scheduled to send after the
+                        //cancelled email, set them to cancelled
+                        if(result.rows[i].date_to_send > email.date_to_send) {
+                            updateEmailStatus(result.rows[i].email_id, "CANCELLED");
+                            clearTimeout(scheduled_emails.get(result.rows[i].email_id));
+                            scheduled_emails.remove(result.rows[i].email_id);
+                        }
                     }
+                    successCallback(true);
                 }
             }
         });
     });    
-} 
+}
 
 /* ////////////////////////////////////////////
 ajax/server request handling
@@ -212,8 +248,7 @@ app.post('/log_in', function(req, res, next) {
 //creator home (collections page)
 app.get('/home', function(request, response){
     if(request.isAuthenticated()){
-        var user = request.user.email; //from the cookie!!!!!!!
-        getCollectionsWithCreator(user,function(collections){
+        getCollectionsWithCreator(request.user.email,function(collections){
             var moustacheParams = [];
             //create moustache field for collection names
             var collectionNamesList = [];
@@ -232,7 +267,8 @@ app.get('/home', function(request, response){
 
             //add the entry name fields to the moustacheParams
             moustacheParams.collectionNames = collectionNamesList;
-            moustacheParams.creatorEmail = user;
+            moustacheParams.creatorEmail = request.user.email;
+            moustacheParams.creatorName = request.user.name;
             response.render('collection.html',moustacheParams);
         });
     } else { //this should redirect to home page
@@ -412,7 +448,7 @@ app.get('/consumer/:collection_id', function(request, response){
         getEntriesWithCollectionID(cl_id, function(entries){
 
             //check if the collection exists
-            if(collection !== null){
+            if(collection !== null && collection.visible == "true"){
                     getCreator(collection.creator_email, function(creator) {
 
                     var moustacheParams = {};
@@ -500,6 +536,18 @@ app.post('/sign_up', function(request, response) {
              response.send("Sorry, the email you gave us is already in use.");
         }
     })
+});
+
+app.get('/unsubscribe/:email_id', function(request, response) {
+    unsubscribe(request.params.email_id, function(success) {
+        if(success) {
+            //TODO: Format this
+            response.send("You have successfully unsubscribed.");
+        } else {
+            //TODO: Format this
+            response.send("Unsubscribe failed.");
+        }
+    });
 });
 
 
@@ -786,6 +834,25 @@ function updateEmailStatus(email_id, status){
         status,
         email_id
     ]).on('error', console.error);
+}
+
+//updates an email body in the database (based on its email_id)
+//optional no-argument function called upon completion
+//NOTE: only to be used just after email creation
+function updateEmailBody(email_id, body, callback){
+    conn.query('UPDATE Emails SET content=$1 WHERE email_id=$2',
+    [
+        body,
+        email_id
+    ], function(error, result) {
+        if(error) {
+            console.error(error);
+        } else {
+            if(callback) {
+                callback();
+            }
+        }
+    });
 }
     
 
@@ -1121,7 +1188,6 @@ addCollection(c1, function(c1_id) {
 if(printDataBase) {
     printDB();
 }
-
 
 
 ////////////////////////////////////////////////////////////////// 
