@@ -33,7 +33,8 @@ $(document).ready(function() {
          state:$('#state').val(), 
          zip:$('#zip').val()
     },function(data,status){
-      if(status === "success"){
+
+      if(data === "success"){
         //login, redirect to creator page
         $.post("log_in",{
            email: $('#email').val(), 

@@ -257,7 +257,7 @@ $("#settingsSave").click(function(){
      state:$('#state').val(), 
      zip:$('#zip').val()
   },function(data,status) {
-       if(data == "incorrectPass"){
+       if(data === "incorrectPass"){
         alert("you entered an incorrect old password");
        }
        else if(data == "passwordChanged"){
