@@ -15,7 +15,7 @@ $(document).ready(function() {
        content: html,
        entry_id: meta("entryId")
     });
-   $("#saveCheckContain").addClass('saved');
+   $('#saveCheckContain, #saveColl').addClass('saved');
   });
 
   $('#finalDelete').click(function() {
@@ -24,8 +24,7 @@ $(document).ready(function() {
   });
 
   $('#goBack').click(function() {
-    
-    if ($('#saveCheckContain').hasClass('saved') || ($('#emailTitleInput').val().length == 0 && $('#emailInput').val().length == 0)) {
+    if ($('#saveCheckContain').hasClass('saved') || $('#saveCheckContain').hasClass('unedited')) {
       window.location = "/home";
     } else{
       $('#backOverlay').show();
@@ -33,10 +32,6 @@ $(document).ready(function() {
   });
   $('#continueBack').click(function() {
     window.location = "/home";
-  });
-  $('#saveFromOverlay').click(function() {
-    $('#backOverlay').hide();
-    $('#saveCheckContain').addClass('saved');
   });
 
   
@@ -78,11 +73,21 @@ $(document).ready(function() {
 
 
   //Pete's stuff
-  $('#emailTitleInput, #emailInput').keydown(function() {
-    $('#saveCheckContain').removeClass('saved');
+  $('#saveFromOverlay').click(function() {
+    var html = editor.serialize().emailInput.value;
+    html += "<h1>HEADER hi</h1>";
+   $.post("/ajax/editEntry",{
+       subject: $('#emailTitleInput').val(),
+       content: html,
+       entry_id: meta("entryId")
+    });
+    window.location = "/home";
   });
-  $('#saveColl').click(function() {
-    $('#saveCheckContain').addClass('saved');
+  $('#emailTitleInput, #emailInput').change(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved unedited');
+  });
+  $('#emailTitleInput, #emailInput').keydown(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved unedited');
   });
   $('#deleteColl').click(function() {
     $('#deleteOverlay').show();

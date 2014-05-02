@@ -5,11 +5,14 @@ $(document).ready(function() {
   *Pete's stuff
   */
 
+  $('#collTitleInput, #collDescriptInput').change(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved');
+  });
   $('#collTitleInput, #collDescriptInput').keydown(function() {
-    $('#saveCheckContain').removeClass('saved');
+    $('#saveCheckContain, #saveColl').removeClass('saved');
   });
   $('#emailFrequency, #addEmailContain, #publishColl').click(function() {
-    $('#saveCheckContain').removeClass('saved');
+    $('#saveCheckContain, #saveColl').removeClass('saved');
   });
 
   if($("#collections").val() == null) {
@@ -133,8 +136,8 @@ $("#saveColl, #unpublishColl").click(function() {
     email_interval: 86400000 * $("#emailFrequency").val()
   };
   editCollectionData(collection);
-  $("#saveCheckContain").addClass('saved');
 
+  $('#saveCheckContain, #saveColl').addClass('saved');
 });
 
 $("#finalDelete").click(function() {
