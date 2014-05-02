@@ -24,7 +24,6 @@ $(document).ready(function() {
   });
 
   $('#goBack').click(function() {
-    
     if ($('#saveCheckContain').hasClass('saved') || $('#saveCheckContain').hasClass('unedited')) {
       window.location = "/home";
     } else{
@@ -75,7 +74,14 @@ $(document).ready(function() {
 
   //Pete's stuff
   $('#saveFromOverlay').click(function() {
-    $('#backOverlay').hide();
+    var html = editor.serialize().emailInput.value;
+    html += "<h1>HEADER hi</h1>";
+   $.post("/ajax/editEntry",{
+       subject: $('#emailTitleInput').val(),
+       content: html,
+       entry_id: meta("entryId")
+    });
+    window.location = "/home";
   });
   $('#emailTitleInput, #emailInput').change(function() {
     $('#saveCheckContain, #saveColl').removeClass('saved unedited');
