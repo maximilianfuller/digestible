@@ -422,16 +422,13 @@ COLLECTIONS
 	margin: 10px auto;
 }
 
-#deleteOverlay, #collSettingsOverlay {
+#deleteOverlay, #backOverlay {
 	position: fixed;
 	top: 0;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	background: rgba(255,255,255,0.95);
-	/*display: none;*/
-}
-#deleteOverlay {
 	display: none;
 }
 
@@ -464,10 +461,10 @@ COLLECTIONS
 	background: transparent;
 	border: none;
 }
-#finalDelete {
+#finalDelete, #saveFromOverlay {
 	margin-bottom: 20px;
 }
-#cancelDelete {
+#cancelDelete, #continueBack {
 	background: #aaa;
 }
 #yourLink, #theURL {
@@ -544,6 +541,22 @@ EMAIL
 	margin: 10px 0 0 0;
 	max-height: 350px;
 	min-height: 350px;
+}
+#saveCheckContain {
+	width: 30px;
+	height: 30px;
+	float: right;
+	margin: 22px 46px 0 0;
+	display: none;
+}
+#saveCheckContain.collectionCheck {
+	margin-right: 26px;
+}
+#saveCheckContain.saved {
+	display: block;
+}
+#saveColl.saved {
+	display: none;
 }
 
 #emailInput {

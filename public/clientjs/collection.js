@@ -5,6 +5,16 @@ $(document).ready(function() {
   *Pete's stuff
   */
 
+  $('#collTitleInput, #collDescriptInput').change(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved');
+  });
+  $('#collTitleInput, #collDescriptInput').keydown(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved');
+  });
+  $('#emailFrequency, #addEmailContain, #publishColl').click(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved');
+  });
+
   if($("#collections").val() == null) {
     $('#deleteColl').hide();
   }
@@ -46,10 +56,15 @@ refresh();
 
 //get data from server and adjust the page accordingly
 function refresh() {
+  
+  $("#settingsWrap").hide();
+  $("#subscriberMainWrap").hide();
+  $("#editHeader").show();
+  $("#collectionWrap").show();
+  
   var currentCollectionId = $("#collections").val();
   if(currentCollectionId == null) {
-    //TODO
-    //what do we do when the creator has no collections?
+      addEntry();
   } else {
     $.get("/ajax/" + currentCollectionId, function(data) {
       $("#collTitleInput").val(data.collection_title);
@@ -57,6 +72,8 @@ function refresh() {
       $("#collDescriptInput").val(data.collection_description);
       $("#pageURL").val("digestible.io/consumer/" + currentCollectionId);
 
+      var emailFrequencyInDays = data.email_interval/86400000;
+      $("#emailFrequency").val(emailFrequencyInDays);
       var $ol = $("#subscriptionsContainer ol");
       $ol.empty();
       var entries = data.entries.sort(function(a, b) {
@@ -100,8 +117,10 @@ $("#publishColl").click(function() {
     collection_id: collection_id,
     collection_title: $("#collTitleInput").val(),
     collection_description: $("#collDescriptInput").val(),
-    visible: "true"
+    visible: "true",
+    email_interval: 86400000 * $("#emailFrequency").val()
   };
+  console.log(collection.email_interval);
   editCollectionData(collection);
 
 });
@@ -112,10 +131,12 @@ $("#saveColl, #unpublishColl").click(function() {
     collection_id: collection_id,
     collection_title: $("#collTitleInput").val(),
     collection_description: $("#collDescriptInput").val(),
-    visible: "false"
+    visible: "false",
+    email_interval: 86400000 * $("#emailFrequency").val()
   };
   editCollectionData(collection);
 
+  $('#saveCheckContain, #saveColl').addClass('saved');
 });
 
 $("#finalDelete").click(function() {
@@ -128,6 +149,10 @@ $("#addCollection").click(function() {
 
 $("#addEmailWrap").click(function() {
   addEntry();
+});
+
+$("#sortable").on("sortupdate", function(event, ui) {
+  console.log(ui.item.index());
 });
 
 
@@ -187,9 +212,9 @@ function meta(name) {
         return tag.content;
     return '';
 }
-  //END OF MAX'S STUFF
-  //BEN'S STUFF
+//END OF MAX'S STUFF
 
+//BEN'S STUFF
 $("#logout").click(function() {
   $.post("/log_out", function(data) {
      window.location = "/";
@@ -197,6 +222,52 @@ $("#logout").click(function() {
     .fail(function() {
       alert("error");
     });
+});
+
+$("#subscribeB").click(function(){
+  $("#editHeader").hide();
+  $("#collectionWrap").hide();
+  $("#settingsWrap").hide();
+  $("#subscriberMainWrap").show();
+});
+
+$("#settingsB").click(function(){
+  
+  $.post("/ajax/loadSettings", function(data) {
+     $('#name').val(data.name);
+     $('#street').val(data.street_address);
+     $('#city').val(data.city);
+     $('#state').val(data.state); 
+     $('#zip').val(data.zipcode);
+  })
+  .fail(function() {
+    alert("error");
+  });
+
+  $("#editHeader").hide();
+  $("#collectionWrap").hide();
+  $("#subscriberMainWrap").hide();
+  $("#settingsWrap").show();
+});
+
+$("#settingsSave").click(function(){
+  $.post("/ajax/saveSettings", {
+     name: $('#name').val(),
+     password: $('#password').val(),
+     newpass: $('#newPass').val(),
+     street: $('#street').val(),
+     city:$('#city').val(),
+     state:$('#state').val(), 
+     zip:$('#zip').val()
+  },function(data,status) {
+       if(data == "incorrectPass"){
+        alert("you entered an incorrect old password");
+       }
+       else if(data == "passwordChanged"){
+        alert("password changed");
+       }
+       alert(data);  
+  });
 });
   //END OF BEN'S STUFF
 });

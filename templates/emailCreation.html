@@ -12,10 +12,8 @@
 		<link rel="stylesheet" href="/css/medium-editor.css"> <!-- Core -->
 		<link rel="stylesheet" href="/css/medium-themes/flat.css">
 		<link rel="stylesheet" href="/css/email.css"> <!-- theme -->
-		<link rel="stylesheet" href="../public/css/digestible.css" /><!-- This is so javier can edit the css file statically-->
-		
-		<script type="text/javascript" src="/clientjs/jquery-2.1.0.min.js"></script>
-		<!-- <script type="text/javascript" src="test.js"></script> This is so javier can test the js file statically-->
+
+		<script type="text/javascript" src="clientjs/jquery-2.1.0.min.js"></script>
 	</head>
 
 	<body>
@@ -24,6 +22,9 @@
 				<button class="headerButton" id="goBack">Go Back</button>
 				<button class="headerButton" id="deleteColl">Delete</button>
 				<button class="headerButton lastButton" id="saveColl">Save</button>
+				<div id="saveCheckContain" class="unedited">
+					<img src="images/checkmark.png" alt="Save Success">
+				</div>
 			</div>
 			<div id="appMainContainer">
 				<section>
@@ -31,8 +32,7 @@
 						<input type="text" value = "{{subject}}" id="emailTitleInput" placeholder="Type your subject">
 						<input type="text" id="articleLinkInput" placeholder="Or paste the article link here and we'll make the email for you">
 						<button id="pullContent">Pull Content</button>
-						<div id="emailInput" class="editable" placeholder="Type email here.">{{{content}}}</div>
-
+						<div id="emailInput" class="editable" >{{{content}}}</div>
 					</div>
 				</section>
 			</div>
@@ -44,9 +44,16 @@
 				<button id="cancelDelete">Cancel</button>
 			</div>
 		</div>
-		<script src="/clientjs/medium-editor.js"></script>
+		<div id="backOverlay">
+			<div class="overlayContain">
+				<h2 class="optionsTitle">Continue without saving?</h2>
+				<button id="saveFromOverlay">Save</button>
+				<button id="continueBack">Continue</button>
+			</div>
+		</div>
+		<script src="clientjs/medium-editor.js"></script>
 
-		<script type="text/javascript" src="/clientjs/emailCreation.js"></script>
+		<script type="text/javascript" src="clientjs/emailCreation.js"></script>
 	</body>
 </html> 
 

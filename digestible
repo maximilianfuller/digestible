@@ -61,7 +61,7 @@
 # Log file path.
 # LOGFILE=/var/log/my-application.log
 #
-NAME="digestible"
+NAME="the digestible application"
 NODE_BIN_DIR=/home/bitnami/stack/nodejs/bin
 NODE_PATH=/home/bitnami/digestible/node_modules
 APPLICATION_DIRECTORY=/home/bitnami/digestible

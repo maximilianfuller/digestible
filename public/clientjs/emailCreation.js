@@ -9,12 +9,12 @@ $(document).ready(function() {
   //save the email to the database
   $('#saveColl').click(function() {
     var html = editor.serialize().emailInput.value;
-    html += "<h1>HEADER hi</h1>";
    $.post("/ajax/editEntry",{
        subject: $('#emailTitleInput').val(),
        content: html,
        entry_id: meta("entryId")
     });
+   $('#saveCheckContain, #saveColl').addClass('saved');
   });
 
   $('#finalDelete').click(function() {
@@ -23,9 +23,15 @@ $(document).ready(function() {
   });
 
   $('#goBack').click(function() {
+    if ($('#saveCheckContain').hasClass('saved') || $('#saveCheckContain').hasClass('unedited')) {
+      window.location = "/home";
+    } else{
+      $('#backOverlay').show();
+    };
+  });
+  $('#continueBack').click(function() {
     window.location = "/home";
   });
-
 
   
   //can only edit content when the collection is not published
@@ -66,6 +72,21 @@ $(document).ready(function() {
 
 
   //Pete's stuff
+  $('#saveFromOverlay').click(function() {
+    var html = editor.serialize().emailInput.value;
+   $.post("/ajax/editEntry",{
+       subject: $('#emailTitleInput').val(),
+       content: html,
+       entry_id: meta("entryId")
+    });
+    window.location = "/home";
+  });
+  $('#emailTitleInput, #emailInput').change(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved unedited');
+  });
+  $('#emailTitleInput, #emailInput').keydown(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved unedited');
+  });
   $('#deleteColl').click(function() {
     $('#deleteOverlay').show();
   });
