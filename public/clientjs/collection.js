@@ -49,6 +49,12 @@ refresh();
 
 //get data from server and adjust the page accordingly
 function refresh() {
+  
+  $("#settingsWrap").hide();
+  $("#subscriberMainWrap").hide();
+  $("#editHeader").show();
+  $("#collectionWrap").show();
+  
   var currentCollectionId = $("#collections").val();
   if(currentCollectionId == null) {
     //TODO
@@ -190,9 +196,9 @@ function meta(name) {
         return tag.content;
     return '';
 }
-  //END OF MAX'S STUFF
-  //BEN'S STUFF
+//END OF MAX'S STUFF
 
+//BEN'S STUFF
 $("#logout").click(function() {
   $.post("/log_out", function(data) {
      window.location = "/";
@@ -200,6 +206,45 @@ $("#logout").click(function() {
     .fail(function() {
       alert("error");
     });
+});
+
+$("#subscribeB").click(function(){
+  $("#editHeader").hide();
+  $("#collectionWrap").hide();
+  $("#settingsWrap").hide();
+  $("#subscriberMainWrap").show();
+});
+
+$("#settingsB").click(function(){
+  
+  $.post("/ajax/loadSettings", function(data) {
+  //refresh page
+  var $option = $('<option>').val(data.collection_id).html(data.collection_title);
+  $('#collections').append($option);
+  $option.attr("selected", true);
+  refresh();
+  })
+  .fail(function() {
+    alert("error");
+  });
+
+  $("#editHeader").hide();
+  $("#collectionWrap").hide();
+  $("#subscriberMainWrap").hide();
+  $("#settingsWrap").show();
+});
+
+$("#settingsSave").click(function(){
+  $.post("/ajax/loadSettings", function(data) {
+  //refresh page
+  var $option = $('<option>').val(data.collection_id).html(data.collection_title);
+  $('#collections').append($option);
+  $option.attr("selected", true);
+  refresh();
+  })
+  .fail(function() {
+    alert("error");
+  }); 
 });
   //END OF BEN'S STUFF
 });

@@ -29,6 +29,7 @@
 				</div>
 			</div>
 			<div id="appMainContainer">
+
 				<section>
 					<form id="collEditForm">
 						<input type="text" id="collTitleInput" placeholder="Name your collection">
@@ -46,29 +47,138 @@
 						<input class="formSubmit collEditOpacity" id="consumerSubmit" type="submit" name="" value="Subscribe"> -->
 						
 
-						<div class="urlHolder "> <!-- ONLY PUT CLASS "unpublished" ON THIS DIV IF NEVER PUBLISHED BEFORE -->
-							<label for="pageURL">Page URL:</label>
-							<input class="collOptionInput" id="pageURL" type="text" value="digestible.com/important-startup-articles" disabled>
-						</div>
-						
-					</form>
-				</section>
-				<div id="separator"></div>
-				<section>
-					<div id="subscriptionsContainer">
-						<h2 id="subscribeTitle">Email Archive</h2>
+							<div class="urlHolder "> <!-- ONLY PUT CLASS "unpublished" ON THIS DIV IF NEVER PUBLISHED BEFORE -->
+								<label for="pageURL">Page URL:</label>
+								<input class="collOptionInput" id="pageURL" type="text" value="digestible.com/important-startup-articles" disabled>
+							</div>
+							
+						</form>
+					</section>
+					<div id="separator"></div>
+					<section>
+						<div id="subscriptionsContainer">
+							<h2 id="subscribeTitle">Email Archive</h2>
 
-						<!-- this only shows up if there are no li elements in the email archive ol -->
-						<p id="noLinksPrompt">1. Links to your scheduled emails will be archived here.</p>
+							<!-- this only shows up if there are no li elements in the email archive ol -->
+							<p id="noLinksPrompt">1. Links to your scheduled emails will be archived here.</p>
 
-						<ol id="sortable">
-						</ol>
-						<div id="addEmailWrap">
-							<div id="addEmailContain">
-								<img src="../images/plus.png" alt="Add Email Link">
+							<ol id="sortable">
+							</ol>
+							<div id="addEmailWrap">
+								<div id="addEmailContain">
+									<img src="../images/plus.png" alt="Add Email Link">
+								</div>
 							</div>
 						</div>
-					</div>
+					</section>
+				</div>
+				<div id = "settingsWrap" style="display:none">
+					<section>
+						<h2>Settings</h2>
+						<form action="">
+							
+							<input type="text" name="" id="name" class="textInput" value="Bob Smith" placeholder="Your real name">
+							
+							<input type="text" name="" id="email" class="textInput" value="bob_smith@gmail.com" placeholder="Email address">
+							
+							<input type="password" name="" id="password" class="textInput" placeholder="Old password">
+							
+							<input type="password" name="" id="newPass" class="textInput" placeholder="New password">
+							<p id="addressExplain">We need your address so you can legally email subscribers.</p>
+							
+							<input type="text" name="" id="street" class="textInput" value="12345 Street St" placeholder="Street">
+							
+							<input type="text" name="" id="city" class="textInput" value="Providence" placeholder="City">
+							<input type="text" name="" id="state" class="textInput" placeholder="State">
+							
+							<input type="text" name="" id="zip" class="textInput" value="12345" placeholder="Zipcode">
+							<input id = "settingsSave" class="formSubmit" type="submit" name="" value="Save"/>
+						</form>
+					</section>
+				</div>
+			</div>
+		</div>
+		<div id="subscriberMainWrap" style="display:none">
+			<div id="subscriberMainContainer">
+				<section>
+					<h1 id="subscriberTitle">Subscribers</h1>
+					<table id="subscribeTable" cellpadding="0">
+						<tr id="headerRow">
+							<th>Collection</th>
+							<th>First Name</th>
+							<th>Email Address</th>
+							<th>Date Started</th>
+							<th>Progress</th>
+						</tr>
+						<tr>
+							<td>
+								<p>1</p>
+							</td>
+							<td>
+								<ul>
+									<li>Bob</li>
+									<li>Bob</li>
+									<li>Bob</li>
+								</ul>
+							</td>
+							<td>
+								<ul>
+									<li>bob_smith@gmail.com</li>
+									<li>bob_smith@gmail.com</li>
+									<li>bob_smith@gmail.com</li>
+								</ul>
+							</td>
+							<td>
+								<ul>
+									<li>Mar 7, 2014</li>
+									<li>Mar 7, 2014</li>
+									<li>Mar 7, 2014</li>
+								</ul>
+							</td>
+							<td>
+								<ul>
+									<li>7/12, Next in 12 days</li>
+									<li>7/12, Next in 12 days</li>
+									<li>7/12, Next in 12 days</li>
+								</ul>
+							</td> 
+						</tr>
+
+						<tr>
+							<td>
+								<p>2</p>
+							</td>
+							<td>
+								<ul>
+									<li>Roger</li>
+									<li>Roger</li>
+									<li>Roger</li>
+								</ul>
+							</td>
+							<td>
+								<ul>
+									<li>bob_smith@gmail.com</li>
+									<li>bob_smith@gmail.com</li>
+									<li>bob_smith@gmail.com</li>
+								</ul>
+							</td>
+							<td>
+								<ul>
+									<li>Mar 7, 2014</li>
+									<li>Mar 7, 2014</li>
+									<li>Mar 7, 2014</li>
+								</ul>
+							</td>
+							<td>
+								<ul>
+									<li>7/12, Next in 12 days</li>
+									<li>7/12, Next in 12 days</li>
+									<li>7/12, Next in 12 days</li>
+								</ul>
+							</td> 
+						</tr>
+							
+					</table>
 				</section>
 			</div>
 		</div>
@@ -84,8 +194,8 @@
 				<!-- <div id="selectArrow"></div> -->
 			</div>
 			<p class="sideBarLink"><a id="addCollection" href="#">Add Collection</a></p>
-			<p class="sideBarLink"><a href="#">Subscribers</a></p>
-			<p class="sideBarLink"><a href="#">Settings</a></p>
+			<p class="sideBarLink"><a id = "subscribeB"href="#">Subscribers</a></p>
+			<p class="sideBarLink"><a id= "settingsB" href="#">Settings</a></p>
 		</div>
 		<p id="logout"><a id="logout" href="#">Log Out</a></p>
 		<!-- <div id="collSettingsOverlay">
