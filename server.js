@@ -240,8 +240,8 @@ ajax/server request handling
 //note: some files served statically and not represented
 //by the following handlers
 
-/*//debugging function to println where requests are sent to
-app.post('*',function(req,res){
+//debugging function to println where requests are sent to
+/*app.post('*',function(req,res){
     console.log("debug post url");
     console.log(req.url);
     //console.log(Object.keys(req));//logs available req fields
@@ -259,6 +259,12 @@ app.post('/log_in', function(req, res, next) {
       res.send('success');
     });
   })(req, res, next);
+});
+
+app.post('/log_out', function(req,res){
+    console.log("test");
+    req.logout();
+    res.send('success');
 });
 
 //creator home (collections page)
@@ -328,8 +334,7 @@ app.post("/ajax/createCollection", function(request, response) {
         });
     } else {
         response.redirect('/'); //redirect to home page
-    }
-   
+    }  
 });
 
 //ajax for editing collection data from the front end
@@ -445,12 +450,15 @@ app.post("/ajax/deleteEntry", function(request, response) {
 
 
 //ajax for scraping
-app.post("/ajax/scrapeUrl", function(request, response) { //ajax coming to right address?
-    if(request.isAuthenticated()){
-        scraper.scrapeUrl(request.body.url, function(content){
-        console.log(content);
-        response.send(content);
-    });
+app.post("/ajax/scrapeUrl", function(req, res) { 
+    console.log("test");
+    if(req.isAuthenticated()){
+        console.log("testawefaef");
+        scraper.scrapeUrl(req.body.url, function(content){
+            res.send({content: content});
+            console.log(content);
+        });
+        //response.send("success");
     }
 });
 
@@ -547,8 +555,14 @@ app.post('/sign_up', function(request, response) {
             //creator email doesn't exist in the db
             console.log("CREATOR ZIP: " + request.body.zip);
              addCreator(creator);
-             response.redirect("/");
-        } else {
+
+             //create a collection for them
+            var coll = new Collection(null, "New Collection", "", creator.email, "true");
+            addCollection(coll, function(id){
+                response.send("success");
+            });
+        }
+        else {
              //creator email alread exists
              response.send("Sorry, the email you gave us is already in use.");
         }
@@ -663,8 +677,6 @@ function getEntry(entry_id, callback) {
                     result.rows[0].content
                 ));
             }
-
-
         });
 }
 
@@ -730,9 +742,6 @@ function addCollection(collection, callback){
         ]).on('error', console.error).on('end', function() {
             callback(id);
         });
-    
-
-
 }
 
 
@@ -1210,6 +1219,6 @@ if(printDataBase) {
 ////////////////////////////////////////////////////////////////// 
 //run on local for testing
 ////////////////////////////////////////////////////////////////// 
-app.listen(8080, function(){
-    console.log('- Server listening on port 8080'.grey);
+app.listen(process.env.PORT || 8080, function(){
+    console.log('- Server listening -'.grey);
 });
