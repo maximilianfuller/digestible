@@ -80,9 +80,6 @@ $(document).ready(function() {
   $('#emailTitleInput, #emailInput').keydown(function() {
     $('#saveCheckContain').removeClass('saved');
   });
-  $('#saveColl').click(function() {
-    $('#saveCheckContain').addClass('saved');
-  });
   $('#deleteColl').click(function() {
     $('#deleteOverlay').show();
   });

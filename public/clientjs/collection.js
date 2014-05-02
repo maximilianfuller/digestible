@@ -4,9 +4,6 @@ $(document).ready(function() {
   /*
   *Pete's stuff
   */
-  $('#saveColl').click(function() {
-    $('#saveCheckContain').addClass('saved');
-  });
   $('#collTitleInput, #collDescriptInput').keydown(function() {
     $('#saveCheckContain').removeClass('saved');
   });
@@ -130,7 +127,6 @@ $("#saveColl, #unpublishColl, #saveFromOverlay").click(function() {
     visible: "false"
   };
   editCollectionData(collection);
-
 });
 
 $("#finalDelete").click(function() {
