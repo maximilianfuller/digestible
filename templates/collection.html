@@ -34,20 +34,22 @@
 						<input type="text" id="collTitleInput" placeholder="Name your collection">
 						<p id="author">By: {{creatorName}}</p>
 						<textarea id="collDescriptInput" rows="4" cols="50" placeholder="Describe your collection of articles"></textarea>
-						<label id="freqLabel">Email Frequency:</label>
-						<select name="" id="emailFrequency">
-							<option value="1">1 day</option>
-							<option value="3">3 days</option>
-							<option value="5">5 days</option>
-							<option value="7">7 days</option>
-						</select>
+						<div id="emailFreqContain" class=""> <!-- GIVE THIS unpublished OR published CLASS ON PAGE LOAD -->
+							<label id="freqLabel">Email Frequency:</label>
+							<select name="" id="emailFrequency">
+								<option value="1">1 day</option>
+								<option value="3">3 days</option>
+								<option value="5">5 days</option>
+								<option value="7">7 days</option>
+							</select>
+						</div>
 						<!-- <p id="collEditEmailExplain">Sign up to recieve each article in an easy to read email every three days.</p>
 						<input type="text" placeholder="Name" class="consumerInput collEditOpacity" id="name" disabled>
 						<input type="text" placeholder="Email Address" class="consumerInput collEditOpacity" id="email" disabled>
 						<input class="formSubmit collEditOpacity" id="consumerSubmit" type="submit" name="" value="Subscribe"> -->
 						
 
-							<div class="urlHolder "> <!-- ONLY PUT CLASS "unpublished" ON THIS DIV IF NEVER PUBLISHED BEFORE -->
+							<div class="urlHolder"> <!-- GIVE THIS unpublished OR published CLASS ON PAGE LOAD -->
 								<label for="pageURL">Page URL:</label>
 								<input class="collOptionInput" id="pageURL" type="text" value="digestible.com/important-startup-articles" disabled>
 							</div>
