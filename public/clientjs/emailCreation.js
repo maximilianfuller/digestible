@@ -8,7 +8,6 @@ $(document).ready(function() {
   });
   //save the email to the database
   $('#saveColl').click(function() {
-    $('#saveCheckContain, #saveColl').addClass('saved');
     var html = editor.serialize().emailInput.value;
     html += "<h1>HEADER hi</h1>";
    $.post("/ajax/editEntry",{
@@ -16,6 +15,7 @@ $(document).ready(function() {
        content: html,
        entry_id: meta("entryId")
     });
+   $('#saveCheckContain, #saveColl').addClass('saved');
   });
 
   $('#finalDelete').click(function() {
@@ -74,6 +74,9 @@ $(document).ready(function() {
 
 
   //Pete's stuff
+  $('#saveFromOverlay').click(function() {
+    $('#backOverlay').hide();
+  });
   $('#emailTitleInput, #emailInput').change(function() {
     $('#saveCheckContain, #saveColl').removeClass('saved unedited');
   });

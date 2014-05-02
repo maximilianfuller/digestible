@@ -4,11 +4,14 @@ $(document).ready(function() {
   /*
   *Pete's stuff
   */
+  $('#collTitleInput, #collDescriptInput').change(function() {
+    $('#saveCheckContain, #saveColl').removeClass('saved');
+  });
   $('#collTitleInput, #collDescriptInput').keydown(function() {
-    $('#saveCheckContain').removeClass('saved');
+    $('#saveCheckContain, #saveColl').removeClass('saved');
   });
   $('#emailFrequency, #addEmailContain, #publishColl').click(function() {
-    $('#saveCheckContain').removeClass('saved');
+    $('#saveCheckContain, #saveColl').removeClass('saved');
   });
 
   if($("#collections").val() == null) {
@@ -127,6 +130,7 @@ $("#saveColl, #unpublishColl, #saveFromOverlay").click(function() {
     visible: "false"
   };
   editCollectionData(collection);
+  $('#saveCheckContain, #saveColl').addClass('saved');
 });
 
 $("#finalDelete").click(function() {
