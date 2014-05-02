@@ -21,7 +21,7 @@
 			<div id="editHeader">
 				<button class="headerButton lastButton" id="unpublishColl">Edit Collection and Emails</button>
 				<button class="headerButton " id="deleteColl">Delete</button>
-				<button class="headerButton lastButton" id="publishColl">Publish</button> <!-- THIS TEXT SHOULD BE "Publish" or "Publish Changes" -->
+				<button class="headerButton lastButton" id="publishColl">Publish</button> <!-- TODO THIS TEXT SHOULD BE "Publish" or "Publish Changes" -->
 				<button class="headerButton " id="saveColl">Save</button>
 				<div id="saveCheckContain" class="collectionCheck">
 					<img src="../images/checkmark.png" alt="Save Success">
@@ -34,20 +34,22 @@
 						<input type="text" id="collTitleInput" placeholder="Name your collection">
 						<p id="author">By: {{creatorName}}</p>
 						<textarea id="collDescriptInput" rows="4" cols="50" placeholder="Describe your collection of articles"></textarea>
-						<label id="freqLabel">Email Frequency:</label>
-						<select name="" id="emailFrequency">
-							<option value="1">1 day</option>
-							<option value="3">3 days</option>
-							<option value="5">5 days</option>
-							<option value="7">7 days</option>
-						</select>
+						<div id="emailFreqContain" class=""> <!-- TODO GIVE THIS unpublished OR published CLASS ON PAGE LOAD -->
+							<label id="freqLabel">Email Frequency:</label>
+							<select name="" id="emailFrequency">
+								<option value="1">1 day</option>
+								<option value="3">3 days</option>
+								<option value="5">5 days</option>
+								<option value="7">7 days</option>
+							</select>
+						</div>
 						<!-- <p id="collEditEmailExplain">Sign up to recieve each article in an easy to read email every three days.</p>
 						<input type="text" placeholder="Name" class="consumerInput collEditOpacity" id="name" disabled>
 						<input type="text" placeholder="Email Address" class="consumerInput collEditOpacity" id="email" disabled>
 						<input class="formSubmit collEditOpacity" id="consumerSubmit" type="submit" name="" value="Subscribe"> -->
 						
 
-							<div class="urlHolder "> <!-- ONLY PUT CLASS "unpublished" ON THIS DIV IF NEVER PUBLISHED BEFORE -->
+							<div class="urlHolder"> <!-- TODO GIVE THIS unpublished OR published CLASS ON PAGE LOAD -->
 								<label for="pageURL">Page URL:</label>
 								<input class="collOptionInput" id="pageURL" type="text" value="digestible.com/important-startup-articles" disabled>
 							</div>
@@ -65,7 +67,7 @@
 							<ol id="sortable">
 							</ol>
 							<div id="addEmailWrap">
-								<div id="addEmailContain">
+								<div id="addEmailContain"> <!-- TODO GIVE THIS CLASS published IF PAGE IS PUBLISHED -->
 									<img src="../images/plus.png" alt="Add Email Link">
 								</div>
 							</div>

@@ -421,6 +421,9 @@ COLLECTIONS
 	height: 20px;
 	margin: 10px auto;
 }
+#addEmailContain.published {
+	display: none;
+}
 
 #deleteOverlay, #backOverlay {
 	position: fixed;
@@ -470,7 +473,10 @@ COLLECTIONS
 #yourLink, #theURL {
 	display: inline-block;
 }
-.unpublished {
+#emailFreqContain.unpublished, .urlHolder.published {
+	display: block;
+}
+#emailFreqContain.published, .urlHolder.unpublished {
 	display: none;
 }
 
