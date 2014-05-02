@@ -5,10 +5,10 @@
 //scintillating, majestic, cs132-tastic code
 
 //IMPORTANT: SET THIS VARIABLE TO THE DOMAIN NAME! THIS IS FOR UNSUBSCRIBING
-var domain = "127.0.0.1";
+var domain = "http://localhost:8080";
 
 /* ////////////////////////////////////////////
-//RUN TESTS/PRIMERS:
+//localhost TESTS/PRIMERS:
 *//////////////////////////////////////////////
 //runs a series of asserts to verify correct db functionality
 var runDBTests = false; 
@@ -37,6 +37,8 @@ var LocalStrategy = require('passport-local').Strategy;
 var scraper = require('./scraper'); //a simple scraping routine we wrote
 var app = express();
 var cheerio = require('cheerio');
+var juice = require('juice');
+var fs = require('fs');
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
 app.set('views', __dirname + '/templates'); // tell Express where to find templates
@@ -147,10 +149,10 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
     getEntriesWithCollectionID(collection_id, function(entries) {
         var currentMills = millsToFirst;
         for(var i = 0; i < entries.length; i++) {
-            var email = new Email(null, reader_email, 
-                Date.now() + currentMills, entries[i].entry_id, collection_id,
-                entries[i].subject, entries[i].content, "PENDING");
-            (function(currentMills) {
+            (function(currentMills, i) {
+                var email = new Email(null, reader_email, 
+                    Date.now() + currentMills, entries[i].entry_id, collection_id,
+                    entries[i].subject, entries[i].content, "PENDING");
                 addEmail(email, function(email_id) {
                     email.email_id = email_id;
                     //append extra html to email body
@@ -160,29 +162,38 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
                         });
                     });
                 });
-            })(currentMills);
+            })(currentMills, i);
             currentMills+=millsInterval;
 
         }
     });
 }
-//appends address and unsubscribe html to the body of the email. call callback on the result
+//appends address and unsubscribe html to the body of the email. Also adds inline css. calls callback on the result
 function formatEmailBody(email, callback) {
     console.log("email.collection_id: " + email.collection_id);
     getCollection(email.collection_id, function(collection) {
         getCreator(collection.creator_email, function(creator) {
             //var $ = cheerio.load(email.content);
             //console.log("PRECONTENT: " + email.content);
-            var unsub = "<p>If you wish to unsubscribe from this collection, " + 
+            var unsub = "<p id='unsub'>If you wish to unsubscribe from this collection, " + 
                 "please go <a href=\"" + domain + "/unsubscribe/" + email.email_id + "\">here</a></p>";
-            var address = "<p>This email was sent on behalf of " + creator.name + ", " + 
+            var address = "<p id='address'>This email was sent on behalf of " + creator.name + ", " + 
                 creator.street_address + " " + creator.city + ", " + 
                 creator.state + ", " + creator.zipcode + "</p>";
-            var result = email.content + unsub + address + "<a href='www.google.com'>hi</a>";
+            var result = email.content + unsub + address;
+            //inline css
+            
+            fs.readFile('./public/css/email.css', {encoding : "utf8"},
+                function(err, css) {
+                if(err) console.error(err);
+                result = juice.inlineContent(result, css);
+                callback(result);
+            })
+           
             //$('body').append(unsub);
             //$('body').append(address);
             // console.log("POSTCONTENT: " + result);
-            callback(result);
+            
         });
     });
 }
@@ -191,28 +202,33 @@ function formatEmailBody(email, callback) {
 //NOTE: NEEDS TESTING
 function unsubscribe(email_id, successCallback){
     getEmail(email_id, function(email) {
-        conn.query("SELECT * FROM Emails WHERE collection_id = $1 AND recipient = $2",
-        [email.collection_id, email.recipient], function(error, result) {
-            if(error) {
-                console.error(error);
-                successCallback(false);
-            } else {
-                if(result.rowCount == 0) {
+        if(email == null) {
+            callback(false);
+        } else {
+            conn.query("SELECT * FROM Emails WHERE collection_id = $1 AND recipient = $2",
+            [email.collection_id, email.recipient], function(error, result) {
+                if(error) {
+                    console.error(error);
                     successCallback(false);
                 } else {
-                    for(var i = 0; i < result.rowCount; i++) {
-                        //for any emails in the db scheduled to send after the
-                        //cancelled email, set them to cancelled
-                        if(result.rows[i].date_to_send > email.date_to_send) {
-                            updateEmailStatus(result.rows[i].email_id, "CANCELLED");
-                            clearTimeout(scheduled_emails.get(result.rows[i].email_id));
-                            scheduled_emails.remove(result.rows[i].email_id);
+                    if(result.rowCount == 0) {
+                        successCallback(false);
+                    } else {
+                        for(var i = 0; i < result.rowCount; i++) {
+                            //for any emails in the db scheduled to send after the
+                            //cancelled email, set them to cancelled
+                            if(result.rows[i].date_to_send > email.date_to_send) {
+                                updateEmailStatus(result.rows[i].email_id, "CANCELLED");
+                                clearTimeout(scheduled_emails.get(result.rows[i].email_id));
+                                scheduled_emails.remove(result.rows[i].email_id);
+                            }
                         }
+                        successCallback(true);
                     }
-                    successCallback(true);
                 }
-            }
-        });
+            });
+        }
+        
     });    
 }
 
@@ -494,7 +510,7 @@ app.post('/consumer/sign_up', function(request, response){
     var reader_email = request.body.email;
     var collection_id = request.body.collection_id;
     var millisToFirst = 0;
-    var millisInterval = 60000; //1 min
+    var millisInterval = 600000; //10 min
     getCollection(collection_id, function(collection) {
         //only subscribe if the collection exists and is public
         if(collection != null && collection.visible == "true") {
@@ -529,6 +545,7 @@ app.post('/sign_up', function(request, response) {
     getCreator(request.body.email, function(creator_data) {
         if(creator_data == null) {
             //creator email doesn't exist in the db
+            console.log("CREATOR ZIP: " + request.body.zip);
              addCreator(creator);
              response.redirect("/");
         } else {

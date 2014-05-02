@@ -1,11 +1,18 @@
 $(document).ready(function() {
   
-  var editor = new MediumEditor('.editable');
+  var editor = new MediumEditor('.editable', {
+    buttons: ['bold', 'italic', 'underline', 'anchor', 'header1', 'header2', 
+    'quote', 'unorderedlist', 'orderedlist'],
+    firstHeader:'h1',
+    secondHeader:'h2'
+  });
   //save the email to the database
   $('#saveColl').click(function() {
+    var html = editor.serialize().emailInput.value;
+    html += "<h1>HEADER hi</h1>";
    $.post("/ajax/editEntry",{
        subject: $('#emailTitleInput').val(),
-       content: editor.serialize().emailInput.value,
+       content: html,
        entry_id: meta("entryId")
     });
   });
