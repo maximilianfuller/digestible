@@ -7,6 +7,12 @@ $(document).ready(function() {
   $('#saveColl').click(function() {
     $('#saveCheckContain').addClass('saved');
   });
+  $('#collTitleInput, #collDescriptInput').keydown(function() {
+    $('#saveCheckContain').removeClass('saved');
+  });
+  $('#emailFrequency, #addEmailContain, #publishColl').click(function() {
+    $('#saveCheckContain').removeClass('saved');
+  });
 
   if($("#collections").val() == null) {
     $('#deleteColl').hide();
