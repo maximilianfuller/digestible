@@ -45,7 +45,16 @@ $(document).ready(function() {
   $('#addEmailWrap').mouseleave(function() {
     $(this).css('border', '2px solid #ccc');
   });
-  $( "#sortable" ).sortable();
+
+  var lastStartIndex;
+  $( "#sortable" ).sortable({
+    update: function(event, ui) {
+      reorderEntry(lastStartIndex + 1, ui.item.index() + 1);
+    },
+    start: function(event, ui) {
+      lastStartIndex = ui.item.index();
+    }
+  });
   
   /*
   *end of Pete's stuff
@@ -150,11 +159,6 @@ $("#addEmailWrap").click(function() {
   addEntry();
 });
 
-$("#sortable").on("sortupdate", function(event, ui) {
-  console.log("position: " + ui.position);
-  console.log("original position: " + ui.originalPosition);
-});
-
 
 
 //edits collection data on the server
@@ -189,8 +193,7 @@ function createCollection() {
     $('#collections').append($option);
     $option.attr("selected", true);
     refresh();
-  })
-    .fail(function() {
+  }).fail(function() {
       alert("error");
     });
 }
@@ -205,8 +208,16 @@ function addEntry() {
   });
 }
 
-function insertEntry(startRow, endRow) {
-
+function reorderEntry(startRow, endRow) {
+  console.log("startRow: " + startRow + "       endRow: " + endRow);
+  $.post("/ajax/reorderEntry",
+  {
+    collection_id: $("#collections").val(),
+    startEntryNumber: startRow,
+    endEntryNumber: endRow
+  }).fail(function() {
+      alert("error");
+    });
 }
 
 

@@ -447,7 +447,31 @@ app.post("/ajax/deleteEntry", function(request, response) {
             });
         }
     });
-}); 
+});
+
+app.post("/ajax/reorderEntry", function(request, response) {
+    //reorder the entry_numbers
+    var start = request.body.startEntryNumber;
+    var end = request.body.endEntryNumber;
+    getEntriesWithCollectionID(request.body.collection_id, function(entries) {
+        for(var i = 0; i < entries.length; i++) {
+            if(entries[i].entry_number == start) {
+                entries[i].entry_number = end;
+                editEntry(entries[i]);
+            } else if (start < end) {
+                if(entries[i].entry_number > start && entries[i].entry_number <= end) {
+                    entries[i].entry_number--;
+                    editEntry(entries[i]);
+                }
+            } else {
+                if(entries[i].entry_number < start && entries[i].entry_number >= end) {
+                    entries[i].entry_number++;
+                    editEntry(entries[i]);
+                }   
+            }
+        }
+    });
+});
 
 
 //ajax for scraping
