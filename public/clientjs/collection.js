@@ -4,6 +4,9 @@ $(document).ready(function() {
   /*
   *Pete's stuff
   */
+  $('#saveColl').click(function() {
+    $('#saveCheckContain').addClass('saved');
+  });
 
   if($("#collections").val() == null) {
     $('#deleteColl').hide();
