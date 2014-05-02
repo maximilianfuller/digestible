@@ -35,6 +35,14 @@ input {
 	border-left: 5px solid #ccc;
 }
 
+input:disabled {
+	background-color: #fff;
+}
+
+textarea:disabled {
+	background-color: #fff;
+}
+
 select {
 	display: block;
 	outline: none;
@@ -42,6 +50,11 @@ select {
 	margin: 1px 0 20px 0;
 	font-size: 17px;
 }
+
+label {
+	font-size: 18px;
+}
+
 #authForm {
 	position: absolute;
 	right: 0;
@@ -251,7 +264,7 @@ APP
    position: relative;
 }
 #collections {
-	width: 142px;
+	width: 150px;
    background: transparent;
    padding: 5px;
    font-size: 16px;
@@ -259,9 +272,11 @@ APP
    border: 0;
    border-radius: 0;
    height: 34px;
-   -webkit-appearance: none;
+   /*-webkit-appearance: none;*/
    color: #444;
+   margin: 0;
 }
+
 #selectArrow {
 	position: absolute;
 	width: 0; 
@@ -330,6 +345,11 @@ COLLECTIONS
 #unpublishColl {
 	width: 210px;
 	background: #1095EC;
+	opacity: .75;
+}
+
+#unpublishColl:hover {
+	opacity: 1.00;
 }
 #settingsHolder {
 	width: 30px;
@@ -402,16 +422,13 @@ COLLECTIONS
 	margin: 10px auto;
 }
 
-#deleteOverlay, #collSettingsOverlay {
+#deleteOverlay, #backOverlay {
 	position: fixed;
 	top: 0;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	background: rgba(255,255,255,0.95);
-	/*display: none;*/
-}
-#deleteOverlay {
 	display: none;
 }
 
@@ -438,14 +455,16 @@ COLLECTIONS
 	display: inline-block;
 }
 #emailFrequency {
-	width: 150px;
+	width: 50px;
 	margin: 15px 0 0 10px;
 	display: inline-block;
+	background: transparent;
+	border: none;
 }
-#finalDelete {
+#finalDelete, #saveFromOverlay {
 	margin-bottom: 20px;
 }
-#cancelDelete {
+#cancelDelete, #continueBack {
 	background: #aaa;
 }
 #yourLink, #theURL {
@@ -523,6 +542,16 @@ EMAIL
 	margin: 10px 0 0 0;
 	max-height: 350px;
 	min-height: 350px;
+}
+#saveCheckContain {
+	width: 30px;
+	height: 30px;
+	float: right;
+	margin: 22px 0 0 0;
+	display: none;
+}
+#saveCheckContain.saved {
+	display: block;
 }
 
 /*---------------

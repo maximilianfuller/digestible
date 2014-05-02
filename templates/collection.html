@@ -30,21 +30,23 @@
 				</div> -->
 			</div>
 			<div id="appMainContainer">
-				<div id="collectionWrap">
-					<section>
-						<form id="collEditForm">
-							<input type="text" id="collTitleInput" placeholder="Name your collection">
-							<p id="author">By: {{creatorName}}</p>
-							<textarea id="collDescriptInput" rows="4" cols="50" placeholder="Describe your collection of articles"></textarea>
-							<label id="freqLabel">Email Frequency:</label>
-							<select name="" id="emailFrequency">
-								<option value="">3</option>
-							</select>
-							<!-- <p id="collEditEmailExplain">Sign up to recieve each article in an easy to read email every three days.</p>
-							<input type="text" placeholder="Name" class="consumerInput collEditOpacity" id="name" disabled>
-							<input type="text" placeholder="Email Address" class="consumerInput collEditOpacity" id="email" disabled>
-							<input class="formSubmit collEditOpacity" id="consumerSubmit" type="submit" name="" value="Subscribe"> -->
-							
+
+				<section>
+					<form id="collEditForm">
+						<input type="text" id="collTitleInput" placeholder="Name your collection">
+						<p id="author">By: {{creatorName}}</p>
+						<textarea id="collDescriptInput" rows="4" cols="50" placeholder="Describe your collection of articles"></textarea>
+						<label id="freqLabel">Email Frequency:</label>
+						<select name="" id="emailFrequency">
+							<option value="">3</option>
+							<option value="">5</option>
+							<option value="">7</option>
+						</select>
+						<!-- <p id="collEditEmailExplain">Sign up to recieve each article in an easy to read email every three days.</p>
+						<input type="text" placeholder="Name" class="consumerInput collEditOpacity" id="name" disabled>
+						<input type="text" placeholder="Email Address" class="consumerInput collEditOpacity" id="email" disabled>
+						<input class="formSubmit collEditOpacity" id="consumerSubmit" type="submit" name="" value="Subscribe"> -->
+						
 
 							<div class="urlHolder "> <!-- ONLY PUT CLASS "unpublished" ON THIS DIV IF NEVER PUBLISHED BEFORE -->
 								<label for="pageURL">Page URL:</label>
@@ -190,7 +192,7 @@
 
 					{{/collectionNames}}
 				</select>
-				<div id="selectArrow"></div>
+				<!-- <div id="selectArrow"></div> -->
 			</div>
 			<p class="sideBarLink"><a id="addCollection" href="#">Add Collection</a></p>
 			<p class="sideBarLink"><a id = "subscribeB"href="#">Subscribers</a></p>
