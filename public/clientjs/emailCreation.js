@@ -51,7 +51,7 @@ $(document).ready(function() {
            entry_id: meta("entryId")
         });
         $('#emailInput').focus();
-        $('#mainWrap').focus();
+        $('#editHeader').focus();
       }
     });
  });
