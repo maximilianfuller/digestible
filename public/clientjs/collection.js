@@ -215,11 +215,11 @@ $("#subscribeB").click(function(){
 $("#settingsB").click(function(){
   
   $.post("/ajax/loadSettings", function(data) {
-  //refresh page
-  var $option = $('<option>').val(data.collection_id).html(data.collection_title);
-  $('#collections').append($option);
-  $option.attr("selected", true);
-  refresh();
+     $('#name').val(data.name);
+     $('#street').val(data.street_address);
+     $('#city').val(data.city);
+     $('#state').val(data.state); 
+     $('#zip').val(data.zipcode);
   })
   .fail(function() {
     alert("error");
@@ -232,16 +232,23 @@ $("#settingsB").click(function(){
 });
 
 $("#settingsSave").click(function(){
-  $.post("/ajax/loadSettings", function(data) {
-  //refresh page
-  var $option = $('<option>').val(data.collection_id).html(data.collection_title);
-  $('#collections').append($option);
-  $option.attr("selected", true);
-  refresh();
-  })
-  .fail(function() {
-    alert("error");
-  }); 
+  $.post("/ajax/saveSettings", {
+     name: $('#name').val(),
+     password: $('#password').val(),
+     newpass: $('#newPass').val(),
+     street: $('#street').val(),
+     city:$('#city').val(),
+     state:$('#state').val(), 
+     zip:$('#zip').val()
+  },function(data,status) {
+       if(data == "incorrectPass"){
+        alert("you entered an incorrect old password");
+       }
+       else if(data == "passwordChanged"){
+        alert("password changed");
+       }
+       alert(data);  
+  });
 });
   //END OF BEN'S STUFF
 });

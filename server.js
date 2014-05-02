@@ -569,6 +569,54 @@ app.post('/sign_up', function(request, response) {
     })
 });
 
+app.post('/ajax/saveSettings', function(request, response) {
+
+    if(request.isAuthenticated()){
+        console.log("creator " + request.user.email + " is editing an account");
+        console.log(request.body.password);
+        console.log(request.user.password);
+
+        if(request.body.password == request.user.password){ //if the user is changing their password
+            console.log("passwordChanged");
+        }
+
+        if(request.body.password == request.user.password){ //if the user is changing their password
+            var creator = new Creator_Data(request.user.email, request.body.newpass, 
+            request.body.name, request.body.street, request.body.city, 
+            request.body.state, request.body.zip);
+            editCreator(creator);
+            response.send("passwordChanged");
+        }
+        else{
+            var creator = new Creator_Data(request.user.email, request.user.password, 
+            request.body.name, request.body.street, request.body.city, 
+            request.body.state, request.body.zip);
+            editCreator(creator);
+
+            if(request.body.newpass !== ""){
+                response.send("incorrectPass");
+            }
+            else{
+                response.send("success");
+            }
+        }        
+    }
+    else {
+        response.redirect('/'); //redirect to home page
+    }
+});
+
+app.post('/ajax/loadSettings', function(request, response) {
+    if(request.isAuthenticated()){
+        getCreator(request.user.email, function(creator){
+            response.send(creator);
+        });
+    }
+    else {
+        response.redirect('/'); //redirect to home page
+    }
+});
+
 app.get('/unsubscribe/:email_id', function(request, response) {
     unsubscribe(request.params.email_id, function(success) {
         if(success) {
