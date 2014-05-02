@@ -324,7 +324,8 @@ app.get('/ajax/:collectionID', function(request, response) {
 app.post("/ajax/createCollection", function(request, response) {
     if(request.isAuthenticated()){
         var email = request.user.email;
-        var collection = new Collection(null, "new collection", "", email, "false");
+        //default email interval is 3 days
+        var collection = new Collection(null, "new collection", "", email, "false", 259200000);
         addCollection(collection, function(collection_id) {
             response.send(
             {
@@ -388,7 +389,7 @@ app.post("/ajax/createEntry", function(request, response) {
         if(request.isAuthenticated() && collection != null && 
             collection.creator_email == request.user.email){
             var entry = new Entry(null, request.body.collection_id, 
-                request.body.entry_number, null, null, Date.now(), "", "");
+                request.body.entry_number, null, null, Date.now(), "new email", "");
             addEntry(entry, function(entry_id) {
                 response.send({entry_id: entry_id});
             });
@@ -518,11 +519,10 @@ app.post('/consumer/sign_up', function(request, response){
     var reader_email = request.body.email;
     var collection_id = request.body.collection_id;
     var millisToFirst = 0;
-    var millisInterval = 600000; //10 min
     getCollection(collection_id, function(collection) {
         //only subscribe if the collection exists and is public
         if(collection != null && collection.visible == "true") {
-            subscribe(collection_id, reader_email, millisToFirst, millisInterval);
+            subscribe(collection_id, reader_email, millisToFirst, collection.email_interval);
         }
     })
 
@@ -553,11 +553,10 @@ app.post('/sign_up', function(request, response) {
     getCreator(request.body.email, function(creator_data) {
         if(creator_data == null) {
             //creator email doesn't exist in the db
-            console.log("CREATOR ZIP: " + request.body.zip);
              addCreator(creator);
 
              //create a collection for them
-            var coll = new Collection(null, "New Collection", "", creator.email, "true");
+            var coll = new Collection(null, "new collection", "", creator.email, "true", 259200000);
             addCollection(coll, function(id){
                 response.send("success");
             });
@@ -660,12 +659,13 @@ function Email(email_id, recipient, date_to_send, entry_id, collection_id, subje
 }
 
 //constructor for a Collection object
-function Collection(collection_id, collection_title, collection_description, creator_email, visible) {
+function Collection(collection_id, collection_title, collection_description, creator_email, visible, email_interval) {
     this.collection_id = collection_id;
     this.collection_title = collection_title;
     this.collection_description = collection_description;
     this.creator_email = creator_email;
     this.visible = visible ? visible : "true";
+    this.email_interval = email_interval;
 }
 
 
@@ -779,14 +779,16 @@ function deleteEntry(entry_id){
 //puts a collection into the database and calls callback on its id
 function addCollection(collection, callback){
     var id = generateCollectionID();
-    conn.query('INSERT INTO Collections (collection_id, collection_title, collection_description, creator_email, visible)' + 
-        'VALUES ($1, $2, $3, $4, $5)', 
+    conn.query('INSERT INTO Collections (collection_id, collection_title, ' + 
+        'collection_description, creator_email, visible, email_interval)' + 
+        'VALUES ($1, $2, $3, $4, $5, $6)', 
         [
             id,
             collection.collection_title,
             collection.collection_description,
             collection.creator_email,
-            collection.visible
+            collection.visible,
+            collection.email_interval
         ]).on('error', console.error).on('end', function() {
             callback(id);
         });
@@ -811,7 +813,8 @@ function getCollection(collection_id, callback) {
                     result.rows[0].collection_title,
                     result.rows[0].collection_description,
                     result.rows[0].creator_email, 
-                    result.rows[0].visible));
+                    result.rows[0].visible,
+                    result.rows[0].email_interval));
             }
         });
 }
@@ -827,7 +830,8 @@ function getCollectionsWithCreator(creator_email, callback) {
                     result.rows[i].collection_title,
                     result.rows[i].collection_description,
                     creator_email,
-                    result.rows[i].visible
+                    result.rows[i].visible,
+                    result.rows[i].email_interval
                 ));
             }
             callback(collections);
@@ -837,13 +841,14 @@ function getCollectionsWithCreator(creator_email, callback) {
 //updates a collection in the database
 function editCollection(collection) {
     conn.query('UPDATE Collections ' + 
-        'SET collection_title=$1, collection_description=$2, creator_email=$3, visible=$4 ' +
-        'WHERE collection_id=$5',
+        'SET collection_title=$1, collection_description=$2, creator_email=$3, visible=$4, email_interval=$5 ' +
+        'WHERE collection_id=$6',
     [
         collection.collection_title,
         collection.collection_description,
         collection.creator_email,
         collection.visible,
+        collection.email_interval,
         collection.collection_id
     ]).on('error', console.error);
 }
@@ -1106,7 +1111,7 @@ function assert(cond) {
 
 if(runDBTests) {
 setTimeout(function() {
-var c1 = new Collection(null, "boss instructions", "MY DESCRIPTION", "max@gmail.com", "true");
+var c1 = new Collection(null, "boss instructions", "MY DESCRIPTION", "max@gmail.com", "true", 60000);
 
 addCollection(c1, function(c1_id) {
     
@@ -1228,8 +1233,8 @@ if(primeDataBase) {
 //wait to avoid collision with table id primers
 setTimeout(function() {
 
-var c1 = new Collection(null, "boss instructions", "MY DESCRIPTION", "benjamin_resnick@brown.edu", "true");
-var c2 = new Collection(null, "Collection 2", "This is my awesome collection of articles", "benjamin_resnick@brown.edu", "false");
+var c1 = new Collection(null, "boss instructions", "MY DESCRIPTION", "benjamin_resnick@brown.edu", "true", 60000);
+var c2 = new Collection(null, "Collection 2", "This is my awesome collection of articles", "benjamin_resnick@brown.edu", "false", 60000);
 
 addCollection(c1, function(c1_id) {
     addCollection(c2, function(c2_id) {
