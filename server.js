@@ -1136,6 +1136,6 @@ if(printDataBase) {
 ////////////////////////////////////////////////////////////////// 
 //run on local for testing
 ////////////////////////////////////////////////////////////////// 
-app.listen(80, function(){
-    console.log('- Server listening on port 8080'.grey);
+app.listen(8080, function(){
+    console.log('- Server listening -'.grey);
 });
