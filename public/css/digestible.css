@@ -550,6 +550,9 @@ EMAIL
 	margin: 22px 46px 0 0;
 	display: none;
 }
+#saveCheckContain.collectionCheck {
+	margin-right: 26px;
+}
 #saveCheckContain.saved {
 	display: block;
 }
