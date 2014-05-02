@@ -73,7 +73,6 @@ function refresh() {
       $("#pageURL").val("digestible.io/consumer/" + currentCollectionId);
 
       var emailFrequencyInDays = data.email_interval/86400000;
-      console.log(emailFrequencyInDays);
       $("#emailFrequency").val(emailFrequencyInDays);
       var $ol = $("#subscriptionsContainer ol");
       $ol.empty();
@@ -150,6 +149,10 @@ $("#addCollection").click(function() {
 
 $("#addEmailWrap").click(function() {
   addEntry();
+});
+
+$("#sortable").on("sortupdate", function(event, ui) {
+  console.log(ui.item.index());
 });
 
 

@@ -9,7 +9,6 @@ $(document).ready(function() {
   //save the email to the database
   $('#saveColl').click(function() {
     var html = editor.serialize().emailInput.value;
-    html += "<h1>HEADER hi</h1>";
    $.post("/ajax/editEntry",{
        subject: $('#emailTitleInput').val(),
        content: html,
@@ -75,7 +74,6 @@ $(document).ready(function() {
   //Pete's stuff
   $('#saveFromOverlay').click(function() {
     var html = editor.serialize().emailInput.value;
-    html += "<h1>HEADER hi</h1>";
    $.post("/ajax/editEntry",{
        subject: $('#emailTitleInput').val(),
        content: html,
