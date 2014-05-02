@@ -24,7 +24,7 @@ $(document).ready(function() {
 
   $('#goBack').click(function() {
     
-    if ($('#saveCheckContain').hasClass('saved') || ($('#emailTitleInput').val().length == 0 && $('#emailInput').val().length == 0)) {
+    if ($('#saveCheckContain').hasClass('saved') || $('#saveCheckContain').hasClass('unedited')) {
       window.location = "/home";
     } else{
       $('#backOverlay').show();
@@ -32,10 +32,6 @@ $(document).ready(function() {
   });
   $('#continueBack').click(function() {
     window.location = "/home";
-  });
-  $('#saveFromOverlay').click(function() {
-    $('#backOverlay').hide();
-    $('#saveCheckContain').addClass('saved');
   });
 
   
@@ -78,7 +74,7 @@ $(document).ready(function() {
 
   //Pete's stuff
   $('#emailTitleInput, #emailInput').keydown(function() {
-    $('#saveCheckContain').removeClass('saved');
+    $('#saveCheckContain').removeClass('saved unedited');
   });
   $('#deleteColl').click(function() {
     $('#deleteOverlay').show();
