@@ -265,7 +265,6 @@ APP
 }
 #collections {
 	width: 150px;
-   background: transparent;
    padding: 5px;
    font-size: 16px;
    line-height: 1;
@@ -275,6 +274,7 @@ APP
    /*-webkit-appearance: none;*/
    color: #444;
    margin: 0;
+   background-color: #fff;
 }
 
 #selectArrow {
@@ -337,7 +337,7 @@ COLLECTIONS
 #saveColl, #goBack {
 	background: #aaa;
 }
-#publishColl {
+#publishColl {email
 	background: #1095EC;
 	width: auto;
 	padding: 0 20px 0 20px;
@@ -389,7 +389,7 @@ COLLECTIONS
 }
 #collDescriptInput, #emailDescriptInput {
 	resize: none;
-	font-weight: 400;
+	font-weight: 400;email
 	max-height: 200px;
 	min-height: 200px;
 	min-width: 488px;
@@ -405,7 +405,7 @@ COLLECTIONS
 }
 
 #noLinksPrompt {
-	color: #a3a3a3;
+	color: #a3a3a3;email
 	width: 420px;
 }
 #addEmailWrap {
@@ -420,6 +420,9 @@ COLLECTIONS
 	width: 20px;
 	height: 20px;
 	margin: 10px auto;
+}
+#addEmailContain.published {
+	display: none;
 }
 
 #deleteOverlay, #backOverlay {
@@ -455,7 +458,7 @@ COLLECTIONS
 	display: inline-block;
 }
 #emailFrequency {
-	width: 50px;
+	width: 80px;
 	margin: 15px 0 0 10px;
 	display: inline-block;
 	background: transparent;
@@ -470,7 +473,10 @@ COLLECTIONS
 #yourLink, #theURL {
 	display: inline-block;
 }
-.unpublished {
+#emailFreqContain.unpublished, .urlHolder.published {
+	display: block;
+}
+#emailFreqContain.published, .urlHolder.unpublished {
 	display: none;
 }
 
@@ -481,7 +487,6 @@ EMAIL
 	font-size: 14px;
 	width: 420px;
 	display: inline-block;
-	margin-bottom: 20px;
 }
 #pullContent {
 	height: 30px;
@@ -559,6 +564,12 @@ EMAIL
 #saveColl.saved {
 	display: none;
 }
+
+#emailInput {
+	outline: none;
+	margin-top: 36px;
+}
+
 
 /*---------------
 CONSUMERS

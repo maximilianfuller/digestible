@@ -73,7 +73,6 @@ function refresh() {
       $("#pageURL").val("digestible.io/consumer/" + currentCollectionId);
 
       var emailFrequencyInDays = data.email_interval/86400000;
-      console.log(emailFrequencyInDays);
       $("#emailFrequency").val(emailFrequencyInDays);
       var $ol = $("#subscriptionsContainer ol");
       $ol.empty();
@@ -121,7 +120,6 @@ $("#publishColl").click(function() {
     visible: "true",
     email_interval: 86400000 * $("#emailFrequency").val()
   };
-  console.log(collection.email_interval);
   editCollectionData(collection);
 
 });
@@ -150,6 +148,11 @@ $("#addCollection").click(function() {
 
 $("#addEmailWrap").click(function() {
   addEntry();
+});
+
+$("#sortable").on("sortupdate", function(event, ui) {
+  console.log("position: " + ui.position);
+  console.log("original position: " + ui.originalPosition);
 });
 
 
@@ -200,6 +203,10 @@ function addEntry() {
   $.post("/ajax/createEntry", request, function(data) {
     window.location = "/" + data.entry_id;
   });
+}
+
+function insertEntry(startRow, endRow) {
+
 }
 
 
