@@ -121,7 +121,7 @@ $("#publishColl").click(function() {
 
 });
 
-$("#saveColl, #unpublishColl").click(function() {
+$("#saveColl, #unpublishColl, #saveFromOverlay").click(function() {
   var collection_id = $("#collections").val();
   var collection = {
     collection_id: collection_id,
