@@ -107,7 +107,7 @@ if (typeof module === 'object') {
             disableToolbar: false,
             firstHeader: 'h3',
             forcePlainText: true,
-            placeholder: 'Type your text',
+            placeholder: 'Type your text. Select it for options. We use a simple template so this automatic email looks great on all browsers, mobile devices, and email applications.',
             secondHeader: 'h4',
             targetBlank: false,
             extensions: {}

@@ -1,7 +1,7 @@
 $(document).ready(function() {
   
   var editor = new MediumEditor('.editable', {
-    buttons: ['bold', 'italic', 'underline', 'anchor', 'header1', 'header2', 
+    buttons: ['bold', 'italic', 'anchor', 'header1', 'header2', 
     'quote', 'unorderedlist', 'orderedlist'],
     firstHeader:'h1',
     secondHeader:'h2'
