@@ -62,6 +62,7 @@ conn.end();
     //username and password TABLE (for creators only)
     	//(primary) email
     	//password
+        //name
         //street address
         //city
         //state
