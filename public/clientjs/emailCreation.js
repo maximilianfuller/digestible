@@ -23,9 +23,20 @@ $(document).ready(function() {
   });
 
   $('#goBack').click(function() {
+    
+    if ($('#saveCheckContain').hasClass('saved') || ($('#emailTitleInput').val().length == 0 && $('#emailInput').val().length == 0)) {
+      window.location = "/home";
+    } else{
+      $('#backOverlay').show();
+    };
+  });
+  $('#continueBack').click(function() {
     window.location = "/home";
   });
-
+  $('#saveFromOverlay').click(function() {
+    $('#backOverlay').hide();
+    $('#saveCheckContain').addClass('saved');
+  });
 
   
   //can only edit content when the collection is not published
@@ -66,6 +77,12 @@ $(document).ready(function() {
 
 
   //Pete's stuff
+  $('#emailTitleInput, #emailInput').keydown(function() {
+    $('#saveCheckContain').removeClass('saved');
+  });
+  $('#saveColl').click(function() {
+    $('#saveCheckContain').addClass('saved');
+  });
   $('#deleteColl').click(function() {
     $('#deleteOverlay').show();
   });
