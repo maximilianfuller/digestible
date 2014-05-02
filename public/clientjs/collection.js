@@ -4,9 +4,7 @@ $(document).ready(function() {
   /*
   *Pete's stuff
   */
-  $('#saveColl').click(function() {
-    $('#saveCheckContain').addClass('saved');
-  });
+
   $('#collTitleInput, #collDescriptInput').keydown(function() {
     $('#saveCheckContain').removeClass('saved');
   });
@@ -71,6 +69,9 @@ function refresh() {
       $("#collDescriptInput").val(data.collection_description);
       $("#pageURL").val("digestible.io/consumer/" + currentCollectionId);
 
+      var emailFrequencyInDays = data.email_interval/86400000;
+      console.log(emailFrequencyInDays);
+      $("#emailFrequency").val(emailFrequencyInDays);
       var $ol = $("#subscriptionsContainer ol");
       $ol.empty();
       var entries = data.entries.sort(function(a, b) {
@@ -114,8 +115,10 @@ $("#publishColl").click(function() {
     collection_id: collection_id,
     collection_title: $("#collTitleInput").val(),
     collection_description: $("#collDescriptInput").val(),
-    visible: "true"
+    visible: "true",
+    email_interval: 86400000 * $("#emailFrequency").val()
   };
+  console.log(collection.email_interval);
   editCollectionData(collection);
 
 });
@@ -126,9 +129,11 @@ $("#saveColl, #unpublishColl").click(function() {
     collection_id: collection_id,
     collection_title: $("#collTitleInput").val(),
     collection_description: $("#collDescriptInput").val(),
-    visible: "false"
+    visible: "false",
+    email_interval: 86400000 * $("#emailFrequency").val()
   };
   editCollectionData(collection);
+  $("#saveCheckContain").addClass('saved');
 
 });
 

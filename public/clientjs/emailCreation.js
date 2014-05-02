@@ -15,6 +15,7 @@ $(document).ready(function() {
        content: html,
        entry_id: meta("entryId")
     });
+   $("#saveCheckContain").addClass('saved');
   });
 
   $('#finalDelete').click(function() {

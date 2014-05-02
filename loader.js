@@ -14,7 +14,7 @@ conn.query('CREATE TABLE Entries (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, co
     });
 
 conn.query('CREATE TABLE Collections (collection_id INTEGER PRIMARY KEY AUTOINCREMENT, ' + 
-    'collection_title TEXT, collection_description TEXT, creator_email TEXT, visible TEXT);') 
+    'collection_title TEXT, collection_description TEXT, creator_email TEXT, visible TEXT, email_interval INT);') 
     .on('error', function() {
         console.error; 
     });
@@ -58,6 +58,7 @@ conn.end();
         //creator email
         //visible (true or false string; determines 
             //whether the public (suscribers, can view this collection))
+        //email_interval (time in milliseconds between emails)
 
     //username and password TABLE (for creators only)
     	//(primary) email
