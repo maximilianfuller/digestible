@@ -325,12 +325,12 @@ app.post("/ajax/createCollection", function(request, response) {
     if(request.isAuthenticated()){
         var email = request.user.email;
         //default email interval is 3 days
-        var collection = new Collection(null, "new collection", "", email, "false", 259200000);
+        var collection = new Collection(null, "Name your collection", "", email, "false", 259200000);
         addCollection(collection, function(collection_id) {
             response.send(
             {
                 collection_id: collection_id,
-                collection_title: "new collection"
+                collection_title: "Name your collection"
             });
         });
     } else {
@@ -580,7 +580,7 @@ app.post('/sign_up', function(request, response) {
              addCreator(creator);
 
              //create a collection for them
-            var coll = new Collection(null, "new collection", "", creator.email, "true", 259200000);
+            var coll = new Collection(null, "Name your collection", "", creator.email, "true", 259200000);
             addCollection(coll, function(id){
                 response.send("success");
             });
