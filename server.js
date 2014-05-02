@@ -17,7 +17,7 @@ var runDBTests = false;
 var primeDataBase = false; 
 
 //prints the contents of the database to the console upon initilization
-var printDataBase = true; 
+var printDataBase = false; 
 
 /* ////////////////////////////////////////////
 Initialization
@@ -388,7 +388,7 @@ app.post("/ajax/createEntry", function(request, response) {
         if(request.isAuthenticated() && collection != null && 
             collection.creator_email == request.user.email){
             var entry = new Entry(null, request.body.collection_id, 
-                request.body.entry_number, null, null, Date.now(), "", "");
+                request.body.entry_number, null, null, Date.now(), "new email", "");
             addEntry(entry, function(entry_id) {
                 response.send({entry_id: entry_id});
             });
@@ -557,7 +557,7 @@ app.post('/sign_up', function(request, response) {
              addCreator(creator);
 
              //create a collection for them
-            var coll = new Collection(null, "New Collection", "", creator.email, "true");
+            var coll = new Collection(null, "new collection", "", creator.email, "true");
             addCollection(coll, function(id){
                 response.send("success");
             });
