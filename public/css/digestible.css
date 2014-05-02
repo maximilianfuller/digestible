@@ -461,10 +461,10 @@ COLLECTIONS
 	background: transparent;
 	border: none;
 }
-#finalDelete {
+#finalDelete, #saveFromOverlay {
 	margin-bottom: 20px;
 }
-#cancelDelete {
+#cancelDelete, #continueBack {
 	background: #aaa;
 }
 #yourLink, #theURL {
