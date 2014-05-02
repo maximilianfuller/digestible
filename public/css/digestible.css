@@ -35,6 +35,14 @@ input {
 	border-left: 5px solid #ccc;
 }
 
+input:disabled {
+	background-color: #fff;
+}
+
+textarea:disabled {
+	background-color: #fff;
+}
+
 select {
 	display: block;
 	outline: none;
@@ -42,6 +50,11 @@ select {
 	margin: 1px 0 20px 0;
 	font-size: 17px;
 }
+
+label {
+	font-size: 18px;
+}
+
 #authForm {
 	position: absolute;
 	right: 0;
@@ -251,7 +264,7 @@ APP
    position: relative;
 }
 #collections {
-	width: 142px;
+	width: 150px;
    background: transparent;
    padding: 5px;
    font-size: 16px;
@@ -259,9 +272,11 @@ APP
    border: 0;
    border-radius: 0;
    height: 34px;
-   -webkit-appearance: none;
+   /*-webkit-appearance: none;*/
    color: #444;
+   margin: 0;
 }
+
 #selectArrow {
 	position: absolute;
 	width: 0; 
@@ -330,6 +345,11 @@ COLLECTIONS
 #unpublishColl {
 	width: 210px;
 	background: #1095EC;
+	opacity: .75;
+}
+
+#unpublishColl:hover {
+	opacity: 1.00;
 }
 #settingsHolder {
 	width: 30px;
@@ -438,9 +458,11 @@ COLLECTIONS
 	display: inline-block;
 }
 #emailFrequency {
-	width: 150px;
+	width: 50px;
 	margin: 15px 0 0 10px;
 	display: inline-block;
+	background: transparent;
+	border: none;
 }
 #finalDelete {
 	margin-bottom: 20px;
