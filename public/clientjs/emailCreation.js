@@ -1,5 +1,10 @@
 $(document).ready(function() {
   
+  // TODO call these lines if the email is (1) published or (2) unpublished
+  // (1) $('#emailTitleInput, #articleLinkInput, #emailInput').attr('readonly', true);
+  // (2) $('#emailTitleInput, #articleLinkInput, #emailInput').attr('readonly', false);
+
+
   var editor = new MediumEditor('.editable', {
     buttons: ['bold', 'italic', 'anchor', 'header1', 'header2', 
     'quote', 'unorderedlist', 'orderedlist'],
