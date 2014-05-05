@@ -51,6 +51,7 @@ $(document).ready(function() {
     update: function(event, ui) {
       reorderEntry(lastStartIndex + 1, ui.item.index() + 1);
     },
+    disabled: false,
     start: function(event, ui) {
       lastStartIndex = ui.item.index();
     }
@@ -99,14 +100,18 @@ function refresh() {
       } else {
         $('#noLinksPrompt').show();
       }
-      if (data.visible == 'false') {
+      if (data.visible == 'false') { //when not visible, the collection is unpublished
         $('.headerButton, #settingsHolder').removeClass('published');
         $('.headerButton, #settingsHolder').addClass('unpublished');
-        $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('disabled', false);
+        $('#addEmailWrap').show();
+        $( "#sortable" ).sortable( "option", "disabled", false );
+        $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', false);
       } else {
+        $('#addEmailWrap').hide();
+        $( "#sortable" ).sortable( "option", "disabled", true );
         $('.headerButton, #settingsHolder').removeClass('unpublished');
         $('.headerButton, #settingsHolder').addClass('published');
-        $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('disabled', true); // these elements can't be edited when pubslished
+        $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', true); // these elements can't be edited when pubslished
       }
     })
       .fail(function() {

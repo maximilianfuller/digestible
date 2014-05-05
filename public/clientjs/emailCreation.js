@@ -38,7 +38,8 @@ $(document).ready(function() {
   if(meta("visible") == "true") {
     $('#deleteColl').hide();
     $('#saveColl').hide();
-    //TODO: set content to non-editableboss.
+    $('#articleLinkInput').hide();
+    editor.deactivate();
   }
 
   function meta(name) {
@@ -63,8 +64,6 @@ $(document).ready(function() {
            content: data.content,
            entry_id: meta("entryId")
         });
-        $('#emailInput').focus();
-        $('#editHeader').focus();
       }
     });
  });

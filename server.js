@@ -381,7 +381,6 @@ app.get('/ajax/:collectionID', function(request, response) {
             response.redirect('/'); //redirect to home page
         }
     });
-
 });
 
 //ajax for adding a collection as requested by the front end
@@ -563,6 +562,7 @@ app.get('/consumer/:collection_id', function(request, response){
                     var moustacheParams = {};
                     moustacheParams.collectionName = collection.collection_title;
                     moustacheParams.collectionId = cl_id;
+                    moustacheParams.email_interval = collection.email_interval/86400000;
                     moustacheParams.creatorName = creator.name;
                     moustacheParams.description = collection.collection_description;
                     
@@ -574,7 +574,13 @@ app.get('/consumer/:collection_id', function(request, response){
                     for(var i = 0; i < entries.length; i++){ 
                         orderedEntries[entries[i].entry_number-1] = entries[i];
                     }//generate the moustache fields
+                    console.log(entries[0]);
+                    console.log("banana");
+                    
                     for(var i = 0; i < entries.length; i++){ 
+                        console.log("asdf" + i);
+                        console.log(entries[1]);
+
                         var entry = [];
                         entry.entrySubject = orderedEntries[i].subject;
                         entry.entryId = orderedEntries[i].entry_id;
@@ -615,7 +621,7 @@ app.post('/consumer/sign_up', function(request, response){
 
 
 //consumer page view entry requests
-app.get('/consumer/:collection_id/:entry_id', function (request, response) {
+app.get('/consumer/e/:entry_id', function (request, response) {
     getEntry(request.params.entry_id, function(entry) {
         if(entry == null) {
             response.render("page_not_found.html");
@@ -789,8 +795,6 @@ function addEntry(entry, callback){
         ]).on('error', console.error).on('end', function() {
              callback(id);
         });
-   
-
 }
 
 //gets the entry with the given entry_id then calls callback on the resulting entry
@@ -1396,6 +1400,6 @@ if(printDataBase) {
 ////////////////////////////////////////////////////////////////// 
 //run on local for testing
 ////////////////////////////////////////////////////////////////// 
-app.listen(process.env.PORT || 8080, function(){
+app.listen(process.env.PORT || 8081, function(){
     console.log('- Server listening -'.grey);
 });
