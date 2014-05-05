@@ -723,6 +723,7 @@ app.post('/ajax/saveSettings', function(request, response) {
 app.post('/ajax/loadSettings', function(request, response) {
     if(request.isAuthenticated()){
         getCreator(request.user.email, function(creator){
+            console.log(creator.state);
             response.send(creator);
         });
     }

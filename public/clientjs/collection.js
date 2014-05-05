@@ -79,6 +79,7 @@ function refresh() {
       $("#author").html("By: " + data.creator_name);
       $("#collDescriptInput").val(data.collection_description);
       $("#pageURL").val("digestible.io/consumer/" + currentCollectionId);
+      $("#pageURLLink").attr('href','digestible.io/consumer/' + currentCollectionId);
 
       var emailFrequencyInDays = data.email_interval/86400000;
       $("#emailFrequency").val(emailFrequencyInDays);
@@ -255,6 +256,8 @@ $("#settingsB").click(function(){
      $('#name').val(data.name);digestible.io
      $('#street').val(data.street_address);
      $('#city').val(data.city);
+     alert(data.state);
+     alert("asdf");
      $('#state').val(data.state); 
      $('#zip').val(data.zipcode);
   })
