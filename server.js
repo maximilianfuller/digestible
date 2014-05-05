@@ -469,7 +469,12 @@ app.post("/ajax/editEntry", function(request, response) {
             getCollection(entry.collection_id, function(collection) {
                 //verify that the entry belongs to the user
                 if(request.isAuthenticated() && request.user.email == collection.creator_email) {
-                    entry.subject = request.body.subject;
+                    if(request.body.subject === ""){
+                        entry.subject = "untitled";
+                    }
+                    else{
+                        entry.subject = request.body.subject;
+                    }
                     entry.content =request.body.content;
                     editEntry(entry);
                     response.send(200);
