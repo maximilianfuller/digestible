@@ -101,16 +101,16 @@ function refresh() {
         $('#noLinksPrompt').show();
       }
       if (data.visible == 'false') { //when not visible, the collection is unpublished
-        $('.headerButton, #settingsHolder').removeClass('published');
-        $('.headerButton, #settingsHolder').addClass('unpublished');
+        $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').removeClass('published');
+        $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').addClass('unpublished');
         $('#addEmailWrap').show();
         $( "#sortable" ).sortable( "option", "disabled", false );
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', false);
       } else {
         $('#addEmailWrap').hide();
         $( "#sortable" ).sortable( "option", "disabled", true );
-        $('.headerButton, #settingsHolder').removeClass('unpublished');
-        $('.headerButton, #settingsHolder').addClass('published');
+        $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').removeClass('unpublished');
+        $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').addClass('published');
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', true); // these elements can't be edited when pubslished
       }
     })
@@ -269,7 +269,7 @@ $("#subscribeB").click(function(){
 $("#settingsB").click(function(){
   
   $.post("/ajax/loadSettings", function(data) {
-     $('#name').val(data.name);
+     $('#name').val(data.name);digestible.io
      $('#street').val(data.street_address);
      $('#city').val(data.city);
      $('#state').val(data.state); 
