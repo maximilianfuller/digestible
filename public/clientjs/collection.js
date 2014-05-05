@@ -281,9 +281,10 @@ $("#settingsSave").click(function(){
        if(data === "incorrectPass"){
         alert("you entered an incorrect old password");
        }
-       else if(data == "passwordChanged"){
+       else if(data === "passwordChanged"){
         alert("password changed");
        }
+       alert(data);
   });
 });
   //END OF BEN'S STUFF
