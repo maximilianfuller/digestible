@@ -79,6 +79,7 @@ function refresh() {
       $("#author").html("By: " + data.creator_name);
       $("#collDescriptInput").val(data.collection_description);
       $("#pageURL").val("digestible.io/consumer/" + currentCollectionId);
+      $("#pageURLLink").attr('href','/consumer/' + currentCollectionId);
 
       var emailFrequencyInDays = data.email_interval/86400000;
       $("#emailFrequency").val(emailFrequencyInDays);
@@ -268,10 +269,10 @@ $("#subscribeB").click(function(){
 $("#settingsB").click(function(){
   
   $.post("/ajax/loadSettings", function(data) {
-     $('#name').val(data.name);digestible.io
+     $('#name').val(data.name);
      $('#street').val(data.street_address);
      $('#city').val(data.city);
-     $('#state').val(data.state); 
+     $('#state').val('RI'); 
      $('#zip').val(data.zipcode);
   })
   .fail(function() {
@@ -297,9 +298,10 @@ $("#settingsSave").click(function(){
        if(data === "incorrectPass"){
         alert("you entered an incorrect old password");
        }
-       else if(data == "passwordChanged"){
+       else if(data === "passwordChanged"){
         alert("password changed");
        }
+       alert(data);
   });
 });
   //END OF BEN'S STUFF
