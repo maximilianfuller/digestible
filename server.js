@@ -320,9 +320,8 @@ app.get('/ajax/subscriptionData', function(request, response) {
                                 subs.set(emails[j].recipient, [emails[j]]);
                             }
                         }
-                        var counter = 0;
+                        
                         subs.forEach(function(value, key) {
-
                             //sort these emails by date
                             value.sort(function(a,b) {
                                 return(a.date_to_send-b.date_to_send);
@@ -360,18 +359,14 @@ app.get('/ajax/subscriptionData', function(request, response) {
                                 date_started: dateToString(dateStarted),
                                 progress: progress
                             });
-                            //if this is the last key, then send the data
-                            console.log("counter: " + counter);
-                            console.log("subs.keys().length-1" + subs.count());
-                            if(counter == subs.key().length-1) {
-                                response.send({subscriptionData: subscriptionData});
-                            }
-                            counter++;
+                            //TEMP FIX. WORKS FOR n=1
+                            response.send({subscriptionData: subscriptionData});
                         });
-                        
                     });
                 })(collections[i]);
             }
+            //TODO: FIX THIS. DOESN'T WORK WITH ASYNCH
+            //response.send({subscriptionData: subscriptionData});
         });
     }
     
@@ -487,12 +482,7 @@ app.post("/ajax/editEntry", function(request, response) {
             getCollection(entry.collection_id, function(collection) {
                 //verify that the entry belongs to the user
                 if(request.isAuthenticated() && request.user.email == collection.creator_email) {
-                    if(request.body.subject === ""){
-                        entry.subject = "untitled";
-                    }
-                    else{
-                        entry.subject = request.body.subject;
-                    }
+                    entry.subject = request.body.subject;
                     entry.content =request.body.content;
                     editEntry(entry);
                     response.send(200);
@@ -686,7 +676,6 @@ app.post('/ajax/saveSettings', function(request, response) {
 
     if(request.isAuthenticated()){
         console.log("creator " + request.user.email + " is editing an account");
-
         console.log(request.body.password);
         console.log(request.user.password);
 
@@ -707,7 +696,6 @@ app.post('/ajax/saveSettings', function(request, response) {
             request.body.state, request.body.zip);
             editCreator(creator);
 
-            console.log("saveResponse");
             if(request.body.newpass !== ""){
                 response.send("incorrectPass");
             }
