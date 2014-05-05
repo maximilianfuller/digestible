@@ -223,6 +223,20 @@ function reorderEntry(startRow, endRow) {
     });
 }
 
+function getSubscriptionData() {
+  $.get("/ajax/subscriptionData", function(data) {
+    console.log(data);
+    $("#subscribeTable").find("tr:gt(0)").remove(); //clear all non header rows
+    $.each(data.subscriptionData, function(i, row) {
+      var $row = $('<tr>').append($('<td>').text(row.collection_title))
+        .append($('<td>').text(row.address))
+        .append($('<td>').text(row.date_started))
+        .append($('<td>').text(row.progress));
+       $("#subscribeTable").append($row);
+    });
+  });
+}
+
 
 function meta(name) {
     var tag = document.querySelector('meta[name=' + name + ']');
@@ -247,6 +261,8 @@ $("#subscribeB").click(function(){
   $("#collectionWrap").hide();
   $("#settingsWrap").hide();
   $("#subscriberMainWrap").show();
+  getSubscriptionData();
+
 });
 
 $("#settingsB").click(function(){
