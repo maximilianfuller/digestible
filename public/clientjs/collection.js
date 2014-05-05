@@ -256,7 +256,7 @@ $("#settingsB").click(function(){
      $('#name').val(data.name);
      $('#street').val(data.street_address);
      $('#city').val(data.city);
-     $('#state').val(data.state); 
+     $('#state').val('RI'); 
      $('#zip').val(data.zipcode);
   })
   .fail(function() {
