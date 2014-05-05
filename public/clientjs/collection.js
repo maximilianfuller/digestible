@@ -164,7 +164,7 @@ $("#addEmailWrap").click(function() {
 
 
 
-//edits collection data on the server
+//edits collection data on the serverName your collection
 function editCollectionData(collection) {
   $.post("/ajax/editCollection", collection, function(data) {
     //update sidebar
@@ -277,14 +277,13 @@ $("#settingsSave").click(function(){
      city:$('#city').val(),
      state:$('#state').val(), 
      zip:$('#zip').val()
-  },function(data,status) {
+  }).done(function(data) {
        if(data === "incorrectPass"){
         alert("you entered an incorrect old password");
        }
        else if(data == "passwordChanged"){
         alert("password changed");
        }
-       alert(data);  
   });
 });
   //END OF BEN'S STUFF

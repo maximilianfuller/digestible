@@ -667,6 +667,7 @@ app.post('/ajax/saveSettings', function(request, response) {
 
     if(request.isAuthenticated()){
         console.log("creator " + request.user.email + " is editing an account");
+
         console.log(request.body.password);
         console.log(request.user.password);
 
@@ -687,6 +688,7 @@ app.post('/ajax/saveSettings', function(request, response) {
             request.body.state, request.body.zip);
             editCreator(creator);
 
+            console.log("saveResponse");
             if(request.body.newpass !== ""){
                 response.send("incorrectPass");
             }
