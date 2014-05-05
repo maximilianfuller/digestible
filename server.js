@@ -117,14 +117,14 @@ function scheduleEmail(email_id, millisFromNow) {
 function sendEmail(email_id) {
     console.log("sending email with id: " + email_id);
     getEmail(email_id, function(email) {
-       
-    	// setup e-mail data with unicode symbols
-    	var mailOptions = {
-    	    from: "Digestible" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
-    	    to: email.recipient, // list of receivers
-    	    subject: email.subject, // Subject line
-    	    html: email.content // html bodies can also be sent
-    	};	
+       if(email !== null){
+        // setup e-mail data with unicode symbols
+        var mailOptions = {
+            from: "Digestible" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
+            to: email.recipient, // list of receivers
+            subject: email.subject, // Subject line
+            html: email.content // html bodies can also be sent
+        };  
 
         // send mail with defined transport object
         smtpTransport.sendMail(mailOptions, function(error, response){
@@ -136,7 +136,8 @@ function sendEmail(email_id) {
         });
         updateEmailStatus(email_id, "SENT");
         scheduled_emails.remove(email_id);
-          
+        
+       }  
     });
 }
 
@@ -597,16 +598,16 @@ app.get('/consumer/:collection_id', function(request, response){
                         orderedEntries[entries[i].entry_number-1] = entries[i];
                     }//generate the moustache fields
                     console.log(entries[0]);
-                    console.log("banana");
                     
                     for(var i = 0; i < entries.length; i++){ 
-                        console.log("asdf" + i);
                         console.log(entries[1]);
 
                         var entry = [];
-                        entry.entrySubject = orderedEntries[i].subject;
-                        entry.entryId = orderedEntries[i].entry_id;
-                        entryList.push(entry);
+                        if(orderedEntries[i] !== null){
+                            entry.entrySubject = orderedEntries[i].subject;
+                            entry.entryId = orderedEntries[i].entry_id;
+                            entryList.push(entry);
+                        }
                     }
 
                     //add the entry name fields to the moustacheParams
