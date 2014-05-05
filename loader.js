@@ -2,7 +2,7 @@ var anyDB = require('any-db');
 var conn = anyDB.createConnection('sqlite3://digestible.db');
 
 conn.query('CREATE TABLE Emails (email_id INTEGER PRIMARY KEY AUTOINCREMENT, recipient TEXT, ' + 
-    'date_to_send TEXT, entry_id TEXT, collection_id TEXT, subject TEXT, content TEXT, status TEXT);') 
+    'date_to_send TEXT, entry_id TEXT, collection_id TEXT, subject TEXT, content TEXT, status TEXT, entry_edition TEXT);') 
     .on('error', function() {
     	console.error; 
     });
@@ -38,8 +38,10 @@ conn.end();
         //subject
         //content
         //status (either "PENDING", "SENT", or "CANCELLED")
-    	//(to delete an email, select by collection id and recipient)
-    	//hash map of email ids to jobs
+        //entry_edition (e.g. (4/12))
+    	//NOTE: (to delete an email, select by collection id and recipient)
+    	//NOTE: hash map of email ids to jobs
+
 
     //entry TABLE
     	//(primary) entry id

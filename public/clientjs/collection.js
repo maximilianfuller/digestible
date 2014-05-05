@@ -209,7 +209,6 @@ function addEntry() {
 }
 
 function reorderEntry(startRow, endRow) {
-  console.log("startRow: " + startRow + "       endRow: " + endRow);
   $.post("/ajax/reorderEntry",
   {
     collection_id: $("#collections").val(),
@@ -218,6 +217,21 @@ function reorderEntry(startRow, endRow) {
   }).fail(function() {
       alert("error");
     });
+}
+
+function getSubscriptionData() {
+  $.get("/ajax/subscriptionData", function(data) {
+    console.log(data);
+    $("#subscribeTable").find("tr:gt(0)").remove(); //clear all non header rows
+    $.each(data.subscriptionData, function(i, row) {
+      var $row = $('<tr>').append($('<td>').text(row.collection_title))
+        .append($('<td>').text(row.name))
+        .append($('<td>').text(row.address))
+        .append($('<td>').text(row.date_started))
+        .append($('<td>').text(row.progress));
+       $("#subscribeTable").append($row);
+    });
+  });
 }
 
 
@@ -244,6 +258,7 @@ $("#subscribeB").click(function(){
   $("#collectionWrap").hide();
   $("#settingsWrap").hide();
   $("#subscriberMainWrap").show();
+  getSubscriptionData();
 });
 
 $("#settingsB").click(function(){
