@@ -652,6 +652,7 @@ app.get('/consumer/e/:entry_id', function (request, response) {
             response.render("entry.html",
                 {
                     "content" : entry.content,
+                    "subject" : entry.subject
                 });
         }
     });
