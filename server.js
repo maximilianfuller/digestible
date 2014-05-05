@@ -317,7 +317,6 @@ app.get('/ajax/:collectionID', function(request, response) {
             response.redirect('/'); //redirect to home page
         }
     });
-
 });
 
 //ajax for adding a collection as requested by the front end
