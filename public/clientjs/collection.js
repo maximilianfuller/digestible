@@ -51,6 +51,7 @@ $(document).ready(function() {
     update: function(event, ui) {
       reorderEntry(lastStartIndex + 1, ui.item.index() + 1);
     },
+    disabled: false,
     start: function(event, ui) {
       lastStartIndex = ui.item.index();
     }
@@ -103,9 +104,11 @@ function refresh() {
         $('.headerButton, #settingsHolder').removeClass('published');
         $('.headerButton, #settingsHolder').addClass('unpublished');
         $('#addEmailWrap').show();
+        $( "#sortable" ).sortable( "option", "disabled", false );
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', false);
       } else {
         $('#addEmailWrap').hide();
+        $( "#sortable" ).sortable( "option", "disabled", true );
         $('.headerButton, #settingsHolder').removeClass('unpublished');
         $('.headerButton, #settingsHolder').addClass('published');
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', true); // these elements can't be edited when pubslished
