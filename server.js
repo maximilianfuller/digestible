@@ -486,7 +486,12 @@ app.post("/ajax/editEntry", function(request, response) {
             getCollection(entry.collection_id, function(collection) {
                 //verify that the entry belongs to the user
                 if(request.isAuthenticated() && request.user.email == collection.creator_email) {
-                    entry.subject = request.body.subject;
+                    if(request.body.subject === ""){
+                        entry.subject = "untitled";
+                    }
+                    else{
+                        entry.subject = request.body.subject;
+                    }
                     entry.content =request.body.content;
                     editEntry(entry);
                     response.send(200);
@@ -679,6 +684,7 @@ app.post('/ajax/saveSettings', function(request, response) {
 
     if(request.isAuthenticated()){
         console.log("creator " + request.user.email + " is editing an account");
+
         console.log(request.body.password);
         console.log(request.user.password);
 
@@ -699,6 +705,7 @@ app.post('/ajax/saveSettings', function(request, response) {
             request.body.state, request.body.zip);
             editCreator(creator);
 
+            console.log("saveResponse");
             if(request.body.newpass !== ""){
                 response.send("incorrectPass");
             }

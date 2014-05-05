@@ -1,6 +1,4 @@
 $(document).ready(function() {
-
-
   /*
   *Pete's stuff
   */
@@ -92,7 +90,7 @@ function refresh() {
       for(var i = 0; i < entries.length; i++) {
         $ol.append(
           $("<li>").append(
-            $("<a>").attr('href', "/" + entries[i].entry_id).html(entries[i].subject + " " + entries[i].entry_number)
+            $("<a>").attr('href', "/" + entries[i].entry_id).html(entries[i].subject)
         ));
       }
       if ($('#subscriptionsContainer ol').html().length > 0) {
@@ -166,7 +164,7 @@ $("#addEmailWrap").click(function() {
 
 
 
-//edits collection data on the server
+//edits collection data on the serverName your collection
 function editCollectionData(collection) {
   $.post("/ajax/editCollection", collection, function(data) {
     //update sidebar
@@ -214,6 +212,7 @@ function addEntry() {
 }
 
 function reorderEntry(startRow, endRow) {
+  console.log("startRow: " + startRow + "       endRow: " + endRow);
   $.post("/ajax/reorderEntry",
   {
     collection_id: $("#collections").val(),
@@ -222,21 +221,6 @@ function reorderEntry(startRow, endRow) {
   }).fail(function() {
       alert("error");
     });
-}
-
-function getSubscriptionData() {
-  $.get("/ajax/subscriptionData", function(data) {
-    console.log(data);
-    $("#subscribeTable").find("tr:gt(0)").remove(); //clear all non header rows
-    $.each(data.subscriptionData, function(i, row) {
-      var $row = $('<tr>').append($('<td>').text(row.collection_title))
-        .append($('<td>').text(row.name))
-        .append($('<td>').text(row.address))
-        .append($('<td>').text(row.date_started))
-        .append($('<td>').text(row.progress));
-       $("#subscribeTable").append($row);
-    });
-  });
 }
 
 
@@ -263,7 +247,6 @@ $("#subscribeB").click(function(){
   $("#collectionWrap").hide();
   $("#settingsWrap").hide();
   $("#subscriberMainWrap").show();
-  getSubscriptionData();
 });
 
 $("#settingsB").click(function(){
@@ -294,14 +277,13 @@ $("#settingsSave").click(function(){
      city:$('#city').val(),
      state:$('#state').val(), 
      zip:$('#zip').val()
-  },function(data,status) {
+  }).done(function(data) {
        if(data === "incorrectPass"){
         alert("you entered an incorrect old password");
        }
        else if(data == "passwordChanged"){
         alert("password changed");
        }
-       alert(data);  
   });
 });
   //END OF BEN'S STUFF
