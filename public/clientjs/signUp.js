@@ -33,7 +33,6 @@ $(document).ready(function() {
          state:$('#state').val(), 
          zip:$('#zip').val()
     },function(data,status){
-
       if(data === "success"){
         //login, redirect to creator page
         $.post("log_in",{
@@ -47,6 +46,9 @@ $(document).ready(function() {
             window.location = "/home"; 
           }
         });
+      }
+      else{ //else the email address is already in use
+        alert(data);
       }
     });
   });

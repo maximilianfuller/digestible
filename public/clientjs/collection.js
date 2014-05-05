@@ -99,11 +99,13 @@ function refresh() {
       } else {
         $('#noLinksPrompt').show();
       }
-      if (data.visible == 'false') {
+      if (data.visible == 'false') { //when not visible, the collection is unpublished
         $('.headerButton, #settingsHolder').removeClass('published');
         $('.headerButton, #settingsHolder').addClass('unpublished');
+        $('#addEmailWrap').show();
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', false);
       } else {
+        $('#addEmailWrap').hide();
         $('.headerButton, #settingsHolder').removeClass('unpublished');
         $('.headerButton, #settingsHolder').addClass('published');
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', true); // these elements can't be edited when pubslished

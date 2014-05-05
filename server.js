@@ -720,8 +720,6 @@ function addEntry(entry, callback){
         ]).on('error', console.error).on('end', function() {
              callback(id);
         });
-   
-
 }
 
 //gets the entry with the given entry_id then calls callback on the resulting entry
@@ -1295,6 +1293,6 @@ if(printDataBase) {
 ////////////////////////////////////////////////////////////////// 
 //run on local for testing
 ////////////////////////////////////////////////////////////////// 
-app.listen(process.env.PORT || 8080, function(){
+app.listen(process.env.PORT || 8081, function(){
     console.log('- Server listening -'.grey);
 });
