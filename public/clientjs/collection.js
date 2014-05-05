@@ -253,7 +253,7 @@ $("#subscribeB").click(function(){
 $("#settingsB").click(function(){
   
   $.post("/ajax/loadSettings", function(data) {
-     $('#name').val(data.name);digestible.io
+     $('#name').val(data.name);
      $('#street').val(data.street_address);
      $('#city').val(data.city);
      $('#state').val('NY'); 
