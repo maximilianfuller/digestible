@@ -17,7 +17,7 @@ var runDBTests = false;
 var primeDataBase = false; 
 
 //prints the contents of the database to the console upon initilization
-var printDataBase = true; 
+var printDataBase = false; 
 
 /* ////////////////////////////////////////////
 Initialization
@@ -319,33 +319,36 @@ app.get('/ajax/subscriptionData', function(request, response) {
                                 subs.set(emails[j].recipient, [emails[j]]);
                             }
                         }
-                        
+                        var counter = 0;
                         subs.forEach(function(value, key) {
+
                             //sort these emails by date
                             value.sort(function(a,b) {
                                 return(a.date_to_send-b.date_to_send);
                             });
                             var progress = null;
-                            var dateStarted = new Date(value[0].date_to_send);
+                            var dateStarted = new Date(Math.floor(value[0].date_to_send));
                            
                             for(var j = 0; j < value.length; j++) {
                                 if(value[j].status == "CANCELLED") {
                                     console.log("CANCELLED");
-                                    var prevDate = new Date(value[i].date_to_send);
-                                    progress = value[j-1].entry_edition + "Ended early " + dateToString(prevDate);
+                                    var prevDate = new Date(Math.floor(value[j-1].date_to_send));
+                                    console.log("date_to_send: " + value[j].date_to_send);
+                                    console.log("prevDate: " + prevDate);
+                                    progress = value[j-1].entry_edition + " Ended early " + dateToString(prevDate);
                                     break;
                                 } else if (value[j].status == "PENDING") {
                                     console.log("PENDING");
                                     var numDays = Math.floor((value[j].date_to_send - Date.now())/86400000);
-                                    progress = value[j-1].entry_edition + "Next in " + numDays + " days";
+                                    progress = value[j-1].entry_edition + " Next in " + numDays + " days";
                                     break;
                                 }
                                 if(j == value.length-1) {
                                     console.log("COMPLETED");
-                                    progress = "Completed " + dateToString(value[value.length-1].date_to_send);
+                                    progress = "Completed " + dateToString(new Date(Math.floor(value[value.length-1].date_to_send)));
                                 }
                             }
-
+                            console.log("here");
 
                             //push a subscription item
                             subscriptionData.push({
@@ -356,8 +359,15 @@ app.get('/ajax/subscriptionData', function(request, response) {
                                 date_started: dateToString(dateStarted),
                                 progress: progress
                             });
+                            //if this is the last key, then send the data
+                            console.log("counter: " + counter);
+                            console.log("subs.keys().length-1" + subs.count());
+                            if(counter == subs.key().length-1) {
+                                response.send({subscriptionData: subscriptionData});
+                            }
+                            counter++;
                         });
-                        response.send({subscriptionData: subscriptionData});
+                        
                     });
                 })(collections[i]);
             }
@@ -365,6 +375,13 @@ app.get('/ajax/subscriptionData', function(request, response) {
     }
     
 });
+
+function dateToString(date) {
+    console.log(date);
+    return date.getMonth() + 
+        "-" + date.getDay() + 
+        "-" + date.getFullYear();
+}
 
 //ajax for populating collections page with data
 app.get('/ajax/:collectionID', function(request, response) {
@@ -725,13 +742,6 @@ app.get('/unsubscribe/:email_id', function(request, response) {
     });
 });
 
-
-
-function dateToString(date) {
-    return date.getMonth() + 
-        "-" + date.getDay() + 
-        "-" + date.getYear();
-}
 
 /* ////////////////////////////////////////////
 Database wrappers
@@ -1407,6 +1417,6 @@ if(printDataBase) {
 ////////////////////////////////////////////////////////////////// 
 //run on local for testing
 ////////////////////////////////////////////////////////////////// 
-app.listen(process.env.PORT || 8081, function(){
+app.listen(process.env.PORT || 8080, function(){
     console.log('- Server listening -'.grey);
 });
