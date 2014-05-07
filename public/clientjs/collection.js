@@ -120,6 +120,9 @@ function refresh() {
         $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').addClass('published');
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', true); // these elements can't be edited when pubslished
       }
+       if ($('#collections option').length == 1) {
+        $('#deleteColl').hide();
+      };
     })
       .fail(function() {
         //alert("error"); //an error occurred, we're gonna ignore
@@ -127,9 +130,7 @@ function refresh() {
   }
 
   // Don't show delete if on last collection
-  if ($('#collections option').length == 1) {
-    $('#deleteColl').hide();
-  };
+ 
 }
 
 //change data upon selecting a new collection
