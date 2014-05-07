@@ -590,10 +590,8 @@ app.get('/consumer/:collection_id', function(request, response){
                     for(var i = 0; i < entries.length; i++){ 
                         orderedEntries[entries[i].entry_number-1] = entries[i];
                     }//generate the moustache fields
-                    console.log(entries[0]);
                     
                     for(var i = 0; i < entries.length; i++){ 
-                        console.log(entries[1]);
 
                         var entry = [];
                         if(orderedEntries[i] !== null){
@@ -718,7 +716,7 @@ app.get('/unsubscribe/:email_id', function(request, response) {
     unsubscribe(request.params.email_id, function(success) {
         if(success) {
             //TODO: Format this
-            response.send("You have successfully unsubscribed.");
+            response.render("unsubscribe.html");
         } else {
             //TODO: Format this
             response.send("Unsubscribe failed.");
