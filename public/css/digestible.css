@@ -440,6 +440,7 @@ COLLECTIONS
 	text-align: center;
 	font-size: 44px;
 	margin-top: 70px;
+	margin-bottom: 44px;
 }
 #collEditForm label {
 	display: inline-block;
