@@ -1,6 +1,9 @@
 var request = require('request');
 var	cheerio = require('cheerio');
 
+//I wrote this scraper as a seperate module because... just because, ok?
+//I could come up with an articulate justification, but we both know 
+//that it feels right.
 module.exports = {
   scrapeUrl: function (url, callback) {
   		//the following code grabs all paragraphs and headings from the given url
@@ -15,7 +18,6 @@ module.exports = {
 			        $('body').find('p').each(function(){
 			        	a = a + "<p>" + $(this).html() + "</p>";
 			        });
-			        console.log("fff");
 					callback(a);	
 		        }    
 		});

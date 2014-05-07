@@ -145,31 +145,34 @@ function sendEmail(email_id) {
 //creates a subscription
 function subscribe(collection_id, reader_email, millsToFirst, millsInterval){   
     getEntriesWithCollectionID(collection_id, function(entries) {
-        var currentMills = millsToFirst;
-        for(var i = 0; i < entries.length; i++) {
-            (function(currentMills, i) {
-                var email = new Email(null, reader_email, 
-                    Date.now() + currentMills, entries[i].entry_id, collection_id,
-                    entries[i].subject, entries[i].content, "PENDING", entries[i].entry_number + "/" + entries.length);
-                addEmail(email, function(email_id) {
-                    email.email_id = email_id;
-                    //append extra html to email body
-                    formatEmailBody(email, function(body) {
-                        updateEmailBody(email_id, body, function() {
-                            scheduleEmail(email_id, currentMills);
+        if(entries !== null){
+            var currentMills = millsToFirst;
+            for(var i = 0; i < entries.length; i++) {
+                (function(currentMills, i) {
+                    var email = new Email(null, reader_email, 
+                        Date.now() + currentMills, entries[i].entry_id, collection_id,
+                        entries[i].subject, entries[i].content, "PENDING", entries[i].entry_number + "/" + entries.length);
+                    addEmail(email, function(email_id) {
+                        email.email_id = email_id;
+                        //append extra html to email body
+                        formatEmailBody(email, function(body) {
+                            updateEmailBody(email_id, body, function() {
+                                scheduleEmail(email_id, currentMills);
+                            });
                         });
                     });
-                });
-            })(currentMills, i);
-            currentMills+=millsInterval;
+                })(currentMills, i);
+                currentMills+=millsInterval;
 
+            }
         }
     });
 }
 //appends address and unsubscribe html to the body of the email. Also adds inline css. calls callback on the result
 function formatEmailBody(email, callback) {
     getCollection(email.collection_id, function(collection) {
-        getCreator(collection.creator_email, function(creator) {
+        if(collection !== null){
+            getCreator(collection.creator_email, function(creator) {
            
             var unsub = "<p id='unsub'>If you wish to unsubscribe from this collection, " + 
                 "please go <a href=\"" + domain + "/unsubscribe/" + email.email_id + "\">here</a></p>";
@@ -185,7 +188,8 @@ function formatEmailBody(email, callback) {
                 result = juice.inlineContent(result, css);
                 callback(result);
             })
-        });
+            });
+        }
     });
 }
 
@@ -263,27 +267,29 @@ app.post('/log_out', function(req,res){
 app.get('/home', function(request, response){
     if(request.isAuthenticated()){
         getCollectionsWithCreator(request.user.email,function(collections){
-            var moustacheParams = [];
-            //create moustache field for collection names
-            var collectionNamesList = [];
-            for(var i = 0; i < collections.length; i++){
-                var collect = [];
-                collect.collectionTitle = collections[i].collection_title;
-                collect.collectionId = collections[i].collection_id;
-                if(collections[i].visible === "true"){
-                    collect.visible = "true";
+            if(collection !== null){
+                var moustacheParams = [];
+                //create moustache field for collection names
+                var collectionNamesList = [];
+                for(var i = 0; i < collections.length; i++){
+                    var collect = [];
+                    collect.collectionTitle = collections[i].collection_title;
+                    collect.collectionId = collections[i].collection_id;
+                    if(collections[i].visible === "true"){
+                        collect.visible = "true";
+                    }
+                    else{
+                        collect.visible = "false";
+                    }
+                    collectionNamesList.push(collect);
                 }
-                else{
-                    collect.visible = "false";
-                }
-                collectionNamesList.push(collect);
-            }
 
-            //add the entry name fields to the moustacheParams
-            moustacheParams.collectionNames = collectionNamesList;
-            moustacheParams.creatorEmail = request.user.email;
-            moustacheParams.creatorName = request.user.name;
-            response.render('collection.html',moustacheParams);
+                //add the entry name fields to the moustacheParams
+                moustacheParams.collectionNames = collectionNamesList;
+                moustacheParams.creatorEmail = request.user.email;
+                moustacheParams.creatorName = request.user.name;
+                response.render('collection.html',moustacheParams);
+            }
         });
     } else { //this should redirect to home page
         response.statusCode = 302;
@@ -371,16 +377,18 @@ function dateToString(date) {
 //ajax for populating collections page with data
 app.get('/ajax/:collectionID', function(request, response) {
     getCollection(request.params.collectionID, function (collection) {
-        if(request.isAuthenticated() && request.user.email === collection.creator_email){
-            getEntriesWithCollectionID(request.params.collectionID, function(entries) {
-                getCreator(collection.creator_email, function(creator_data) {
-                    collection.creator_name = creator_data.name;
-                    collection.entries = entries;
-                    response.send(collection);
+        if(collection !== null){
+                    if(request.isAuthenticated() && request.user.email === collection.creator_email){
+                getEntriesWithCollectionID(request.params.collectionID, function(entries) {
+                    getCreator(collection.creator_email, function(creator_data) {
+                        collection.creator_name = creator_data.name;
+                        collection.entries = entries;
+                        response.send(collection);
+                    });
                 });
-            });
-        } else {
-            response.redirect('/'); //redirect to home page
+            } else {
+                response.redirect('/'); //redirect to home page
+            }
         }
     });
 });
@@ -424,14 +432,15 @@ app.post('/ajax/editCollection', function(request, response) {
 //ajax for deleting collection data as requested by the front end
 app.post('/ajax/deleteCollection', function(request, response) {
     getCollection(request.body.collection_id, function(collection) {
-        if(request.isAuthenticated() && request.user.email === collection.creator_email){
-            deleteCollection(request.body.collection_id);
-            response.send(200);
-        } else {
-            response.redirect('/'); //redirect to home page
+        if(collection !== null){
+            if(request.isAuthenticated() && request.user.email === collection.creator_email){
+                deleteCollection(request.body.collection_id);
+                response.send(200);
+            } else {
+                response.redirect('/'); //redirect to home page
+            }    
         }
     });
-
 });
 
 //email creation page
@@ -472,7 +481,7 @@ app.post("/ajax/createEntry", function(request, response) {
 //ajax for editing entries
 app.post("/ajax/editEntry", function(request, response) {
     getEntry(request.body.entry_id, function(entry) {
-        if(entry != null) {
+        if(entry !== null) {
             getCollection(entry.collection_id, function(collection) {
                 //verify that the entry belongs to the user
                 if(request.isAuthenticated() && request.user.email == collection.creator_email) {
@@ -491,7 +500,7 @@ app.post("/ajax/editEntry", function(request, response) {
 //ajax for deleting entries
 app.post("/ajax/deleteEntry", function(request, response) {
     getEntry(request.body.entry_id, function(entry) {
-        if(entry != null) {
+        if(entry !== null) {
             getCollection(entry.collection_id, function(collection) {
                 //verify that the entry belongs to the user
                 if(request.isAuthenticated() && request.user.email == collection.creator_email) {
@@ -520,20 +529,22 @@ app.post("/ajax/reorderEntry", function(request, response) {
     var start = request.body.startEntryNumber;
     var end = request.body.endEntryNumber;
     getEntriesWithCollectionID(request.body.collection_id, function(entries) {
-        for(var i = 0; i < entries.length; i++) {
-            if(entries[i].entry_number == start) {
-                entries[i].entry_number = end;
-                editEntry(entries[i]);
-            } else if (start < end) {
-                if(entries[i].entry_number > start && entries[i].entry_number <= end) {
-                    entries[i].entry_number--;
+        if(entries !== null){
+            for(var i = 0; i < entries.length; i++) {
+                if(entries[i].entry_number == start) {
+                    entries[i].entry_number = end;
                     editEntry(entries[i]);
+                } else if (start < end) {
+                    if(entries[i].entry_number > start && entries[i].entry_number <= end) {
+                        entries[i].entry_number--;
+                        editEntry(entries[i]);
+                    }
+                } else {
+                    if(entries[i].entry_number < start && entries[i].entry_number >= end) {
+                        entries[i].entry_number++;
+                        editEntry(entries[i]);
+                    }   
                 }
-            } else {
-                if(entries[i].entry_number < start && entries[i].entry_number >= end) {
-                    entries[i].entry_number++;
-                    editEntry(entries[i]);
-                }   
             }
         }
     });
