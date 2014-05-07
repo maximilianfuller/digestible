@@ -122,22 +122,14 @@ function refresh() {
       }
     })
       .fail(function() {
-        alert("error");
+        //alert("error"); //an error occurred, we're gonna ignore
       });
   }
 }
 
 //change data upon selecting a new collection
 $("#collections").on("change", function() {
-  var collection_id = prevID;
-  var collection = {
-    collection_id: collection_id,
-    collection_title: $("#collTitleInput").val(),
-    collection_description: $("#collDescriptInput").val(),
-    visible: prevVisible,
-    email_interval: 86400000 * $("#emailFrequency").val()
-  };
-  editCollectionData(collection);
+  saveCurrCollectionState();
   refresh();
 });
 
@@ -151,6 +143,11 @@ $("#publishColl").click(function() {
     email_interval: 86400000 * $("#emailFrequency").val()
   };
   editCollectionData(collection);
+});
+
+//autosave collection state when editing an old email
+$("#subscriptionsContainer ol").click(function(event){
+    saveCurrCollectionState();
 });
 
 $("#saveColl, #unpublishColl").click(function() {
@@ -174,24 +171,28 @@ $("#finalDelete").click(function() {
 $("#addCollection").click(function() {
   //autosave curr collection
   var collection_id = prevID;
-  var collection = {
-    collection_id: collection_id,
-    collection_title: $("#collTitleInput").val(),
-    collection_description: $("#collDescriptInput").val(),
-    visible: "true",
-    email_interval: 86400000 * $("#emailFrequency").val()
-  };
-  editCollectionData(collection);
+  saveCurrCollectionState();
 
   //create the new collection
   createCollection();
 });
 
 $("#addEmailWrap").click(function() {
+  saveCurrCollectionState();
   addEntry();
 });
 
-
+function saveCurrCollectionState(){
+  var collection_id = prevID;
+  var collection = {
+    collection_id: collection_id,
+    collection_title: $("#collTitleInput").val(),
+    collection_description: $("#collDescriptInput").val(),
+    visible: prevVisible,
+    email_interval: 86400000 * $("#emailFrequency").val()
+  };
+  editCollectionData(collection);
+}
 
 //edits collection data on the serverName your collection
 function editCollectionData(collection) {
@@ -202,7 +203,7 @@ function editCollectionData(collection) {
     refresh();
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -213,7 +214,7 @@ function deleteCollection(collectionId) {
     refresh();
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -226,7 +227,7 @@ function createCollection() {
     $option.attr("selected", true);
     refresh();
   }).fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -248,7 +249,7 @@ function reorderEntry(startRow, endRow) {
     startEntryNumber: startRow,
     endEntryNumber: endRow
   }).fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -281,7 +282,7 @@ $("#logout").click(function() {
      window.location = "/";
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 });
 
@@ -304,7 +305,7 @@ $("#settingsB").click(function(){
      $('#zip').val(data.zipcode);
   })
   .fail(function() {
-    alert("error");
+    //alert("error"); //an error occurred, we're gonna ignore it
   });
 
   $("#editHeader").hide();

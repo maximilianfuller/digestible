@@ -5,7 +5,7 @@
 //scintillating, majestic, cs132-tastic code
 
 //IMPORTANT: SET THIS VARIABLE TO THE DOMAIN NAME! THIS IS FOR UNSUBSCRIBING
-var domain = "http://digestible.io";
+var domain = "http://localhost:8080";
 
 /* ////////////////////////////////////////////
 //localhost TESTS/PRIMERS:
