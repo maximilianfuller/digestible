@@ -211,6 +211,7 @@ APP
 	height: 1px;
 	background: #eee;
 	position: absolute;
+	margin-top: 50px;
 	left: 0;
 	right: 0;
 }
@@ -446,12 +447,10 @@ COLLECTIONS
 	padding: 7px 8px 0 0;
 	box-sizing: border-box;
 	color: #ccc;
-	margin-bottom: 20px;
 	font-weight: 600;
 }
 .collOptionInput {
 	width: 350px;
-	margin-bottom: 20px;
 	display: inline-block;
 }
 #freqLabel {
@@ -597,12 +596,13 @@ CONSUMERS
 	margin-top: 70px;
 }
 #consumerForm {
-	margin: 0 auto 20px;
+	margin: 0 auto;
 }
 .consumerInput {
 	height: 40px;
 	width: 165px;
 	display: inline-block;
+	margin-bottom: 0;
 }
 #consumerSubmit {
 	font-size: 16px;
@@ -616,6 +616,7 @@ CONSUMERS
 }
 #subscribeTitle {
 	text-align: center;
+	margin-top: 100px;
 }
 #subscriptionsContainer ol {
 	padding: 0 0 0 30px;
