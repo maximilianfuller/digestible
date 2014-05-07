@@ -267,7 +267,7 @@ app.post('/log_out', function(req,res){
 app.get('/home', function(request, response){
     if(request.isAuthenticated()){
         getCollectionsWithCreator(request.user.email,function(collections){
-            if(collection !== null){
+            if(collections !== null){
                 var moustacheParams = [];
                 //create moustache field for collection names
                 var collectionNamesList = [];
