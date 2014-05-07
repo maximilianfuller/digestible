@@ -691,3 +691,13 @@ SUBSCRIBERS
 	font-weight: 600;
 	margin-top: 0;
 }
+#unsubscribeSuccess {
+	text-align: center;
+	font-weight: 700;
+	font-size: 44px;
+	margin-top: 200px;
+	color: #222;
+}
+#unsubscribeSuccess span {
+	color: #e31218;
+}
