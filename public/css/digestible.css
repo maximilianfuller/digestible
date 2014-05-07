@@ -452,6 +452,13 @@ COLLECTIONS
 .collOptionInput {
 	width: 350px;
 	display: inline-block;
+	cursor: text;
+}
+#pageURLLink button {
+	display: inline-block;
+	width: 60px;
+	height: 36px;
+	font-size: 16px;
 }
 #freqLabel {
 	display: inline-block;
