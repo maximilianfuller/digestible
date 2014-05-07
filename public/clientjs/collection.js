@@ -125,6 +125,11 @@ function refresh() {
         alert("error");
       });
   }
+
+  // Don't show delete if on last collection
+  if ($('#collections option').length() == 1) {
+    $('#deleteColl').hide();
+  };
 }
 
 //change data upon selecting a new collection
