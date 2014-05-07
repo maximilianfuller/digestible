@@ -17,6 +17,18 @@ $(document).ready(function() {
    $('#saveCheckContain, #saveColl').addClass('saved');
   });
 
+  $('#saveFromOverlay').click(function() {
+    var html = editor.serialize().emailInput.value;
+   $.post("/ajax/editEntry",{
+       subject: $('#emailTitleInput').val(),
+       content: html,
+       entry_id: meta("entryId")
+    }, function(data) {
+      window.location = "/home";
+    });
+    
+  });
+
   $('#finalDelete').click(function() {
     $.post("ajax/deleteEntry", {entry_id: meta("entryId")});
     window.location = "/home";
@@ -71,15 +83,7 @@ $(document).ready(function() {
 
 
   //Pete's stuff
-  $('#saveFromOverlay').click(function() {
-    var html = editor.serialize().emailInput.value;
-   $.post("/ajax/editEntry",{
-       subject: $('#emailTitleInput').val(),
-       content: html,
-       entry_id: meta("entryId")
-    });
-    window.location = "/home";
-  });
+  
   $('#emailTitleInput, #emailInput').change(function() {
     $('#saveCheckContain, #saveColl').removeClass('saved unedited');
   });

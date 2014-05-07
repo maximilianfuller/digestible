@@ -127,7 +127,7 @@ function refresh() {
   }
 
   // Don't show delete if on last collection
-  if ($('#collections option').length() == 1) {
+  if ($('#collections option').length == 1) {
     $('#deleteColl').hide();
   };
 }
