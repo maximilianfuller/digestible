@@ -322,10 +322,16 @@ $("#settingsSave").click(function(){
        if(data === "incorrectPass"){
         alert("you entered an incorrect old password");
        }
-       else if(data === "passwordChanged"){
-        alert("password changed");
+       else{
+          if(data === "passwordChanged"){
+            alert("password changed");
+          }
+          $("#editHeader").show();
+          $("#collectionWrap").show();
+          $("#subscriberMainWrap").hide();
+          $("#settingsWrap").show();
        }
-       alert(data);
+      
   });
 });
   //END OF BEN'S STUFF
