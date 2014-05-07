@@ -125,6 +125,11 @@ function refresh() {
         //alert("error"); //an error occurred, we're gonna ignore
       });
   }
+
+  // Don't show delete if on last collection
+  if ($('#collections option').length() == 1) {
+    $('#deleteColl').hide();
+  };
 }
 
 //change data upon selecting a new collection
@@ -257,13 +262,22 @@ function getSubscriptionData() {
   $.get("/ajax/subscriptionData", function(data) {
     console.log(data);
     $("#subscribeTable").find("tr:gt(0)").remove(); //clear all non header rows
-    $.each(data.subscriptionData, function(i, row) {
-      var $row = $('<tr>').append($('<td>').text(row.collection_title))
-        .append($('<td>').text(row.address))
-        .append($('<td>').text(row.date_started))
-        .append($('<td>').text(row.progress));
-       $("#subscribeTable").append($row);
+    $.each(data.subscriptionData, function(i, collection) {
+      var $row = $('<tr>');
+      $row.append($('<td>').append($('<p>').text(collection[0].collection_title)));
+      var appendData = function(row, datum) {
+        var $ul = $('<ul>');
+        row.append($('<td>').append($ul));
+        $.each(collection, function(i, sub) {
+          $ul.append($('<li>').text(sub[datum]));
+        });
+      }
+      appendData($row, "address");
+      appendData($row, "date_started");
+      appendData($row, "progress"); 
+      $("#subscribeTable").append($row);   
     });
+
   });
 }
 
