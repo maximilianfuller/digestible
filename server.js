@@ -308,9 +308,9 @@ app.get('/ajax/subscriptionData', function(request, response) {
         getCollectionsWithCreator(request.user.email, function(collections) {
 
             for(var i = 0; i < collections.length; i++) {
-                (function(coll) {
-                    getEmailsWithCollectionID(coll.collection_id, function(emails) {
-                        var subscriptionData = [];
+                (function(collections, i) {
+                    var collectionData = [];
+                    getEmailsWithCollectionID(collections[i].collection_id, function(emails) {
                         var subs = new HashMap(); //subscriber email addresses to arrays of emails
                         //map email addresses to corresponding emails
                         for(var j = 0; j < emails.length; j++) {
@@ -329,45 +329,43 @@ app.get('/ajax/subscriptionData', function(request, response) {
                             });
                             var progress = null;
                             var dateStarted = new Date(Math.floor(value[0].date_to_send));
+
                            
                             for(var j = 0; j < value.length; j++) {
                                 if(value[j].status == "CANCELLED") {
-                                    console.log("CANCELLED");
                                     var prevDate = new Date(Math.floor(value[j-1].date_to_send));
-                                    console.log("date_to_send: " + value[j].date_to_send);
-                                    console.log("prevDate: " + prevDate);
                                     progress = value[j-1].entry_edition + " Ended early " + dateToString(prevDate);
                                     break;
                                 } else if (value[j].status == "PENDING") {
-                                    console.log("PENDING");
                                     var numDays = Math.floor((value[j].date_to_send - Date.now())/86400000);
                                     progress = value[j-1].entry_edition + " Next in " + numDays + " days";
                                     break;
                                 }
                                 if(j == value.length-1) {
-                                    console.log("COMPLETED");
                                     progress = "Completed " + dateToString(new Date(Math.floor(value[value.length-1].date_to_send)));
                                 }
                             }
-                            console.log("here");
 
                             //push a subscription item
-                            subscriptionData.push({
-                                collection_id: coll.collection_id,
-                                collection_title: coll.collection_title,
+                            collectionData.push({
+                                collection_id: collections[i].collection_id,
+                                collection_title: collections[i].collection_title,
                                 name: "",
                                 address: key,
                                 date_started: dateToString(dateStarted),
                                 progress: progress
                             });
-                            if(i == collections.length-1 && subs.count() == count) {
-                                response.send({subscriptionData: subscriptionData});
+                            if(subs.count() == count) {
+                                subscriptionData.push(collectionData);
+                                if(i == collections.length-1) {
+                                    response.send({subscriptionData: subscriptionData});
+                                }
                             }
                             //TEMP FIX. WORKS FOR n=1
                             //response.send({subscriptionData: subscriptionData});
                         });
                     });
-                })(collections[i]);
+                })(collections, i);
             }
             //TODO: FIX THIS. DOESN'T WORK WITH ASYNCH
             //response.send({subscriptionData: subscriptionData});
@@ -377,9 +375,8 @@ app.get('/ajax/subscriptionData', function(request, response) {
 });
 
 function dateToString(date) {
-    console.log(date);
-    return date.getMonth() + 
-        "-" + date.getDay() + 
+    return (date.getMonth()+1) + 
+        "-" + date.getDate() + 
         "-" + date.getFullYear();
 }
 
