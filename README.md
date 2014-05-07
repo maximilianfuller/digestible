@@ -13,7 +13,7 @@ Now their readers have the option to casually read the articles with periodic em
 
 ##HOW TO RUN IT
 The database must first be initialized by running the following line of code:
-node loader.js
+node loader.js. (Note: for this to work you must remove the old digestible.db file. To do this run: rm -f digestible.db)
 
 Additionally, npm dependencies must be installed by running the following line of code:
 npm install.

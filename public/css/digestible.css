@@ -440,6 +440,7 @@ COLLECTIONS
 	text-align: center;
 	font-size: 44px;
 	margin-top: 70px;
+	margin-bottom: 44px;
 }
 #collEditForm label {
 	display: inline-block;
@@ -643,6 +644,13 @@ CONSUMERS
 }
 #subscriptionsContainer ol li a {
 	font-weight: 400;
+}
+#subscribeNote {
+	text-align: center;
+	margin: 0;
+	font-weight: 600;
+	font-size: 20px;
+	display: none;
 }
 
 /*---------------
