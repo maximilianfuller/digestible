@@ -72,12 +72,10 @@ passport.use('local-login', new LocalStrategy({
         if(pass === creator_info.password){ //if the password is valid
             return done(null,creator_info);
         }
-        else{//invalid password\
-            console.log("invalid login attempt");
+        else{//invalid password
             return done(null, false, { message: 'invalid password' });
         }
        } else{
-            console.log("invalid login attempt");
             return done(null, false, { message: 'invalid email' });
        }
     });  
@@ -115,7 +113,6 @@ function scheduleEmail(email_id, millisFromNow) {
 }
 
 function sendEmail(email_id) {
-    console.log("sending email with id: " + email_id);
     getEmail(email_id, function(email) {
        if(email !== null){
         // setup e-mail data with unicode symbols
@@ -173,8 +170,7 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
 function formatEmailBody(email, callback) {
     getCollection(email.collection_id, function(collection) {
         getCreator(collection.creator_email, function(creator) {
-            //var $ = cheerio.load(email.content);
-            //console.log("PRECONTENT: " + email.content);
+           
             var unsub = "<p id='unsub'>If you wish to unsubscribe from this collection, " + 
                 "please go <a href=\"" + domain + "/unsubscribe/" + email.email_id + "\">here</a></p>";
             var address = "<p id='address'>This email was sent on behalf of " + creator.name + ", " + 
@@ -189,11 +185,6 @@ function formatEmailBody(email, callback) {
                 result = juice.inlineContent(result, css);
                 callback(result);
             })
-           
-            //$('body').append(unsub);
-            //$('body').append(address);
-            // console.log("POSTCONTENT: " + result);
-            
         });
     });
 }
@@ -263,7 +254,6 @@ app.post('/log_in', function(req, res, next) {
 });
 
 app.post('/log_out', function(req,res){
-    console.log("test");
     req.logout();
     res.send('success');
 });
@@ -373,7 +363,6 @@ app.get('/ajax/subscriptionData', function(request, response) {
 });
 
 function dateToString(date) {
-    console.log(date);
     return date.getMonth() + 
         "-" + date.getDay() + 
         "-" + date.getFullYear();
@@ -416,7 +405,6 @@ app.post("/ajax/createCollection", function(request, response) {
 
 //ajax for editing collection data from the front end
 app.post('/ajax/editCollection', function(request, response) {
-    console.log("coll id" + request.body.collection_id);
     getCollection(request.body.collection_id, function(collection) {
         if(collection !== null){
             if(request.isAuthenticated() && request.user.email === collection.creator_email){
@@ -428,7 +416,7 @@ app.post('/ajax/editCollection', function(request, response) {
             }
         }
         else{
-            console.log("invalid collection id- editCollection request");
+            console.log("invalid collection id- editCollection request"); //this should not occur
         }
     });    
 });
@@ -554,14 +542,10 @@ app.post("/ajax/reorderEntry", function(request, response) {
 
 //ajax for scraping
 app.post("/ajax/scrapeUrl", function(req, res) { 
-    console.log("test");
     if(req.isAuthenticated()){
-        console.log("testawefaef");
         scraper.scrapeUrl(req.body.url, function(content){
             res.send({content: content});
-            console.log(content);
         });
-        //response.send("success");
     }
 });
 
@@ -613,7 +597,7 @@ app.get('/consumer/:collection_id', function(request, response){
                 }); 
             }
             else{ //render a 404 page
-                console.log("invalid collection access attempt");
+                //console.log("invalid collection access attempt"); //this println might come in handy for mantaining our code
                 response.render('page_not_found.html',{});
             } 
         });
@@ -679,16 +663,7 @@ app.post('/sign_up', function(request, response) {
 });
 
 app.post('/ajax/saveSettings', function(request, response) {
-
     if(request.isAuthenticated()){
-        console.log("creator " + request.user.email + " is editing an account");
-        console.log(request.body.password);
-        console.log(request.user.password);
-
-        if(request.body.password == request.user.password){ //if the user is changing their password
-            console.log("passwordChanged");
-        }
-
         if(request.body.password == request.user.password){ //if the user is changing their password
             var creator = new Creator_Data(request.user.email, request.body.newpass, 
             request.body.name, request.body.street, request.body.city, 
