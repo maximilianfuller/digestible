@@ -19,6 +19,7 @@ $(document).ready(function() {
        collection_name: collectionName
     },function(data,status){
       if(status === "success"){
+        $("#subscribeNote").slideDown();
         $("#consumerForm").hide();
         $("#emailExplain").hide("fast", function(){
           $("#successMessage").show();

@@ -645,6 +645,13 @@ CONSUMERS
 #subscriptionsContainer ol li a {
 	font-weight: 400;
 }
+#subscribeNote {
+	text-align: center;
+	margin: 0;
+	font-weight: 600;
+	font-size: 20px;
+	display: none;
+}
 
 /*---------------
 SUBSCRIBERS
