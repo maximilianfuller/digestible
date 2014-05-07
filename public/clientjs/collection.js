@@ -62,6 +62,8 @@ $(document).ready(function() {
   //MAX'S STUFF
 refresh();
 
+var prevID; //prev id used to save upon collection focus change
+
 //get data from server and adjust the page accordingly
 function refresh() {
   
@@ -71,6 +73,8 @@ function refresh() {
   $("#collectionWrap").show();
   
   var currentCollectionId = $("#collections").val();
+  prevID = currentCollectionId; //slightly confusing nomenclature (I know, its not previous yet)
+
   if(currentCollectionId == null) {
       addEntry();
   } else {
@@ -121,6 +125,15 @@ function refresh() {
 
 //change data upon selecting a new collection
 $("#collections").on("change", function() {
+  var collection_id = prevID;
+  var collection = {
+    collection_id: collection_id,
+    collection_title: $("#collTitleInput").val(),
+    collection_description: $("#collDescriptInput").val(),
+    visible: "true",
+    email_interval: 86400000 * $("#emailFrequency").val()
+  };
+  editCollectionData(collection);
   refresh();
 });
 
@@ -134,7 +147,6 @@ $("#publishColl").click(function() {
     email_interval: 86400000 * $("#emailFrequency").val()
   };
   editCollectionData(collection);
-
 });
 
 $("#saveColl, #unpublishColl").click(function() {
@@ -156,6 +168,18 @@ $("#finalDelete").click(function() {
 });
 
 $("#addCollection").click(function() {
+  //autosave curr collection
+  var collection_id = prevID;
+  var collection = {
+    collection_id: collection_id,
+    collection_title: $("#collTitleInput").val(),
+    collection_description: $("#collDescriptInput").val(),
+    visible: "true",
+    email_interval: 86400000 * $("#emailFrequency").val()
+  };
+  editCollectionData(collection);
+
+  //create the new collection
   createCollection();
 });
 
@@ -245,7 +269,7 @@ function meta(name) {
         return tag.content;
     return '';
 }
-//END OF MAX'S STUFF
+//END OF MAX'S 
 
 //BEN'S STUFF
 $("#logout").click(function() {
