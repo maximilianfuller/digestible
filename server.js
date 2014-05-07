@@ -416,13 +416,19 @@ app.post("/ajax/createCollection", function(request, response) {
 
 //ajax for editing collection data from the front end
 app.post('/ajax/editCollection', function(request, response) {
+    console.log("coll id" + request.body.collection_id);
     getCollection(request.body.collection_id, function(collection) {
-        if(request.isAuthenticated() && request.user.email === collection.creator_email){
+        if(collection !== null){
+            if(request.isAuthenticated() && request.user.email === collection.creator_email){
             request.body.creator_email = request.user.email;
             editCollection(request.body);
             response.send(200);
-        } else {
-            response.redirect('/'); //redirect to home page
+            } else {
+                response.redirect('/'); //redirect to home page
+            }
+        }
+        else{
+            console.log("invalid collection id- editCollection request");
         }
     });    
 });
