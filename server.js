@@ -320,8 +320,9 @@ app.get('/ajax/subscriptionData', function(request, response) {
                                 subs.set(emails[j].recipient, [emails[j]]);
                             }
                         }
-                        
+                        var count = 0;
                         subs.forEach(function(value, key) {
+                            count++;
                             //sort these emails by date
                             value.sort(function(a,b) {
                                 return(a.date_to_send-b.date_to_send);
@@ -359,8 +360,11 @@ app.get('/ajax/subscriptionData', function(request, response) {
                                 date_started: dateToString(dateStarted),
                                 progress: progress
                             });
+                            if(i == collections.length-1 && subs.count() == count) {
+                                response.send({subscriptionData: subscriptionData});
+                            }
                             //TEMP FIX. WORKS FOR n=1
-                            response.send({subscriptionData: subscriptionData});
+                            //response.send({subscriptionData: subscriptionData});
                         });
                     });
                 })(collections[i]);
