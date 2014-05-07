@@ -83,7 +83,7 @@ function refresh() {
       $("#collTitleInput").val(data.collection_title);
       $("#author").html("By: " + data.creator_name);
       $("#collDescriptInput").val(data.collection_description);
-      $("#pageURL").val("digestible.io/consumer/" + currentCollectionId);
+      $("#pageURL").val("localhost:8080/consumer/" + currentCollectionId);
       $("#pageURLLink").attr('href','/consumer/' + currentCollectionId);
 
       var emailFrequencyInDays = data.email_interval/86400000;
@@ -122,7 +122,7 @@ function refresh() {
       }
     })
       .fail(function() {
-        alert("error");
+        //alert("error"); //an error occurred, we're gonna ignore
       });
   }
 
@@ -134,15 +134,7 @@ function refresh() {
 
 //change data upon selecting a new collection
 $("#collections").on("change", function() {
-  var collection_id = prevID;
-  var collection = {
-    collection_id: collection_id,
-    collection_title: $("#collTitleInput").val(),
-    collection_description: $("#collDescriptInput").val(),
-    visible: prevVisible,
-    email_interval: 86400000 * $("#emailFrequency").val()
-  };
-  editCollectionData(collection);
+  saveCurrCollectionState();
   refresh();
 });
 
@@ -156,6 +148,11 @@ $("#publishColl").click(function() {
     email_interval: 86400000 * $("#emailFrequency").val()
   };
   editCollectionData(collection);
+});
+
+//autosave collection state when editing an old email
+$("#subscriptionsContainer ol").click(function(event){
+    saveCurrCollectionState();
 });
 
 $("#saveColl, #unpublishColl").click(function() {
@@ -179,24 +176,28 @@ $("#finalDelete").click(function() {
 $("#addCollection").click(function() {
   //autosave curr collection
   var collection_id = prevID;
-  var collection = {
-    collection_id: collection_id,
-    collection_title: $("#collTitleInput").val(),
-    collection_description: $("#collDescriptInput").val(),
-    visible: "true",
-    email_interval: 86400000 * $("#emailFrequency").val()
-  };
-  editCollectionData(collection);
+  saveCurrCollectionState();
 
   //create the new collection
   createCollection();
 });
 
 $("#addEmailWrap").click(function() {
+  saveCurrCollectionState();
   addEntry();
 });
 
-
+function saveCurrCollectionState(){
+  var collection_id = prevID;
+  var collection = {
+    collection_id: collection_id,
+    collection_title: $("#collTitleInput").val(),
+    collection_description: $("#collDescriptInput").val(),
+    visible: prevVisible,
+    email_interval: 86400000 * $("#emailFrequency").val()
+  };
+  editCollectionData(collection);
+}
 
 //edits collection data on the serverName your collection
 function editCollectionData(collection) {
@@ -207,7 +208,7 @@ function editCollectionData(collection) {
     refresh();
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -218,7 +219,7 @@ function deleteCollection(collectionId) {
     refresh();
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -231,7 +232,7 @@ function createCollection() {
     $option.attr("selected", true);
     refresh();
   }).fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -253,7 +254,7 @@ function reorderEntry(startRow, endRow) {
     startEntryNumber: startRow,
     endEntryNumber: endRow
   }).fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -261,13 +262,22 @@ function getSubscriptionData() {
   $.get("/ajax/subscriptionData", function(data) {
     console.log(data);
     $("#subscribeTable").find("tr:gt(0)").remove(); //clear all non header rows
-    $.each(data.subscriptionData, function(i, row) {
-      var $row = $('<tr>').append($('<td>').text(row.collection_title))
-        .append($('<td>').text(row.address))
-        .append($('<td>').text(row.date_started))
-        .append($('<td>').text(row.progress));
-       $("#subscribeTable").append($row);
+    $.each(data.subscriptionData, function(i, collection) {
+      var $row = $('<tr>');
+      $row.append($('<td>').append($('<p>').text(collection[0].collection_title)));
+      var appendData = function(row, datum) {
+        var $ul = $('<ul>');
+        row.append($('<td>').append($ul));
+        $.each(collection, function(i, sub) {
+          $ul.append($('<li>').text(sub[datum]));
+        });
+      }
+      appendData($row, "address");
+      appendData($row, "date_started");
+      appendData($row, "progress"); 
+      $("#subscribeTable").append($row);   
     });
+
   });
 }
 
@@ -286,7 +296,7 @@ $("#logout").click(function() {
      window.location = "/";
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 });
 
@@ -309,7 +319,7 @@ $("#settingsB").click(function(){
      $('#zip').val(data.zipcode);
   })
   .fail(function() {
-    alert("error");
+    //alert("error"); //an error occurred, we're gonna ignore it
   });
 
   $("#editHeader").hide();

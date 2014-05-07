@@ -5,7 +5,7 @@
 //scintillating, majestic, cs132-tastic code
 
 //IMPORTANT: SET THIS VARIABLE TO THE DOMAIN NAME! THIS IS FOR UNSUBSCRIBING
-var domain = "http://digestible.io";
+var domain = "http://localhost:8080";
 
 /* ////////////////////////////////////////////
 //localhost TESTS/PRIMERS:
@@ -145,31 +145,34 @@ function sendEmail(email_id) {
 //creates a subscription
 function subscribe(collection_id, reader_email, millsToFirst, millsInterval){   
     getEntriesWithCollectionID(collection_id, function(entries) {
-        var currentMills = millsToFirst;
-        for(var i = 0; i < entries.length; i++) {
-            (function(currentMills, i) {
-                var email = new Email(null, reader_email, 
-                    Date.now() + currentMills, entries[i].entry_id, collection_id,
-                    entries[i].subject, entries[i].content, "PENDING", entries[i].entry_number + "/" + entries.length);
-                addEmail(email, function(email_id) {
-                    email.email_id = email_id;
-                    //append extra html to email body
-                    formatEmailBody(email, function(body) {
-                        updateEmailBody(email_id, body, function() {
-                            scheduleEmail(email_id, currentMills);
+        if(entries !== null){
+            var currentMills = millsToFirst;
+            for(var i = 0; i < entries.length; i++) {
+                (function(currentMills, i) {
+                    var email = new Email(null, reader_email, 
+                        Date.now() + currentMills, entries[i].entry_id, collection_id,
+                        entries[i].subject, entries[i].content, "PENDING", entries[i].entry_number + "/" + entries.length);
+                    addEmail(email, function(email_id) {
+                        email.email_id = email_id;
+                        //append extra html to email body
+                        formatEmailBody(email, function(body) {
+                            updateEmailBody(email_id, body, function() {
+                                scheduleEmail(email_id, currentMills);
+                            });
                         });
                     });
-                });
-            })(currentMills, i);
-            currentMills+=millsInterval;
+                })(currentMills, i);
+                currentMills+=millsInterval;
 
+            }
         }
     });
 }
 //appends address and unsubscribe html to the body of the email. Also adds inline css. calls callback on the result
 function formatEmailBody(email, callback) {
     getCollection(email.collection_id, function(collection) {
-        getCreator(collection.creator_email, function(creator) {
+        if(collection !== null){
+            getCreator(collection.creator_email, function(creator) {
            
             var unsub = "<p id='unsub'>If you wish to unsubscribe from this collection, " + 
                 "please go <a href=\"" + domain + "/unsubscribe/" + email.email_id + "\">here</a></p>";
@@ -185,7 +188,8 @@ function formatEmailBody(email, callback) {
                 result = juice.inlineContent(result, css);
                 callback(result);
             })
-        });
+            });
+        }
     });
 }
 
@@ -263,27 +267,29 @@ app.post('/log_out', function(req,res){
 app.get('/home', function(request, response){
     if(request.isAuthenticated()){
         getCollectionsWithCreator(request.user.email,function(collections){
-            var moustacheParams = [];
-            //create moustache field for collection names
-            var collectionNamesList = [];
-            for(var i = 0; i < collections.length; i++){
-                var collect = [];
-                collect.collectionTitle = collections[i].collection_title;
-                collect.collectionId = collections[i].collection_id;
-                if(collections[i].visible === "true"){
-                    collect.visible = "true";
+            if(collections !== null){
+                var moustacheParams = [];
+                //create moustache field for collection names
+                var collectionNamesList = [];
+                for(var i = 0; i < collections.length; i++){
+                    var collect = [];
+                    collect.collectionTitle = collections[i].collection_title;
+                    collect.collectionId = collections[i].collection_id;
+                    if(collections[i].visible === "true"){
+                        collect.visible = "true";
+                    }
+                    else{
+                        collect.visible = "false";
+                    }
+                    collectionNamesList.push(collect);
                 }
-                else{
-                    collect.visible = "false";
-                }
-                collectionNamesList.push(collect);
-            }
 
-            //add the entry name fields to the moustacheParams
-            moustacheParams.collectionNames = collectionNamesList;
-            moustacheParams.creatorEmail = request.user.email;
-            moustacheParams.creatorName = request.user.name;
-            response.render('collection.html',moustacheParams);
+                //add the entry name fields to the moustacheParams
+                moustacheParams.collectionNames = collectionNamesList;
+                moustacheParams.creatorEmail = request.user.email;
+                moustacheParams.creatorName = request.user.name;
+                response.render('collection.html',moustacheParams);
+            }
         });
     } else { //this should redirect to home page
         response.statusCode = 302;
@@ -298,9 +304,9 @@ app.get('/ajax/subscriptionData', function(request, response) {
         getCollectionsWithCreator(request.user.email, function(collections) {
 
             for(var i = 0; i < collections.length; i++) {
-                (function(coll) {
-                    getEmailsWithCollectionID(coll.collection_id, function(emails) {
-                        var subscriptionData = [];
+                (function(collections, i) {
+                    var collectionData = [];
+                    getEmailsWithCollectionID(collections[i].collection_id, function(emails) {
                         var subs = new HashMap(); //subscriber email addresses to arrays of emails
                         //map email addresses to corresponding emails
                         for(var j = 0; j < emails.length; j++) {
@@ -310,50 +316,52 @@ app.get('/ajax/subscriptionData', function(request, response) {
                                 subs.set(emails[j].recipient, [emails[j]]);
                             }
                         }
-                        
+                        var count = 0;
                         subs.forEach(function(value, key) {
+                            count++;
                             //sort these emails by date
                             value.sort(function(a,b) {
                                 return(a.date_to_send-b.date_to_send);
                             });
                             var progress = null;
                             var dateStarted = new Date(Math.floor(value[0].date_to_send));
+
                            
                             for(var j = 0; j < value.length; j++) {
                                 if(value[j].status == "CANCELLED") {
-                                    console.log("CANCELLED");
                                     var prevDate = new Date(Math.floor(value[j-1].date_to_send));
-                                    console.log("date_to_send: " + value[j].date_to_send);
-                                    console.log("prevDate: " + prevDate);
                                     progress = value[j-1].entry_edition + " Ended early " + dateToString(prevDate);
                                     break;
                                 } else if (value[j].status == "PENDING") {
-                                    console.log("PENDING");
                                     var numDays = Math.floor((value[j].date_to_send - Date.now())/86400000);
                                     progress = value[j-1].entry_edition + " Next in " + numDays + " days";
                                     break;
                                 }
                                 if(j == value.length-1) {
-                                    console.log("COMPLETED");
                                     progress = "Completed " + dateToString(new Date(Math.floor(value[value.length-1].date_to_send)));
                                 }
                             }
-                            console.log("here");
 
                             //push a subscription item
-                            subscriptionData.push({
-                                collection_id: coll.collection_id,
-                                collection_title: coll.collection_title,
+                            collectionData.push({
+                                collection_id: collections[i].collection_id,
+                                collection_title: collections[i].collection_title,
                                 name: "",
                                 address: key,
                                 date_started: dateToString(dateStarted),
                                 progress: progress
                             });
+                            if(subs.count() == count) {
+                                subscriptionData.push(collectionData);
+                                if(i == collections.length-1) {
+                                    response.send({subscriptionData: subscriptionData});
+                                }
+                            }
                             //TEMP FIX. WORKS FOR n=1
-                            response.send({subscriptionData: subscriptionData});
+                            //response.send({subscriptionData: subscriptionData});
                         });
                     });
-                })(collections[i]);
+                })(collections, i);
             }
             //TODO: FIX THIS. DOESN'T WORK WITH ASYNCH
             //response.send({subscriptionData: subscriptionData});
@@ -363,24 +371,26 @@ app.get('/ajax/subscriptionData', function(request, response) {
 });
 
 function dateToString(date) {
-    return date.getMonth() + 
-        "-" + date.getDay() + 
+    return (date.getMonth()+1) + 
+        "-" + date.getDate() + 
         "-" + date.getFullYear();
 }
 
 //ajax for populating collections page with data
 app.get('/ajax/:collectionID', function(request, response) {
     getCollection(request.params.collectionID, function (collection) {
-        if(request.isAuthenticated() && request.user.email === collection.creator_email){
-            getEntriesWithCollectionID(request.params.collectionID, function(entries) {
-                getCreator(collection.creator_email, function(creator_data) {
-                    collection.creator_name = creator_data.name;
-                    collection.entries = entries;
-                    response.send(collection);
+        if(collection !== null){
+                    if(request.isAuthenticated() && request.user.email === collection.creator_email){
+                getEntriesWithCollectionID(request.params.collectionID, function(entries) {
+                    getCreator(collection.creator_email, function(creator_data) {
+                        collection.creator_name = creator_data.name;
+                        collection.entries = entries;
+                        response.send(collection);
+                    });
                 });
-            });
-        } else {
-            response.redirect('/'); //redirect to home page
+            } else {
+                response.redirect('/'); //redirect to home page
+            }
         }
     });
 });
@@ -424,14 +434,15 @@ app.post('/ajax/editCollection', function(request, response) {
 //ajax for deleting collection data as requested by the front end
 app.post('/ajax/deleteCollection', function(request, response) {
     getCollection(request.body.collection_id, function(collection) {
-        if(request.isAuthenticated() && request.user.email === collection.creator_email){
-            deleteCollection(request.body.collection_id);
-            response.send(200);
-        } else {
-            response.redirect('/'); //redirect to home page
+        if(collection !== null){
+            if(request.isAuthenticated() && request.user.email === collection.creator_email){
+                deleteCollection(request.body.collection_id);
+                response.send(200);
+            } else {
+                response.redirect('/'); //redirect to home page
+            }    
         }
     });
-
 });
 
 //email creation page
@@ -472,7 +483,7 @@ app.post("/ajax/createEntry", function(request, response) {
 //ajax for editing entries
 app.post("/ajax/editEntry", function(request, response) {
     getEntry(request.body.entry_id, function(entry) {
-        if(entry != null) {
+        if(entry !== null) {
             getCollection(entry.collection_id, function(collection) {
                 //verify that the entry belongs to the user
                 if(request.isAuthenticated() && request.user.email == collection.creator_email) {
@@ -491,7 +502,7 @@ app.post("/ajax/editEntry", function(request, response) {
 //ajax for deleting entries
 app.post("/ajax/deleteEntry", function(request, response) {
     getEntry(request.body.entry_id, function(entry) {
-        if(entry != null) {
+        if(entry !== null) {
             getCollection(entry.collection_id, function(collection) {
                 //verify that the entry belongs to the user
                 if(request.isAuthenticated() && request.user.email == collection.creator_email) {
@@ -520,20 +531,22 @@ app.post("/ajax/reorderEntry", function(request, response) {
     var start = request.body.startEntryNumber;
     var end = request.body.endEntryNumber;
     getEntriesWithCollectionID(request.body.collection_id, function(entries) {
-        for(var i = 0; i < entries.length; i++) {
-            if(entries[i].entry_number == start) {
-                entries[i].entry_number = end;
-                editEntry(entries[i]);
-            } else if (start < end) {
-                if(entries[i].entry_number > start && entries[i].entry_number <= end) {
-                    entries[i].entry_number--;
+        if(entries !== null){
+            for(var i = 0; i < entries.length; i++) {
+                if(entries[i].entry_number == start) {
+                    entries[i].entry_number = end;
                     editEntry(entries[i]);
+                } else if (start < end) {
+                    if(entries[i].entry_number > start && entries[i].entry_number <= end) {
+                        entries[i].entry_number--;
+                        editEntry(entries[i]);
+                    }
+                } else {
+                    if(entries[i].entry_number < start && entries[i].entry_number >= end) {
+                        entries[i].entry_number++;
+                        editEntry(entries[i]);
+                    }   
                 }
-            } else {
-                if(entries[i].entry_number < start && entries[i].entry_number >= end) {
-                    entries[i].entry_number++;
-                    editEntry(entries[i]);
-                }   
             }
         }
     });
