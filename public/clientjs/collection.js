@@ -63,6 +63,7 @@ $(document).ready(function() {
 refresh();
 
 var prevID; //prev id used to save upon collection focus change
+var prevVisible;
 
 //get data from server and adjust the page accordingly
 function refresh() {
@@ -104,12 +105,15 @@ function refresh() {
         $('#noLinksPrompt').show();
       }
       if (data.visible == 'false') { //when not visible, the collection is unpublished
+
+        prevVisible = "false";
         $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').removeClass('published');
         $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').addClass('unpublished');
         $('#addEmailWrap').show();
         $( "#sortable" ).sortable( "option", "disabled", false );
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', false);
       } else {
+        prevVisible = "true";
         $('#addEmailWrap').hide();
         $( "#sortable" ).sortable( "option", "disabled", true );
         $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').removeClass('unpublished');
@@ -130,7 +134,7 @@ $("#collections").on("change", function() {
     collection_id: collection_id,
     collection_title: $("#collTitleInput").val(),
     collection_description: $("#collDescriptInput").val(),
-    visible: "true",
+    visible: prevVisible,
     email_interval: 86400000 * $("#emailFrequency").val()
   };
   editCollectionData(collection);
