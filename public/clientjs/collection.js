@@ -62,6 +62,9 @@ $(document).ready(function() {
   //MAX'S STUFF
 refresh();
 
+var prevID; //prev id used to save upon collection focus change
+var prevVisible;
+
 //get data from server and adjust the page accordingly
 function refresh() {
   
@@ -71,6 +74,8 @@ function refresh() {
   $("#collectionWrap").show();
   
   var currentCollectionId = $("#collections").val();
+  prevID = currentCollectionId; //slightly confusing nomenclature (I know, its not previous yet)
+
   if(currentCollectionId == null) {
       addEntry();
   } else {
@@ -100,12 +105,15 @@ function refresh() {
         $('#noLinksPrompt').show();
       }
       if (data.visible == 'false') { //when not visible, the collection is unpublished
+
+        prevVisible = "false";
         $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').removeClass('published');
         $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').addClass('unpublished');
         $('#addEmailWrap').show();
         $( "#sortable" ).sortable( "option", "disabled", false );
         $('#collTitleInput, #collDescriptInput, #emailFrequency').attr('readonly', false);
       } else {
+        prevVisible = "true";
         $('#addEmailWrap').hide();
         $( "#sortable" ).sortable( "option", "disabled", true );
         $('.headerButton, #settingsHolder, #emailFreqContain, .urlHolder').removeClass('unpublished');
@@ -114,13 +122,14 @@ function refresh() {
       }
     })
       .fail(function() {
-        alert("error");
+        //alert("error"); //an error occurred, we're gonna ignore
       });
   }
 }
 
 //change data upon selecting a new collection
 $("#collections").on("change", function() {
+  saveCurrCollectionState();
   refresh();
 });
 
@@ -134,7 +143,11 @@ $("#publishColl").click(function() {
     email_interval: 86400000 * $("#emailFrequency").val()
   };
   editCollectionData(collection);
+});
 
+//autosave collection state when editing an old email
+$("#subscriptionsContainer ol").click(function(event){
+    saveCurrCollectionState();
 });
 
 $("#saveColl, #unpublishColl").click(function() {
@@ -156,14 +169,30 @@ $("#finalDelete").click(function() {
 });
 
 $("#addCollection").click(function() {
+  //autosave curr collection
+  var collection_id = prevID;
+  saveCurrCollectionState();
+
+  //create the new collection
   createCollection();
 });
 
 $("#addEmailWrap").click(function() {
+  saveCurrCollectionState();
   addEntry();
 });
 
-
+function saveCurrCollectionState(){
+  var collection_id = prevID;
+  var collection = {
+    collection_id: collection_id,
+    collection_title: $("#collTitleInput").val(),
+    collection_description: $("#collDescriptInput").val(),
+    visible: prevVisible,
+    email_interval: 86400000 * $("#emailFrequency").val()
+  };
+  editCollectionData(collection);
+}
 
 //edits collection data on the serverName your collection
 function editCollectionData(collection) {
@@ -174,7 +203,7 @@ function editCollectionData(collection) {
     refresh();
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -185,7 +214,7 @@ function deleteCollection(collectionId) {
     refresh();
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -198,7 +227,7 @@ function createCollection() {
     $option.attr("selected", true);
     refresh();
   }).fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -220,7 +249,7 @@ function reorderEntry(startRow, endRow) {
     startEntryNumber: startRow,
     endEntryNumber: endRow
   }).fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 }
 
@@ -254,7 +283,7 @@ function meta(name) {
         return tag.content;
     return '';
 }
-//END OF MAX'S STUFF
+//END OF MAX'S 
 
 //BEN'S STUFF
 $("#logout").click(function() {
@@ -262,7 +291,7 @@ $("#logout").click(function() {
      window.location = "/";
   })
     .fail(function() {
-      alert("error");
+      //alert("error"); //an error occurred, we're gonna ignore it
     });
 });
 
@@ -281,11 +310,11 @@ $("#settingsB").click(function(){
      $('#name').val(data.name);
      $('#street').val(data.street_address);
      $('#city').val(data.city);
-     $('#state').val('RI'); 
+     $('#state').val(data.state); 
      $('#zip').val(data.zipcode);
   })
   .fail(function() {
-    alert("error");
+    //alert("error"); //an error occurred, we're gonna ignore it
   });
 
   $("#editHeader").hide();
@@ -307,10 +336,16 @@ $("#settingsSave").click(function(){
        if(data === "incorrectPass"){
         alert("you entered an incorrect old password");
        }
-       else if(data === "passwordChanged"){
-        alert("password changed");
+       else{
+          if(data === "passwordChanged"){
+            alert("password changed");
+          }
+          $("#editHeader").show();
+          $("#collectionWrap").show();
+          $("#subscriberMainWrap").hide();
+          $("#settingsWrap").show();
        }
-       alert(data);
+      
   });
 });
   //END OF BEN'S STUFF
