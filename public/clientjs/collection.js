@@ -272,7 +272,7 @@ $("#settingsB").click(function(){
      $('#name').val(data.name);
      $('#street').val(data.street_address);
      $('#city').val(data.city);
-     $('#state').val('RI'); 
+     $('#state').val(data.state); 
      $('#zip').val(data.zipcode);
   })
   .fail(function() {
