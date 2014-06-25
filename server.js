@@ -23,31 +23,31 @@ var printDataBase = false;
 Initialization
 *//////////////////////////////////////////////
 
-//dependencies
-var http = require('http');
-var	colors = require('colors');
-var	express = require('express');
-var engines = require('consolidate');
-var anyDB = require('any-db');
-var mailer = require('nodemailer');
-var HashMap = require('hashmap').HashMap;
-var conn = anyDB.createConnection('sqlite3://digestible.db');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var scraper = require('./scraper'); //a simple scraping routine we wrote
+// //dependencies
+// var http = require('http');
+ var	colors = require('colors');
+ var	express = require('express');
+// var engines = require('consolidate');
+// var anyDB = require('any-db');
+// var mailer = require('nodemailer');
+// var HashMap = require('hashmap').HashMap;
+// var conn = anyDB.createConnection('sqlite3://digestible.db');
+// var passport = require('passport');
+// var LocalStrategy = require('passport-local').Strategy;
+// var scraper = require('./scraper'); //a simple scraping routine we wrote
 var app = express();
-var cheerio = require('cheerio');
-//var juice = require('juice');
-var fs = require('fs');
+// var cheerio = require('cheerio');
+// //var juice = require('juice');
+// var fs = require('fs');
 
-app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
-app.set('views', __dirname + '/templates'); // tell Express where to find templates
-app.use(express.bodyParser());
-app.use(express.cookieParser('aacb87*nnai'));
-app.use(express.session({secret: 'yupyupyup'}));
-app.use(express.static(__dirname + '/public'));
-app.use(passport.initialize());
-app.use(passport.session());
+// app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
+// app.set('views', __dirname + '/templates'); // tell Express where to find templates
+// app.use(express.bodyParser());
+// app.use(express.cookieParser('aacb87*nnai'));
+// app.use(express.session({secret: 'yupyupyup'}));
+// app.use(express.static(__dirname + '/public'));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // // create reusable transport method (opens pool of SMTP connections)
 // var smtpTransport = mailer.createTransport("SMTP",{
