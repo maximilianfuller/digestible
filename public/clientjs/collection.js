@@ -83,7 +83,7 @@ function refresh() {
       $("#collTitleInput").val(data.collection_title);
       $("#author").html("By: " + data.creator_name);
       $("#collDescriptInput").val(data.collection_description);
-      $("#pageURL").val("localhost:8080/consumer/" + currentCollectionId);
+      $("#pageURL").val("digestible.io/consumer/" + currentCollectionId);
       $("#pageURLLink").attr('href','/consumer/' + currentCollectionId);
 
       var emailFrequencyInDays = data.email_interval/86400000;
