@@ -37,7 +37,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var scraper = require('./scraper'); //a simple scraping routine we wrote
 var app = express();
 var cheerio = require('cheerio');
-//var juice = require('juice');
+var juice = require('juice');
 var fs = require('fs');
 
 app.engine('html', engines.hogan); // tell Express to run .html files through Hogan
