@@ -333,6 +333,8 @@ COLLECTIONS
 
 .backToCollection {
 	width: 130px;
+	float: left;
+	z-index: 1000;
 }
 
 .headerButton:hover {
