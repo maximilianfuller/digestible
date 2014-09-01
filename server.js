@@ -113,8 +113,11 @@ function scheduleEmail(email_id, millisFromNow) {
 }
 
 function sendEmail(email_id) {
+    console.log('sendEmail called');
     getEmail(email_id, function(email) {
        if(email !== null){
+        console.log('email options set');
+
         // setup e-mail data with unicode symbols
         var mailOptions = {
             from: "Digestible" + " <" + "maximilian_fuller@brown.edu" + ">", // sender address
@@ -133,8 +136,10 @@ function sendEmail(email_id) {
         });
         updateEmailStatus(email_id, "SENT");
         scheduled_emails.remove(email_id);
-        
-       }  
+       }
+       else{
+            console.log('null email');
+        }  
     });
 }
 
