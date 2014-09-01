@@ -17,7 +17,7 @@ var runDBTests = false;
 var primeDataBase = false; 
 
 //prints the contents of the database to the console upon initilization
-var printDataBase = false; 
+var printDataBase = true; 
 
 /* ////////////////////////////////////////////
 Initialization
