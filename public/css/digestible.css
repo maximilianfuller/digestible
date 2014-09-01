@@ -347,6 +347,9 @@ COLLECTIONS
 	transition: all 100ms;
 }
 
+.backToCollection:hover {
+	opacity: 1.0;
+}
 .headerButton:hover {
 	opacity: 1.0;
 }
