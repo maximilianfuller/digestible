@@ -201,7 +201,7 @@ function formatEmailBody(email, callback) {
 function unsubscribe(email_id, successCallback){
     getEmail(email_id, function(email) {
         if(email == null) {
-            callback(false);
+            successCallback(false);
         } else {
             //select all emails with the given collection_id and recipient
             conn.query("SELECT * FROM Emails WHERE collection_id = $1 AND recipient = $2",
@@ -719,11 +719,11 @@ app.get('/unsubscribe/:email_id', function(request, response) {
     console.log('unscribed to email id' + request.params.email_id);
     unsubscribe(request.params.email_id, function(success) {
         if(success) {
-            //TODO: Format this
             response.render("unsubscribe.html");
         } else {
             //TODO: Format this
-            response.send("Unsubscribe failed.");
+            console.log('failed unsubscription attempt');
+            response.render('page_not_found.html');
         }
     });
 });
