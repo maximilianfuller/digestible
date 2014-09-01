@@ -13,6 +13,13 @@ $(document).ready(function() {
     $('#saveCheckContain, #saveColl').removeClass('saved');
   });
 
+  $('.backToCollection').click(function() {
+    $("#editHeader").show();
+    $("#collectionWrap").show();
+    $("#settingsWrap").hide();
+    $("#subscriberMainWrap").hide();
+  });
+
   if($("#collections").val() == null) {
     $('#deleteColl').hide();
   }
