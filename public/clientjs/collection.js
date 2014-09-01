@@ -1,19 +1,12 @@
 $(document).ready(function() {
 
+    //set page to last visited collection
     if(readCookie("currCollId") != null){
-        console.log('collid in the cookie: ', collection.collection_id);
-        // var collection_id = prevID;
-        // var collection = {
-        //   collection_id: collection_id,
-        //   collection_title: $("#collTitleInput").val(),
-        //   collection_description: $("#collDescriptInput").val(),
-        //   visible: prevVisible,
-        //   email_interval: 86400000 * $("#emailFrequency").val()
-        // };
-        // editCollectionData(collection);
+        console.log('collid in the cookie: ', readCookie("currCollId"));
+        $("#collections").val(readCookie("currCollId"));
     }
     else{
-      console.log("null cookie")
+      console.log("null prev collection cookie")
     }
 
   /*
