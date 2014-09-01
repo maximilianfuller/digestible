@@ -314,7 +314,7 @@ $("#subscribeB").click(function(){
   $("#editHeader").hide();
   $("#collectionWrap").hide();
   $("#settingsWrap").hide();
-  $("#backToCollectionHeader").show(); 
+  $("#backToCollectionHeader").hide(); 
   $("#subscriberMainWrap").show();
   getSubscriptionData();
 
