@@ -18,6 +18,7 @@ $(document).ready(function() {
     $("#collectionWrap").show();
     $("#settingsWrap").hide();
     $("#subscriberMainWrap").hide();
+    $("#backToCollectionHeader").hide();
   });
 
   if($("#collections").val() == null) {
@@ -77,6 +78,7 @@ function refresh() {
   
   $("#settingsWrap").hide();
   $("#subscriberMainWrap").hide();
+  $("#backToCollectionHeader").hide();
   $("#editHeader").show();
   $("#collectionWrap").show();
   
@@ -312,6 +314,7 @@ $("#subscribeB").click(function(){
   $("#editHeader").hide();
   $("#collectionWrap").hide();
   $("#settingsWrap").hide();
+  $("#backToCollectionHeader").show(); 
   $("#subscriberMainWrap").show();
   getSubscriptionData();
 
@@ -333,6 +336,7 @@ $("#settingsB").click(function(){
   $("#editHeader").hide();
   $("#collectionWrap").hide();
   $("#subscriberMainWrap").hide();
+  $("#backToCollectionHeader").show();
   $("#settingsWrap").show();
 });
 
@@ -356,6 +360,7 @@ $("#settingsSave").click(function(){
           $("#editHeader").show();
           $("#collectionWrap").show();
           $("#subscriberMainWrap").hide();
+          $("#backToCollectionHeader").hide();
           $("#settingsWrap").show();
        }
       

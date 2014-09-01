@@ -308,6 +308,14 @@ COLLECTIONS
 	right: 0;
 	height: 50px;
 }
+#backToCollectionHeader{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 50px;
+}
+
 .headerButton {
 	width: 80px;
 	height: 30px;
@@ -322,6 +330,11 @@ COLLECTIONS
 	-o-transition: all 100ms;
 	transition: all 100ms;
 }
+
+.backToCollection {
+	width: 130px;
+}
+
 .headerButton:hover {
 	opacity: 1.0;
 }
