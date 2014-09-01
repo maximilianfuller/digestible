@@ -106,6 +106,7 @@ Email Scheduling
 function scheduleEmail(email_id, millisFromNow) {
     console.log("email with id " + email_id + " scheduled for " + millisFromNow + " milliseconds from now");
     var job = setTimeout(function() {
+        console.log('set timeout called');
         sendEmail(email_id);
     },millisFromNow);
 
