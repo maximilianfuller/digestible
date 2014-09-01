@@ -292,17 +292,6 @@ app.get('/home', function(request, response){
                 moustacheParams.creatorEmail = request.user.email;
                 moustacheParams.creatorName = request.user.name;
 
-                //add current collection to moustache params
-
-                if(request.user.current_collection != null){
-                    moustacheParams.currentCollection = request.user.current_collection;
-                                    console.log( request.user.current_collection);
-                }
-                else{
-                    console.log(request.user);
-                    moustacheParams.currentCollection = "";
-                }
-
                 response.render('collection.html',moustacheParams);
             }
         });
@@ -434,7 +423,6 @@ app.post('/ajax/editCollection', function(request, response) {
         if(collection !== null){
             if(request.isAuthenticated() && request.user.email === collection.creator_email){
                 request.body.creator_email = request.user.email;
-                request.user.current_collection = request.body.collection_id;
                 editCollection(request.body);
                 response.send(200);
             } else {

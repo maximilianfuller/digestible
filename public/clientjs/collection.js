@@ -1,4 +1,21 @@
 $(document).ready(function() {
+
+    if(readCookie("currCollId") != null){
+        console.log('collid in the cookie: ', collection.collection_id);
+        // var collection_id = prevID;
+        // var collection = {
+        //   collection_id: collection_id,
+        //   collection_title: $("#collTitleInput").val(),
+        //   collection_description: $("#collDescriptInput").val(),
+        //   visible: prevVisible,
+        //   email_interval: 86400000 * $("#emailFrequency").val()
+        // };
+        // editCollectionData(collection);
+    }
+    else{
+      console.log("null cookie")
+    }
+
   /*
   *Pete's stuff
   */
@@ -84,6 +101,7 @@ function refresh() {
   
   var currentCollectionId = $("#collections").val();
   prevID = currentCollectionId; //slightly confusing nomenclature (I know, its not previous yet)
+  createCookie("currCollId",currentCollectionId, 1);
 
   if(currentCollectionId == null) {
       addEntry();
@@ -211,7 +229,9 @@ function saveCurrCollectionState(){
 
 //edits collection data on the serverName your collection
 function editCollectionData(collection) {
+
   $.post("/ajax/editCollection", collection, function(data) {
+
     //update sidebar
     $('#collections option[value="' + collection.collection_id + '"]')
       .html(collection.collection_title);
@@ -220,6 +240,34 @@ function editCollectionData(collection) {
     .fail(function() {
       //alert("error"); //an error occurred, we're gonna ignore it
     });
+}
+
+function createCookie(name, value, days) {
+    var expires;
+
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    } else {
+        expires = "";
+    }
+    document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/";
+}
+
+function readCookie(name) {
+    var nameEQ = escape(name) + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    createCookie(name, "", -1);
 }
 
 //deletes the collection on the server
@@ -366,5 +414,9 @@ $("#settingsSave").click(function(){
       
   });
 });
+ 
   //END OF BEN'S STUFF
 });
+
+
+
