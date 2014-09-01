@@ -2,8 +2,17 @@ $(document).ready(function() {
 
     //set page to last visited collection
     if(readCookie("currCollId") != null){
-        console.log('collid in the cookie: ', readCookie("currCollId"));
-        $("#collections").val(readCookie("currCollId"));
+        console.log('collection id in the cookie: ', readCookie("currCollId"));
+        var collExists = false;
+        $('#collections option').each(function() { 
+            if($(this).attr('value') == readCookie("currCollId")){
+              collExists = true;
+            }
+        });
+        if(collExists == true){
+          console.log('prev collection is valid');
+          $("#collections").val(readCookie("currCollId"));          
+        }
     }
     else{
       console.log("null prev collection cookie")
