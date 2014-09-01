@@ -106,7 +106,6 @@ Email Scheduling
 function scheduleEmail(email_id, millisFromNow) {
     console.log("email with id " + email_id + " scheduled for " + millisFromNow + " milliseconds from now");
     var job = setTimeout(function() {
-        console.log('set timeout called');
         sendEmail(email_id);
     },millisFromNow);
 
@@ -114,10 +113,8 @@ function scheduleEmail(email_id, millisFromNow) {
 }
 
 function sendEmail(email_id) {
-    console.log('sendEmail called');
     getEmail(email_id, function(email) {
        if(email !== null){
-        console.log('email options set');
 
         // setup e-mail data with unicode symbols
         var mailOptions = {
@@ -719,6 +716,7 @@ app.post('/ajax/loadSettings', function(request, response) {
 });
 
 app.get('/unsubscribe/:email_id', function(request, response) {
+    console.log('unscribed to email id' + request.params.email_id);
     unsubscribe(request.params.email_id, function(success) {
         if(success) {
             //TODO: Format this
