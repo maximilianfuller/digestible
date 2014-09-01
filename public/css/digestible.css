@@ -332,9 +332,19 @@ COLLECTIONS
 }
 
 .backToCollection {
+	height: 30px;
+	margin: 22px 0 0 20px;
+	font-size: 13px;
+	opacity: 0.25;
 	width: 130px;
 	float: left;
 	z-index: 1000;
+
+	-webkit-transition: all 100ms;
+	-moz-transition: all 100ms;
+	-ms-transition: all 100ms;
+	-o-transition: all 100ms;
+	transition: all 100ms;
 }
 
 .headerButton:hover {
