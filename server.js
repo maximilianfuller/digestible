@@ -158,6 +158,7 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
                     var email = new Email(null, reader_email, 
                         Date.now() + currentMills, entries[i].entry_id, collection_id,
                         entries[i].subject, entries[i].content, "PENDING", entries[i].entry_number + "/" + entries.length);
+                    console.log('addemail called');
                     addEmail(email, function(email_id) {
                         email.email_id = email_id;
                         //append extra html to email body
@@ -978,6 +979,7 @@ function addEmail(email, callback) {
             email.entry_edition
         ]).on('error', console.error)
         .on('end', function() {
+            console.log('email successfully added');
             callback(id);
         });
 }
