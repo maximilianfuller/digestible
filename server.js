@@ -581,7 +581,15 @@ app.get('/consumer/:collection_id', function(request, response){
                     var moustacheParams = {};
                     moustacheParams.collectionName = collection.collection_title;
                     moustacheParams.collectionId = cl_id;
-                    moustacheParams.email_interval = collection.email_interval/86400000;
+
+                    var interval = collection.email_interval/86400000;
+                    if(interval == 1){
+                        moustacheParams.email_interval = "once a day.";
+                    }
+                    else {
+                        moustacheParams.email_interval = "every" + interval + "days.";
+                    }
+
                     moustacheParams.creatorName = creator.name;
                     moustacheParams.description = collection.collection_description;
                     

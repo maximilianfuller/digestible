@@ -55,12 +55,6 @@ label {
 	font-size: 18px;
 }
 
-#unsubscribeSuccess {
-	font-size: 16px;
-	font-family: 'Open Sans',Helvetica, sans-serif;
-	text-align: center;
-}
-
 #authForm {
 	position: absolute;
 	right: 0;
