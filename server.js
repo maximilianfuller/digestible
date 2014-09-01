@@ -158,7 +158,6 @@ function subscribe(collection_id, reader_email, millsToFirst, millsInterval){
                     var email = new Email(null, reader_email, 
                         Date.now() + currentMills, entries[i].entry_id, collection_id,
                         entries[i].subject, entries[i].content, "PENDING", entries[i].entry_number + "/" + entries.length);
-                    console.log('addemail called');
                     addEmail(email, function(email_id) {
                         email.email_id = email_id;
                         //append extra html to email body
@@ -1180,8 +1179,8 @@ conn.query("SELECT MAX(entry_id) FROM Entries", function(error, result) {
 function generateEmailID() {
     ++lastEmailID;
     //append a big number to the end to ensure unsubscribing is secure.
-    var random = Math.floor((Math.random() * 1000000000000000))
-    return lastEmailID * 1000000000000000 + random
+    //var random = Math.floor((Math.random() * 1000000000000000))
+    return lastEmailID //* 1000000000000000 + random
 }
 
 function generateCollectionID() {
